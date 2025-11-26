@@ -1247,7 +1247,21 @@ function renderQuestion() {
   const skipBtn = document.getElementById("skip-btn");
   const exitBtn = document.getElementById("exit-btn");
 
-  // Option click handler
+  // Make sure we only move on once from this question
+  let hasMovedOn = false;
+  function goNext() {
+    if (hasMovedOn) return;
+    hasMovedOn = true;
+
+    currentQuestionIndex++;
+    if (currentQuestionIndex < total) {
+      renderQuestion();
+    } else {
+      renderResult();
+    }
+  }
+
+  // Option click handler – answer, show feedback, then auto-advance
   optionButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       if (selectedOptionIndex !== null) return; // lock after pick
@@ -1266,6 +1280,11 @@ function renderQuestion() {
         isCorrect,
       });
 
+      // Disable all options once an answer is chosen
+      optionButtons.forEach((b) => {
+        b.disabled = true;
+      });
+
       // Visual + text feedback only if not hiding feedback
       if (!hideFeedbackEnabled) {
         optionButtons.forEach((b) => b.classList.remove("selected"));
@@ -1273,7 +1292,6 @@ function renderQuestion() {
 
         optionButtons.forEach((b) => {
           const bIdx = Number(b.getAttribute("data-index"));
-          b.disabled = true;
           if (bIdx === correctIndex) {
             b.classList.add("correct");
           } else if (bIdx === selectedOptionIndex && !isCorrect) {
@@ -1287,18 +1305,21 @@ function renderQuestion() {
           ? "Correct!"
           : "Incorrect – the correct answer is highlighted.";
       } else {
-        // Just acknowledge selection
+        // Just acknowledge selection without revealing correctness
         feedbackEl.className = "feedback";
         feedbackEl.textContent = "Answer selected.";
       }
 
-      nextBtn.disabled = false;
+      // Auto-move to the next question after a short pause
+      setTimeout(goNext, 900);
     });
   });
 
-  // Skip handler: records no answer, moves on
+  // Skip handler: records no answer, moves on immediately
   if (skipBtn) {
     skipBtn.addEventListener("click", () => {
+      if (hasMovedOn) return;
+
       const correctIndex = q.correctIndex;
       answers.push({
         questionIndex: realIndex,
@@ -1307,18 +1328,16 @@ function renderQuestion() {
         isCorrect: false,
       });
 
-      currentQuestionIndex++;
-      if (currentQuestionIndex < total) {
-        renderQuestion();
-      } else {
-        renderResult();
-      }
+      goNext();
     });
   }
 
-  // Next / Finish handler
+  // Next / Finish handler:
+  // now only needed if user wants to move on WITHOUT answering
   if (nextBtn) {
     nextBtn.addEventListener("click", () => {
+      if (hasMovedOn) return;
+
       if (selectedOptionIndex === null) {
         // No selection made – treat as skipped
         const correctIndex = q.correctIndex;
@@ -1328,13 +1347,8 @@ function renderQuestion() {
           correctIndex,
           isCorrect: false,
         });
-      }
 
-      currentQuestionIndex++;
-      if (currentQuestionIndex < total) {
-        renderQuestion();
-      } else {
-        renderResult();
+        goNext();
       }
     });
   }
@@ -1343,6 +1357,7 @@ function renderQuestion() {
     exitBtn.addEventListener("click", exitQuiz);
   }
 }
+
 
 /* ============================
    RENDER RESULT SCREEN
@@ -1517,3 +1532,4 @@ if (hideFeedbackToggleEl) {
    ============================ */
 initAuth();
 loadModules();
+
