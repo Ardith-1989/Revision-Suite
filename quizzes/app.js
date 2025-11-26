@@ -1185,7 +1185,7 @@ async function startQuiz(quizMeta) {
 }
 
 /* ============================
-   RENDER QUESTION
+   RENDER QUESTION  (NO NEXT BUTTON)
    ============================ */
 function renderQuestion() {
   const questions = currentQuizData.questions || [];
@@ -1204,9 +1204,7 @@ function renderQuestion() {
     .map(
       (optIdx, displayIdx) => `
       <button class="option-btn" data-index="${optIdx}">
-        <span class="option-label">${String.fromCharCode(
-          65 + displayIdx
-        )}.</span>
+        <span class="option-label">${String.fromCharCode(65 + displayIdx)}.</span>
         <span class="option-text">${q.options[optIdx]}</span>
       </button>
     `
@@ -1223,6 +1221,7 @@ function renderQuestion() {
   progressFillEl.style.width = `${progressPercent}%`;
   setBreadcrumbs("quiz");
 
+  // *** Next button removed ***
   quizContentEl.innerHTML = `
     <div class="question-text">${q.question}</div>
     <p class="question-meta">${description}</p>
@@ -1233,9 +1232,6 @@ function renderQuestion() {
     <div class="controls">
       <button class="secondary-button" id="exit-btn">Exit quiz</button>
       <button class="secondary-button" id="skip-btn">Skip</button>
-      <button class="primary-button" id="next-btn" disabled>
-        ${questionNumber < total ? "Next →" : "Finish quiz"}
-      </button>
     </div>
   `;
 
@@ -1243,11 +1239,9 @@ function renderQuestion() {
     quizContentEl.querySelectorAll(".option-btn")
   );
   const feedbackEl = document.getElementById("feedback");
-  const nextBtn = document.getElementById("next-btn");
   const skipBtn = document.getElementById("skip-btn");
   const exitBtn = document.getElementById("exit-btn");
 
-  // Make sure we only move on once from this question
   let hasMovedOn = false;
   function goNext() {
     if (hasMovedOn) return;
@@ -1261,10 +1255,11 @@ function renderQuestion() {
     }
   }
 
-  // Option click handler – answer, show feedback, then auto-advance
+  // Option click auto-advance
   optionButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      if (selectedOptionIndex !== null) return; // lock after pick
+      if (selectedOptionIndex !== null) return;
+
       const idx = Number(btn.getAttribute("data-index"));
       selectedOptionIndex = idx;
 
@@ -1280,12 +1275,9 @@ function renderQuestion() {
         isCorrect,
       });
 
-      // Disable all options once an answer is chosen
-      optionButtons.forEach((b) => {
-        b.disabled = true;
-      });
+      optionButtons.forEach((b) => (b.disabled = true));
 
-      // Visual + text feedback only if not hiding feedback
+      // Feedback & highlighting
       if (!hideFeedbackEnabled) {
         optionButtons.forEach((b) => b.classList.remove("selected"));
         btn.classList.add("selected");
@@ -1305,26 +1297,23 @@ function renderQuestion() {
           ? "Correct!"
           : "Incorrect – the correct answer is highlighted.";
       } else {
-        // Just acknowledge selection without revealing correctness
-        feedbackEl.className = "feedback";
         feedbackEl.textContent = "Answer selected.";
       }
 
-      // Auto-move to the next question after a short pause
+      // Auto-advance
       setTimeout(goNext, 900);
     });
   });
 
-  // Skip handler: records no answer, moves on immediately
+  // Skip immediately
   if (skipBtn) {
     skipBtn.addEventListener("click", () => {
       if (hasMovedOn) return;
 
-      const correctIndex = q.correctIndex;
       answers.push({
         questionIndex: realIndex,
         selected: null,
-        correctIndex,
+        correctIndex: q.correctIndex,
         isCorrect: false,
       });
 
@@ -1332,32 +1321,10 @@ function renderQuestion() {
     });
   }
 
-  // Next / Finish handler:
-  // now only needed if user wants to move on WITHOUT answering
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      if (hasMovedOn) return;
-
-      if (selectedOptionIndex === null) {
-        // No selection made – treat as skipped
-        const correctIndex = q.correctIndex;
-        answers.push({
-          questionIndex: realIndex,
-          selected: null,
-          correctIndex,
-          isCorrect: false,
-        });
-
-        goNext();
-      }
-    });
-  }
-
   if (exitBtn) {
     exitBtn.addEventListener("click", exitQuiz);
   }
 }
-
 
 /* ============================
    RENDER RESULT SCREEN
@@ -1532,4 +1499,5 @@ if (hideFeedbackToggleEl) {
    ============================ */
 initAuth();
 loadModules();
+
 
