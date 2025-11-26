@@ -1,1 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Study Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .portal-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .portal-main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      max-width: 880px;
+      width: 100%;
+    }
+
+    .portal-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 20px 20px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      cursor: pointer;
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        border-color 0.12s ease,
+        background-color 0.12s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .portal-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.6);
+      border-color: var(--accent);
+    }
+
+    .portal-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .portal-logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-strong);
+      color: var(--accent-strong);
+      flex-shrink: 0;
+    }
+
+    .portal-card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .portal-card-subtitle {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .portal-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--text-softer);
+    }
+
+    .portal-pill {
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated-soft);
+      white-space: nowrap;
+      font-size: 11px;
+    }
+
+    .portal-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .portal-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .portal-app-logo-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-strong);
+      color: var(--accent-strong);
+      font-weight: 700;
+    }
+
+    .portal-app-title {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .portal-app-subtitle {
+      margin: 0;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .portal-header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated-soft);
+      color: var(--text-soft);
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .icon-button:hover {
+      border-color: var(--accent-strong);
+      color: var(--accent-strong);
+    }
+  </style>
+</head>
+<body class="theme-light">
+  <div class="portal-shell">
+    <!-- Shared-style header -->
+    <header class="portal-header">
+      <div class="portal-header-left">
+        <div class="portal-app-logo-circle">S</div>
+        <div>
+          <h1 class="portal-app-title">Study Portal</h1>
+          <p class="portal-app-subtitle">
+            Choose a tool to start revising
+          </p>
+        </div>
+      </div>
+      <div class="portal-header-right">
+        <button
+          id="toggleThemeBtn"
+          class="icon-button"
+          type="button"
+          aria-label="Toggle theme"
+          title="Toggle light / dark theme"
+        >
+          🌗
+        </button>
+      </div>
+    </header>
+
+    <main class="portal-main">
+      <div class="portal-grid">
+        <!-- Card 1: Revision Randomiser -->
+        <a href="revision/index.html" class="portal-card">
+          <div class="portal-card-header">
+            <div class="portal-logo-circle">R</div>
+            <div>
+              <h2 class="portal-card-title">Revision Randomiser</h2>
+              <p class="portal-card-subtitle">
+                Generate smart prompts and tasks for active recall.
+              </p>
+            </div>
+          </div>
+          <div class="portal-card-footer">
+            <span>Great for: short, varied revision bursts</span>
+            <span class="portal-pill">Cards & prompts</span>
+          </div>
+        </a>
+
+        <!-- Card 2: MCQ Quizzes -->
+        <a href="quizzes/index.html" class="portal-card">
+          <div class="portal-card-header">
+            <div class="portal-logo-circle">Q</div>
+            <div>
+              <h2 class="portal-card-title">Ancient History MCQs</h2>
+              <p class="portal-card-subtitle">
+                Multiple-choice quizzes mapped to your course structure.
+              </p>
+            </div>
+          </div>
+          <div class="portal-card-footer">
+            <span>Great for: checking knowledge quickly</span>
+            <span class="portal-pill">MCQ practice</span>
+          </div>
+        </a>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Reuse the same theme key as your other apps:
+    const THEME_KEY = "revision-theme";
+
+    function applyStoredTheme() {
+      const stored = localStorage.getItem(THEME_KEY);
+      const body = document.body;
+      if (!stored || stored === "light") {
+        body.classList.add("theme-light");
+      } else {
+        body.classList.remove("theme-light");
+      }
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const isLight = body.classList.contains("theme-light");
+      if (isLight) {
+        body.classList.remove("theme-light");
+        localStorage.setItem(THEME_KEY, "dark");
+      } else {
+        body.classList.add("theme-light");
+        localStorage.setItem(THEME_KEY, "light");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      applyStoredTheme();
+      const btn = document.getElementById("toggleThemeBtn");
+      if (btn) btn.addEventListener("click", toggleTheme);
+    });
+  </script>
+</body>
+</html>
 
