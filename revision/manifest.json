@@ -1,0 +1,20 @@
+{
+  "name": "Revision Randomiser",
+  "short_name": "Randomiser",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#007BFF",
+  "theme_color": "#007BFF",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
