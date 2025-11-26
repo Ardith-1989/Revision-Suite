@@ -1,1 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>A Level Ancient History - Multiple Choice Quizzes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- Shared styles with Revision Randomiser -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* =========================================
+       MCQ-specific styling (uses shared theme vars)
+       ========================================= */
+
+    .card-panel-mcq {
+      width: 100%;
+      max-width: 880px;
+      background-color: var(--bg-elevated);
+      border-radius: 22px;
+      padding: 20px 20px 22px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    body.theme-light .card-panel-mcq {
+      background-color: var(--bg-card);
+    }
+
+    .mcq-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mcq-title {
+      margin: 0 0 4px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .mcq-subtitle {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .mcq-pill {
+      font-size: 12px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      background-color: var(--accent-soft);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-soft);
+      white-space: nowrap;
+    }
+
+    .breadcrumbs {
+      font-size: 12px;
+      color: var(--text-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .breadcrumbs span[data-level] {
+      cursor: pointer;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background-color: var(--bg-elevated-soft);
+      border: 1px solid transparent;
+    }
+
+    .breadcrumbs span[data-level]:hover {
+      border-color: var(--accent);
+      color: var(--accent-strong);
+    }
+
+    .breadcrumbs span:last-child:not([data-level]) {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background-color: var(--bg-elevated-soft);
+      border: 1px solid var(--border-subtle);
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background-color: var(--accent);
+      transition: width 0.25s ease-out;
+    }
+
+    /* Lists for modules / units / quizzes */
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+      margin-bottom: 10px;
+    }
+
+    .list-item {
+      width: 100%;
+      text-align: left;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--border-subtle);
+      background-color: var(--bg-card);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: inherit;
+      color: var(--text);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.25);
+      transition: box-shadow 0.18s ease;
+    }
+
+    .list-item:hover {
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.30);
+    }
+
+    .list-title {
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+    }
+
+    .list-meta {
+      font-size: 12px;
+      color: var(--text-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-family: inherit;
+    }
+
+    /* Mastery badge */
+
+    .mastery-badge {
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .bad-low {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+    .bad-mid {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    .bad-high {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+
+    /* Tooltip wrapper for mastery explanation */
+
+    .mastery-tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: help;
+    }
+
+    .mastery-tooltip .tooltip-text {
+      visibility: hidden;
+      opacity: 0;
+      width: 220px;
+      background: var(--bg-elevated);
+      color: var(--text);
+      text-align: left;
+      border-radius: 10px;
+      padding: 8px 10px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      position: absolute;
+      z-index: 9999;
+      bottom: 130%;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: opacity 0.2s ease-in-out;
+      font-size: 12px;
+    }
+
+    .mastery-tooltip .tooltip-text::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 6px;
+      border-style: solid;
+      border-color: var(--border-subtle) transparent transparent transparent;
+    }
+
+    .mastery-tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* Random quiz button inside cards */
+
+    .random-btn {
+      margin-left: 8px;
+      background: var(--accent-soft);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .random-btn:hover {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .helper-text {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .error-text {
+      font-size: 13px;
+      color: var(--danger);
+    }
+
+    /* Question view */
+
+    .question-text {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .question-meta {
+      margin: 0 0 10px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      padding: 9px 11px;
+      border-radius: 14px;
+      border: 1px solid var(--option-border);
+      background: var(--option-bg);
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.08s ease;
+    }
+
+    .option-btn:hover {
+      background: var(--option-bg-hover);
+      border-color: var(--accent);
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .option-btn.selected {
+      border-color: var(--accent-strong);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
+    }
+
+    .option-btn.correct {
+      border-color: var(--success);
+    }
+
+    .option-btn.incorrect {
+      border-color: var(--danger);
+    }
+
+    .option-label {
+      font-weight: 600;
+      min-width: 20px;
+    }
+
+    .option-text {
+      flex: 1;
+    }
+
+    .feedback {
+      min-height: 20px;
+      font-size: 13px;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .feedback.correct span {
+      color: var(--success);
+    }
+
+    .feedback.incorrect span.value {
+      color: var(--danger);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Results */
+
+    .result-heading {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 0 0 4px;
+    }
+
+    .result-score {
+      font-size: 14px;
+      margin: 0 0 6px;
+    }
+
+    .result-detail {
+      font-size: 13px;
+      margin: 0 0 8px;
+      color: var(--text-soft);
+    }
+
+    .summary-list {
+      margin-top: 8px;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 8px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .summary-item {
+      font-size: 13px;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--border-subtle);
+    }
+
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+
+    .summary-question {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .summary-answer {
+      margin: 1px 0;
+    }
+
+    .summary-answer span.label {
+      font-weight: 500;
+    }
+
+    .summary-answer.correct span.value {
+      color: var(--success);
+    }
+
+    .summary-answer.incorrect span.value {
+      color: var(--danger);
+    }
+
+    /* Sidebar footer link */
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-footer a.sidebar-footer-link {
+      font-size: 13px;
+      text-decoration: none;
+      color: var(--accent);
+    }
+
+    .sidebar-footer a.sidebar-footer-link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .card-panel-mcq {
+        padding: 16px 14px 18px;
+        border-radius: 18px;
+      }
+      .mcq-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+    }
+  </style>
+
+  <!-- Supabase client -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body class="theme-light">
+  <div class="app-shell">
+    <!-- Header (shared style with Revision Randomiser) -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="app-logo-circle">Q</div>
+        <div class="app-title-group">
+          <h1 class="app-title">Ancient History MCQs</h1>
+          <p class="app-subtitle">Multiple-choice quizzes for active recall</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <button
+          id="toggleThemeBtn"
+          class="icon-button"
+          type="button"
+          aria-label="Toggle theme"
+          title="Toggle light / dark theme"
+        >
+          🌗
+        </button>
+        <!-- Sidebar burger icon: rightmost -->
+        <button
+          id="openSidebarBtn"
+          class="icon-button sidebar-toggle"
+          type="button"
+          aria-label="Quiz options"
+          title="Quiz options"
+        >
+          ☰
+        </button>
+      </div>
+    </header>
+
+    <!-- Main content area -->
+    <main class="app-main">
+      <section class="card-panel-mcq">
+        <div class="mcq-header-row">
+          <div>
+            <h2 class="mcq-title" id="card-title">
+              A Level Ancient History – Multiple Choice Quizzes
+            </h2>
+            <p class="mcq-subtitle">
+              Browse modules and units, then take topic-specific MCQ quizzes.
+            </p>
+          </div>
+          <div class="mcq-pill" id="pill-right"></div>
+        </div>
+
+        <div class="breadcrumbs" id="breadcrumbs"></div>
+
+        <div class="progress-bar" id="progress-container">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <div id="quiz-content">
+          <!-- Dynamic content injected by app.js -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Sidebar: options + account -->
+  <aside class="sidebar" id="optionsSidebar">
+    <div class="sidebar-inner">
+      <div class="sidebar-header">
+        <div>
+          <h2>Quiz options</h2>
+          <p class="sidebar-subtitle">
+            Adjust question order and feedback behaviour for this session.
+          </p>
+        </div>
+        <button
+          type="button"
+          class="icon-button"
+          id="closeSidebarBtn"
+          aria-label="Close options"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-header">
+          <p class="sidebar-section-title">Question order</p>
+        </div>
+        <div class="sidebar-section-controls">
+          <label class="inline-checkbox">
+            <input type="checkbox" id="toggle-shuffle" />
+            <span>Shuffle question order</span>
+          </label>
+          <p class="sidebar-text">
+            When enabled, the questions in each quiz will appear in a random order.
+          </p>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-header">
+          <p class="sidebar-section-title">Feedback mode</p>
+        </div>
+        <div class="sidebar-section-controls">
+          <label class="inline-checkbox">
+            <input type="checkbox" id="toggle-hide-feedback" />
+            <span>Hide correct answers until the end</span>
+          </label>
+          <p class="sidebar-text">
+            When enabled, you won’t see which answers are correct as you go.
+            All answers are revealed on the results screen at the end.
+          </p>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-header">
+          <p class="sidebar-section-title">Account</p>
+        </div>
+        <div class="sidebar-section-controls" id="auth-panel">
+          <!-- Filled by app.js: guest mode / login / logout -->
+        </div>
+      </div>
+
+      <!-- Footer: link to Revision Randomiser -->
+      <div class="sidebar-footer">
+        <span class="sidebar-text">Switch app:</span>
+        <a
+          href="#"
+          class="sidebar-footer-link"
+          title="Open Revision Randomiser"
+        >
+          Revision Randomiser ↗
+        </a>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- App logic -->
+  <script src="app.js"></script>
+</body>
+</html>
