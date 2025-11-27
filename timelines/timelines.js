@@ -115,7 +115,7 @@ const TIMELINE_DATA = [
 let currentModule = null;
 let currentUnit = null;
 let currentTimeline = null;
-let currentMode = "study"; // "study" | "match-dates" | "order-only"
+let currentMode = "study"; // "study" | "match-dates" | "order-only" | "which-first" | "placement"
 
 /* ============================
    HELPERS
@@ -213,11 +213,10 @@ function renderModuleList() {
           (mod.units?.length || 0) !== 1 ? "s" : ""
         }</span>
               <span>•</span>
-              <span>${(mod.units || [])
-                .reduce(
-                  (acc, u) => acc + (u.timelines?.length || 0),
-                  0
-                )} timeline(s)</span>
+              <span>${(mod.units || []).reduce(
+                (acc, u) => acc + (u.timelines?.length || 0),
+                0
+              )} timeline(s)</span>
             </div>
           </div>
           <button class="tag-button" data-module-id="${mod.id}">
@@ -230,7 +229,7 @@ function renderModuleList() {
     <p class="helper-text">
       These modules mirror your course structure. Choose one to explore its units and timelines.
     </p>
-  `;
+  ";
 
   contentEl.querySelectorAll("[data-module-id]").forEach((el) => {
     el.addEventListener("click", () => {
@@ -300,7 +299,7 @@ function renderUnitList(moduleId) {
         .join("")}
     </div>
     <p class="helper-text">
-      “Study” shows the timeline in order. “Test” lets you try drag-and-drop sequencing activities.
+      “Study” shows the timeline in order. “Test” lets you try drag-and-drop and question-based activities.
     </p>
   `;
 
@@ -308,7 +307,6 @@ function renderUnitList(moduleId) {
   contentEl.querySelectorAll(".list-item").forEach((card) => {
     card.addEventListener("click", (e) => {
       const unitId = card.getAttribute("data-unit-id");
-      // If click was on a button, its handler will handle; otherwise default
       if (e.target.closest("button")) return;
       const unit = mod.units.find((u) => u.id === unitId);
       if (!unit || !unit.timelines || !unit.timelines.length) return;
@@ -369,6 +367,12 @@ function renderTimelineView() {
       <button class="mode-tab ${
         currentMode === "order-only" ? "active" : ""
       }" data-mode="order-only">Drag & drop (order only)</button>
+      <button class="mode-tab ${
+        currentMode === "which-first" ? "active" : ""
+      }" data-mode="which-first">Which came first?</button>
+      <button class="mode-tab ${
+        currentMode === "placement" ? "active" : ""
+      }" data-mode="placement">Placement</button>
     </div>
   `;
 
@@ -397,7 +401,7 @@ function renderTimelineView() {
           .join("")}
       </div>
       <p class="helper-text">
-        Read through the timeline to get a sense of the order. When you’re ready, try one of the drag-and-drop activities.
+        Read through the timeline to get a sense of the order. When you’re ready, try one of the activities.
       </p>
       <div class="controls-bottom">
         <button class="primary-button" data-start-mode="match-dates">
@@ -406,10 +410,16 @@ function renderTimelineView() {
         <button class="secondary-button" data-start-mode="order-only">
           Start drag & drop (order only) ›
         </button>
+        <button class="secondary-button" data-start-mode="which-first">
+          Start “Which came first?” ›
+        </button>
+        <button class="secondary-button" data-start-mode="placement">
+          Start placement questions ›
+        </button>
       </div>
     `;
   } else {
-    // Placeholder; actual activity is rendered by renderDragDropActivity
+    // Placeholder; actual activity is rendered separately
     bodyHtml = `<div id="activityContainer"></div>`;
   }
 
@@ -426,9 +436,8 @@ function renderTimelineView() {
       if (mode === "study") {
         renderTimelineView();
       } else {
-        // Render base view then inject activity
         renderTimelineView();
-        renderDragDropActivity(mode);
+        renderActivityForMode(mode);
       }
     });
   });
@@ -441,13 +450,32 @@ function renderTimelineView() {
         const mode = btn.getAttribute("data-start-mode");
         currentMode = mode;
         renderTimelineView();
-        renderDragDropActivity(mode);
+        renderActivityForMode(mode);
       })
     );
 
   // If we arrived here already in an activity mode, render it
-  if (currentMode === "match-dates" || currentMode === "order-only") {
-    renderDragDropActivity(currentMode);
+  if (
+    currentMode === "match-dates" ||
+    currentMode === "order-only" ||
+    currentMode === "which-first" ||
+    currentMode === "placement"
+  ) {
+    renderActivityForMode(currentMode);
+  }
+}
+
+/* ============================
+   ACTIVITY DISPATCH
+   ============================ */
+
+function renderActivityForMode(mode) {
+  if (mode === "match-dates" || mode === "order-only") {
+    renderDragDropActivity(mode);
+  } else if (mode === "which-first") {
+    renderWhichFirstActivity();
+  } else if (mode === "placement") {
+    renderPlacementActivity();
   }
 }
 
@@ -501,7 +529,7 @@ function renderDragDropActivity(mode) {
     container.innerHTML = `
       <div class="controls-row">
         <p class="helper-text">
-          Drag (or tap-select) each event and place it onto the correct date. All dates are shown in order.
+          Drag each event onto the correct date. All dates are shown in order.
         </p>
       </div>
 
@@ -511,7 +539,7 @@ function renderDragDropActivity(mode) {
           ${datesHtml}
         </div>
         <div class="dnd-column">
-          <div class="dnd-column-title">Events (drag or tap these onto the dates)</div>
+          <div class="dnd-column-title">Events (drag these onto the dates)</div>
           <div class="dnd-events-pool" id="eventsPool">
             ${eventCardsHtml}
           </div>
@@ -549,7 +577,7 @@ function renderDragDropActivity(mode) {
     container.innerHTML = `
       <div class="controls-row">
         <p class="helper-text">
-          Drag (or tap-select) the events into the correct chronological order (top = earliest). Dates are hidden while you arrange them.
+          Drag the events into the correct chronological order (top = earliest). Dates are hidden while you arrange them.
         </p>
       </div>
 
@@ -582,36 +610,7 @@ function setupMatchDatesDnD(root, events) {
   const switchBtn = root.querySelector("#switchOrderMode");
 
   let draggedCard = null;
-  let selectedCard = null;
 
-  function clearSelection() {
-    if (selectedCard) {
-      selectedCard.classList.remove("selected");
-      selectedCard = null;
-    }
-  }
-
-  function assignCardToSlot(card, slot) {
-    if (!card || !slot) return;
-    const slotEventEl = slot.querySelector("[data-slot-event]");
-    if (!slotEventEl) return;
-
-    // If this card was already assigned to another slot, clear that
-    const prevSlotEventEl = root.querySelector(
-      `.dnd-slot [data-slot-event][data-event-id="${card.getAttribute(
-        "data-event-id"
-      )}"]`
-    );
-    if (prevSlotEventEl) {
-      prevSlotEventEl.textContent = "";
-      prevSlotEventEl.removeAttribute("data-event-id");
-    }
-
-    slotEventEl.textContent = card.textContent.trim();
-    slotEventEl.setAttribute("data-event-id", card.getAttribute("data-event-id"));
-  }
-
-  // Drag support (desktop)
   eventCards.forEach((card) => {
     card.addEventListener("dragstart", () => {
       draggedCard = card;
@@ -621,22 +620,9 @@ function setupMatchDatesDnD(root, events) {
       card.classList.remove("dragging");
       draggedCard = null;
     });
-
-    // Tap / click selection (mobile-friendly)
-    card.addEventListener("click", () => {
-      if (selectedCard === card) {
-        // Deselect
-        clearSelection();
-      } else {
-        clearSelection();
-        selectedCard = card;
-        card.classList.add("selected");
-      }
-    });
   });
 
   slots.forEach((slot) => {
-    // Drag-over (desktop)
     slot.addEventListener("dragover", (e) => {
       e.preventDefault();
       slot.classList.add("highlight-drop");
@@ -647,14 +633,25 @@ function setupMatchDatesDnD(root, events) {
     slot.addEventListener("drop", () => {
       slot.classList.remove("highlight-drop");
       if (!draggedCard) return;
-      assignCardToSlot(draggedCard, slot);
-    });
+      const slotEventEl = slot.querySelector("[data-slot-event]");
+      if (!slotEventEl) return;
 
-    // Tap / click to place selected event (mobile-friendly)
-    slot.addEventListener("click", () => {
-      if (!selectedCard) return;
-      assignCardToSlot(selectedCard, slot);
-      clearSelection();
+      // If this card was in another slot, clear that slot's display
+      const previousSlot = root.querySelector(
+        `.dnd-slot [data-slot-event][data-event-id="${draggedCard.getAttribute(
+          "data-event-id"
+        )}"]`
+      );
+      if (previousSlot) {
+        previousSlot.textContent = "";
+        previousSlot.removeAttribute("data-event-id");
+      }
+
+      slotEventEl.textContent = draggedCard.textContent.trim();
+      slotEventEl.setAttribute(
+        "data-event-id",
+        draggedCard.getAttribute("data-event-id")
+      );
     });
   });
 
@@ -668,11 +665,6 @@ function setupMatchDatesDnD(root, events) {
     root
       .querySelectorAll(".dnd-slot")
       .forEach((s) => s.classList.remove("dnd-correct", "dnd-incorrect"));
-    root
-      .querySelectorAll(".dnd-event-card")
-      .forEach((c) => c.classList.remove("selected", "dragging"));
-    draggedCard = null;
-    selectedCard = null;
   });
 
   checkBtn.addEventListener("click", () => {
@@ -722,18 +714,9 @@ function setupOrderOnlyDnD(root, events) {
   const switchBtn = root.querySelector("#switchMatchMode");
 
   let draggedItem = null;
-  let selectedItem = null;
-
-  function clearSelection() {
-    if (selectedItem) {
-      selectedItem.classList.remove("selected");
-      selectedItem = null;
-    }
-  }
 
   function attachDndHandlers() {
     listEl.querySelectorAll(".dnd-order-item").forEach((item) => {
-      // Drag support (desktop)
       item.addEventListener("dragstart", () => {
         draggedItem = item;
         item.classList.add("dragging");
@@ -754,22 +737,6 @@ function setupOrderOnlyDnD(root, events) {
           } else {
             container.insertBefore(draggedItem, item.nextSibling);
           }
-          updateIndices();
-        }
-      });
-
-      // Tap / click: select first item, then tap another to move it above
-      item.addEventListener("click", () => {
-        if (!selectedItem) {
-          selectedItem = item;
-          item.classList.add("selected");
-        } else if (selectedItem === item) {
-          // Deselect
-          clearSelection();
-        } else {
-          // Move the previously selected item above the tapped item
-          listEl.insertBefore(selectedItem, item);
-          clearSelection();
           updateIndices();
         }
       });
@@ -796,10 +763,8 @@ function setupOrderOnlyDnD(root, events) {
     feedbackEl.textContent = "";
     feedbackEl.className = "feedback";
     items.forEach((it) =>
-      it.classList.remove("dnd-correct", "dnd-incorrect", "selected")
+      it.classList.remove("dnd-correct", "dnd-incorrect")
     );
-    draggedItem = null;
-    selectedItem = null;
     updateIndices();
     attachDndHandlers();
   });
@@ -837,6 +802,274 @@ function setupOrderOnlyDnD(root, events) {
 }
 
 /* ============================
+   ACTIVITY: WHICH CAME FIRST?
+   ============================ */
+
+function renderWhichFirstActivity() {
+  const container = document.getElementById("activityContainer");
+  if (!container || !currentTimeline) return;
+
+  const sortedEvents = sortEventsByDate(currentTimeline.events);
+  if (sortedEvents.length < 2) {
+    container.innerHTML =
+      '<p class="helper-text">Not enough events in this timeline for a "Which came first?" question.</p>';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="controls-row">
+      <p class="helper-text">
+        Choose which event happened earliest. You can try as many questions as you like.
+      </p>
+    </div>
+    <div id="whichFirstQuestion"></div>
+    <div class="controls-bottom">
+      <button class="primary-button" id="nextWhichFirst">Next question</button>
+      <button class="secondary-button" id="switchToPlacement">Switch to placement</button>
+    </div>
+    <div class="feedback" id="whichFirstFeedback"></div>
+  `;
+
+  function buildQuestion() {
+    const qContainer = container.querySelector("#whichFirstQuestion");
+    const feedbackEl = container.querySelector("#whichFirstFeedback");
+    if (!qContainer) return;
+
+    feedbackEl.textContent = "";
+    feedbackEl.className = "feedback";
+
+    // Pick 3 distinct events if possible, else 2
+    const pool = [...sortedEvents];
+    const chosen = [];
+    while (pool.length && chosen.length < Math.min(3, sortedEvents.length)) {
+      const idx = Math.floor(Math.random() * pool.length);
+      chosen.push(pool.splice(idx, 1)[0]);
+    }
+
+    // Determine the earliest event among chosen
+    const earliest = chosen.reduce(
+      (best, ev) => (ev.year < best.year ? ev : best),
+      chosen[0]
+    );
+
+    // Shuffle the options for display
+    const displayOptions = [...chosen];
+    for (let i = displayOptions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [displayOptions[i], displayOptions[j]] = [
+        displayOptions[j],
+        displayOptions[i],
+      ];
+    }
+
+    const optionsHtml = displayOptions
+      .map(
+        (ev, index) => `
+      <button class="option-btn" data-event-id="${ev.id}">
+        <span class="option-label">${String.fromCharCode(65 + index)}.</span>
+        <span class="option-text">${ev.label}</span>
+      </button>
+    `
+      )
+      .join("");
+
+    qContainer.innerHTML = `
+      <p class="question-meta">Which of these events happened <strong>earliest</strong>?</p>
+      <div class="options">
+        ${optionsHtml}
+      </div>
+    `;
+
+    qContainer.querySelectorAll(".option-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const chosenId = btn.getAttribute("data-event-id");
+        const isCorrect = chosenId === earliest.id;
+
+        qContainer.querySelectorAll(".option-btn").forEach((b) => {
+          b.disabled = true;
+          const evId = b.getAttribute("data-event-id");
+          if (evId === earliest.id) {
+            b.classList.add("correct");
+          } else if (evId === chosenId && !isCorrect) {
+            b.classList.add("incorrect");
+          }
+        });
+
+        feedbackEl.className =
+          "feedback " + (isCorrect ? "correct" : "incorrect");
+        feedbackEl.textContent = isCorrect
+          ? "Correct – that was the earliest of the options."
+          : "Incorrect – the earliest event is highlighted in green.";
+      });
+    });
+  }
+
+  const nextBtn = container.querySelector("#nextWhichFirst");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      buildQuestion();
+    });
+  }
+
+  const switchPlacementBtn = container.querySelector("#switchToPlacement");
+  if (switchPlacementBtn) {
+    switchPlacementBtn.addEventListener("click", () => {
+      currentMode = "placement";
+      renderTimelineView();
+    });
+  }
+
+  // Build the first question immediately
+  buildQuestion();
+}
+
+/* ============================
+   ACTIVITY: PLACEMENT QUESTIONS
+   ============================ */
+
+function renderPlacementActivity() {
+  const container = document.getElementById("activityContainer");
+  if (!container || !currentTimeline) return;
+
+  const sortedEvents = sortEventsByDate(currentTimeline.events);
+  if (sortedEvents.length < 3) {
+    container.innerHTML =
+      '<p class="helper-text">Not enough events in this timeline for placement questions.</p>';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="controls-row">
+      <p class="helper-text">
+        Decide where an event belongs relative to two neighbouring anchor events on the timeline.
+      </p>
+    </div>
+    <div id="placementQuestion"></div>
+    <div class="controls-bottom">
+      <button class="primary-button" id="nextPlacement">Next question</button>
+      <button class="secondary-button" id="switchToWhichFirst">Switch to “Which came first?”</button>
+    </div>
+    <div class="feedback" id="placementFeedback"></div>
+  `;
+
+  function buildPlacementQuestion() {
+    const qContainer = container.querySelector("#placementQuestion");
+    const feedbackEl = container.querySelector("#placementFeedback");
+    if (!qContainer) return;
+
+    feedbackEl.textContent = "";
+    feedbackEl.className = "feedback";
+
+    // Pick an index that has both a previous and a next event
+    const idx = 1 + Math.floor(Math.random() * (sortedEvents.length - 2));
+    const target = sortedEvents[idx];
+    const prev = sortedEvents[idx - 1];
+    const next = sortedEvents[idx + 1];
+
+    const options = [
+      {
+        id: "before-prev",
+        label: `Before “${prev.label}”`,
+        correct: false,
+      },
+      {
+        id: "between",
+        label: `Between “${prev.label}” and “${next.label}”`,
+        correct: true,
+      },
+      {
+        id: "after-next",
+        label: `After “${next.label}”`,
+        correct: false,
+      },
+    ];
+
+    // Shuffle options
+    for (let i = options.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
+    }
+
+    const optionsHtml = options
+      .map(
+        (opt, index) => `
+        <button class="option-btn" data-correct="${
+          opt.correct ? "true" : "false"
+        }">
+          <span class="option-label">${String.fromCharCode(
+            65 + index
+          )}.</span>
+          <span class="option-text">${opt.label}</span>
+        </button>
+      `
+      )
+      .join("");
+
+    qContainer.innerHTML = `
+      <p class="question-meta">
+        Where does this event belong on the timeline?
+      </p>
+      <p class="timeline-label" style="margin-bottom:6px;">
+        “${target.label}” (${target.displayDate || target.year})
+      </p>
+      <div class="timeline-note" style="margin-bottom:8px;">
+        Anchor events:
+        <br>Earlier anchor: <strong>${prev.displayDate || prev.year}</strong> – ${
+      prev.label
+    }
+        <br>Later anchor: <strong>${next.displayDate || next.year}</strong> – ${
+      next.label
+    }
+      </div>
+      <div class="options">
+        ${optionsHtml}
+      </div>
+    `;
+
+    qContainer.querySelectorAll(".option-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const isCorrect = btn.getAttribute("data-correct") === "true";
+
+        qContainer.querySelectorAll(".option-btn").forEach((b) => {
+          b.disabled = true;
+          const correct = b.getAttribute("data-correct") === "true";
+          if (correct) {
+            b.classList.add("correct");
+          }
+        });
+        if (!isCorrect) {
+          btn.classList.add("incorrect");
+        }
+
+        feedbackEl.className =
+          "feedback " + (isCorrect ? "correct" : "incorrect");
+        feedbackEl.textContent = isCorrect
+          ? "Correct – that’s where this event sits between the anchors."
+          : "Incorrect – the correct slot is highlighted in green.";
+      });
+    });
+  }
+
+  const nextBtn = container.querySelector("#nextPlacement");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      buildPlacementQuestion();
+    });
+  }
+
+  const switchWhichBtn = container.querySelector("#switchToWhichFirst");
+  if (switchWhichBtn) {
+    switchWhichBtn.addEventListener("click", () => {
+      currentMode = "which-first";
+      renderTimelineView();
+    });
+  }
+
+  // Build initial question
+  buildPlacementQuestion();
+}
+
+/* ============================
    INITIALISATION
    ============================ */
 
@@ -847,4 +1080,3 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   renderModuleList();
 });
-
