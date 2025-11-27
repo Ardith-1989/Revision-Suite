@@ -464,7 +464,7 @@ function renderDragDropActivity(mode) {
   const eventsSubset = [...sortedEvents]; // later you can sample subset
 
   if (mode === "match-dates") {
-    // Dates fixed, events pick-list
+    // Dates fixed in correct order; events list is shuffled
     const datesHtml = eventsSubset
       .map(
         (ev) => `
@@ -478,7 +478,17 @@ function renderDragDropActivity(mode) {
       )
       .join("");
 
-    const eventCardsHtml = eventsSubset
+    // SHUFFLED event cards for matching
+    const shuffledEvents = [...eventsSubset];
+    for (let i = shuffledEvents.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledEvents[i], shuffledEvents[j]] = [
+        shuffledEvents[j],
+        shuffledEvents[i],
+      ];
+    }
+
+    const eventCardsHtml = shuffledEvents
       .map(
         (ev) => `
       <div class="dnd-event-card" draggable="true" data-event-id="${ev.id}">
@@ -491,7 +501,7 @@ function renderDragDropActivity(mode) {
     container.innerHTML = `
       <div class="controls-row">
         <p class="helper-text">
-          Drag each event onto the correct date. All dates are shown in order.
+          Drag (or tap-select) each event and place it onto the correct date. All dates are shown in order.
         </p>
       </div>
 
@@ -501,7 +511,7 @@ function renderDragDropActivity(mode) {
           ${datesHtml}
         </div>
         <div class="dnd-column">
-          <div class="dnd-column-title">Events (drag these onto the dates)</div>
+          <div class="dnd-column-title">Events (drag or tap these onto the dates)</div>
           <div class="dnd-events-pool" id="eventsPool">
             ${eventCardsHtml}
           </div>
@@ -539,7 +549,7 @@ function renderDragDropActivity(mode) {
     container.innerHTML = `
       <div class="controls-row">
         <p class="helper-text">
-          Drag the events into the correct chronological order (top = earliest). Dates are hidden while you arrange them.
+          Drag (or tap-select) the events into the correct chronological order (top = earliest). Dates are hidden while you arrange them.
         </p>
       </div>
 
