@@ -1,1 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Timelines & Sequencing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../styles.css" />
 
+  <style>
+    /* Simple extra styling specific to timelines app */
+
+    .app-main {
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card-panel-timeline {
+      width: 100%;
+      max-width: 880px;
+      background-color: var(--bg-card);
+      border-radius: var(--radius-xl);
+      padding: 20px 20px 22px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .timeline-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .timeline-title {
+      margin: 0 0 4px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .timeline-subtitle {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated-soft);
+      color: var(--text-soft);
+      white-space: nowrap;
+    }
+
+    .breadcrumbs {
+      font-size: 12px;
+      color: var(--text-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .breadcrumbs span[data-level] {
+      cursor: pointer;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background-color: var(--bg-elevated-soft);
+      border: 1px solid transparent;
+    }
+
+    .breadcrumbs span[data-level]:hover {
+      border-color: var(--accent);
+      color: var(--accent-strong);
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .list-item {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated);
+      padding: 12px 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      transition:
+        background-color 0.15s ease,
+        box-shadow 0.18s ease,
+        transform 0.08s ease;
+    }
+
+    .list-item:hover {
+      background-color: var(--bg-elevated-soft);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .list-main {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .list-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .list-meta {
+      font-size: 12px;
+      color: var(--text-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tag-button {
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated-soft);
+      color: var(--text-soft);
+      padding: 4px 9px;
+      cursor: pointer;
+    }
+
+    .tag-button:hover {
+      border-color: var(--accent);
+      color: var(--accent-strong);
+    }
+
+    /* Study mode timeline */
+
+    .timeline-study-list {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .timeline-event-row {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
+      gap: 10px;
+      align-items: flex-start;
+      padding: 8px 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated-soft);
+    }
+
+    .timeline-date {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--accent-strong);
+    }
+
+    .timeline-label {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .timeline-note {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
+
+    /* Mode tabs */
+
+    .mode-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .mode-tab {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated-soft);
+      cursor: pointer;
+    }
+
+    .mode-tab.active {
+      border-color: var(--accent-strong);
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-soft);
+      cursor: pointer;
+    }
+
+    .toggle-label input {
+      cursor: pointer;
+    }
+
+    .helper-text {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 8px;
+    }
+
+    /* Drag & drop */
+
+    .dnd-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .dnd-column {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 10px;
+      background: var(--bg-elevated-soft);
+      min-height: 160px;
+    }
+
+    .dnd-column-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .dnd-slot {
+      border-radius: var(--radius-md);
+      border: 1px dashed var(--border-subtle);
+      padding: 6px 8px;
+      margin-bottom: 6px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .dnd-slot.highlight-drop {
+      background: rgba(59, 130, 246, 0.08);
+      border-color: var(--accent);
+    }
+
+    .dnd-slot .slot-label {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .dnd-slot .slot-event {
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .dnd-events-pool {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .dnd-event-card {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      padding: 6px 8px;
+      background: var(--bg-elevated);
+      cursor: grab;
+      font-size: 13px;
+    }
+
+    .dnd-event-card.dragging {
+      opacity: 0.7;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.35);
+    }
+
+    /* Order-only mode list */
+
+    .dnd-order-list {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .dnd-order-item {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      padding: 6px 8px;
+      background: var(--bg-elevated);
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dnd-order-item-index {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-soft);
+      width: 18px;
+      text-align: right;
+    }
+
+    .dnd-order-item.dragging {
+      opacity: 0.7;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.35);
+    }
+
+    .dnd-correct {
+      border-color: var(--success);
+      background: rgba(34, 197, 94, 0.12);
+    }
+
+    .dnd-incorrect {
+      border-color: var(--danger);
+      background: rgba(239, 68, 68, 0.12);
+    }
+
+    .feedback {
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .feedback.correct {
+      color: var(--success);
+    }
+
+    .feedback.incorrect {
+      color: var(--danger);
+    }
+
+    .controls-bottom {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-start;
+    }
+  </style>
+</head>
+<body class="theme-light">
+  <div class="app-shell">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="app-logo-circle">T</div>
+        <div class="app-title-group">
+          <h1 class="app-title">Timelines & Sequencing</h1>
+          <p class="app-subtitle">Learn and test chronological order</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <a href="../index.html" class="icon-button" style="text-decoration:none; font-size:13px;">
+          ⟵ Portal
+        </a>
+        <button
+          id="toggleThemeBtn"
+          class="icon-button"
+          type="button"
+          aria-label="Toggle theme"
+          title="Toggle light / dark theme"
+        >
+          🌗
+        </button>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="app-main">
+      <section class="card-panel-timeline">
+        <div class="timeline-header-row">
+          <div>
+            <h2 id="cardTitle" class="timeline-title">Timelines</h2>
+            <p id="cardSubtitle" class="timeline-subtitle">
+              Select a module to get started.
+            </p>
+          </div>
+          <div class="pill" id="pillRight">Loading…</div>
+        </div>
+
+        <div class="breadcrumbs" id="breadcrumbs"></div>
+
+        <div id="timelineContent"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="timelines.js"></script>
+</body>
+</html>
