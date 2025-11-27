@@ -367,12 +367,12 @@ function renderTimelineView() {
       <button class="mode-tab ${
         currentMode === "order-only" ? "active" : ""
       }" data-mode="order-only">Drag & drop (order only)</button>
-      <button class="mode-tab ${
+      <!-- <button class="mode-tab ${
         currentMode === "which-first" ? "active" : ""
       }" data-mode="which-first">Which came first?</button>
       <button class="mode-tab ${
         currentMode === "placement" ? "active" : ""
-      }" data-mode="placement">Placement</button>
+      }" data-mode="placement">Placement</button> --!>
     </div>
   `;
 
