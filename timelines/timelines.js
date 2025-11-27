@@ -229,7 +229,7 @@ function renderModuleList() {
     <p class="helper-text">
       These modules mirror your course structure. Choose one to explore its units and timelines.
     </p>
-  ";
+  `;
 
   contentEl.querySelectorAll("[data-module-id]").forEach((el) => {
     el.addEventListener("click", () => {
