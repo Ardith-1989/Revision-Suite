@@ -363,7 +363,20 @@
       gap: 8px;
       justify-content: flex-start;
     }
-  </style>
+
+    /* Highlight for selected cards (used for tap-to-select) */
+      .dnd-event-card.selected,
+      .dnd-order-item.selected {
+        outline: 2px solid var(--accent-strong);
+      }
+      
+      /* Mobile layout: stack dates above events instead of side-by-side */
+      @media (max-width: 768px) {
+        .dnd-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+        </style>
 </head>
 <body class="theme-light">
   <div class="app-shell">
