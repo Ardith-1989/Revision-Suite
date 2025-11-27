@@ -92,9 +92,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 11px;
+      color: var(--text-soft);
       margin-top: 6px;
-      font-size: 12px;
-      color: var(--text-softer);
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .portal-pill {
@@ -217,7 +219,8 @@
         <a href="quizzes/index.html" class="portal-card">
           <div class="portal-card-header">
             <div class="portal-logo-circle">Q</div>
-            <div>
+            <
+div>
               <h2 class="portal-card-title">Multiple-Choice Quizzes</h2>
               <p class="portal-card-subtitle">
                 Multiple-choice quizzes mapped to your course structure.
@@ -229,32 +232,46 @@
             <span class="portal-pill">MCQ practice</span>
           </div>
         </a>
+
+        <!-- Card 3: Timelines & Sequencing -->
+        <a href="timelines/index.html" class="portal-card">
+          <div class="portal-card-header">
+            <div class="portal-logo-circle">T</div>
+            <div>
+              <h2 class="portal-card-title">Timelines &amp; Sequencing</h2>
+              <p class="portal-card-subtitle">
+                Practise ordering events and matching key dates.
+              </p>
+            </div>
+          </div>
+          <div class="portal-card-footer">
+            <span>Great for: chronology and dates</span>
+            <span class="portal-pill">Timelines &amp; ordering</span>
+          </div>
+        </a>
       </div>
     </main>
   </div>
 
   <script>
-    // Reuse the same theme key as your other apps:
     const THEME_KEY = "revision-theme";
 
     function applyStoredTheme() {
       const stored = localStorage.getItem(THEME_KEY);
-      const body = document.body;
       if (!stored || stored === "light") {
-        body.classList.add("theme-light");
+        document.body.classList.add("theme-light");
       } else {
-        body.classList.remove("theme-light");
+        document.body.classList.remove("theme-light");
       }
     }
 
     function toggleTheme() {
-      const body = document.body;
-      const isLight = body.classList.contains("theme-light");
+      const isLight = document.body.classList.contains("theme-light");
       if (isLight) {
-        body.classList.remove("theme-light");
+        document.body.classList.remove("theme-light");
         localStorage.setItem(THEME_KEY, "dark");
       } else {
-        body.classList.add("theme-light");
+        document.body.classList.add("theme-light");
         localStorage.setItem(THEME_KEY, "light");
       }
     }
@@ -267,4 +284,3 @@
   </script>
 </body>
 </html>
-
