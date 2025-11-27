@@ -582,7 +582,36 @@ function setupMatchDatesDnD(root, events) {
   const switchBtn = root.querySelector("#switchOrderMode");
 
   let draggedCard = null;
+  let selectedCard = null;
 
+  function clearSelection() {
+    if (selectedCard) {
+      selectedCard.classList.remove("selected");
+      selectedCard = null;
+    }
+  }
+
+  function assignCardToSlot(card, slot) {
+    if (!card || !slot) return;
+    const slotEventEl = slot.querySelector("[data-slot-event]");
+    if (!slotEventEl) return;
+
+    // If this card was already assigned to another slot, clear that
+    const prevSlotEventEl = root.querySelector(
+      `.dnd-slot [data-slot-event][data-event-id="${card.getAttribute(
+        "data-event-id"
+      )}"]`
+    );
+    if (prevSlotEventEl) {
+      prevSlotEventEl.textContent = "";
+      prevSlotEventEl.removeAttribute("data-event-id");
+    }
+
+    slotEventEl.textContent = card.textContent.trim();
+    slotEventEl.setAttribute("data-event-id", card.getAttribute("data-event-id"));
+  }
+
+  // Drag support (desktop)
   eventCards.forEach((card) => {
     card.addEventListener("dragstart", () => {
       draggedCard = card;
@@ -592,9 +621,22 @@ function setupMatchDatesDnD(root, events) {
       card.classList.remove("dragging");
       draggedCard = null;
     });
+
+    // Tap / click selection (mobile-friendly)
+    card.addEventListener("click", () => {
+      if (selectedCard === card) {
+        // Deselect
+        clearSelection();
+      } else {
+        clearSelection();
+        selectedCard = card;
+        card.classList.add("selected");
+      }
+    });
   });
 
   slots.forEach((slot) => {
+    // Drag-over (desktop)
     slot.addEventListener("dragover", (e) => {
       e.preventDefault();
       slot.classList.add("highlight-drop");
@@ -605,68 +647,56 @@ function setupMatchDatesDnD(root, events) {
     slot.addEventListener("drop", () => {
       slot.classList.remove("highlight-drop");
       if (!draggedCard) return;
-      const slotEventEl = slot.querySelector("[data-slot-event]");
-      if (!slotEventEl) return;
+      assignCardToSlot(draggedCard, slot);
+    });
 
-      // If this card was in another slot, clear that slot's display
-      const previousSlot = root.querySelector(
-        `.dnd-slot [data-slot-event][data-event-id="${draggedCard.getAttribute(
-          "data-event-id"
-        )}"]`
-      );
-      if (previousSlot) {
-        previousSlot.textContent = "";
-        previousSlot.removeAttribute("data-event-id");
-      }
-
-      // Move card back to pool visually OR leave it; here we keep cards in pool but show label in slot
-      slotEventEl.textContent = draggedCard.textContent.trim();
-      slotEventEl.setAttribute(
-        "data-event-id",
-        draggedCard.getAttribute("data-event-id")
-      );
+    // Tap / click to place selected event (mobile-friendly)
+    slot.addEventListener("click", () => {
+      if (!selectedCard) return;
+      assignCardToSlot(selectedCard, slot);
+      clearSelection();
     });
   });
 
   resetBtn.addEventListener("click", () => {
-    root
-      .querySelectorAll("[data-slot-event]")
-      .forEach((el) => {
-        el.textContent = "";
-        el.removeAttribute("data-event-id");
-      });
+    root.querySelectorAll("[data-slot-event]").forEach((el) => {
+      el.textContent = "";
+      el.removeAttribute("data-event-id");
+    });
     feedbackEl.textContent = "";
     feedbackEl.className = "feedback";
     root
       .querySelectorAll(".dnd-slot")
       .forEach((s) => s.classList.remove("dnd-correct", "dnd-incorrect"));
+    root
+      .querySelectorAll(".dnd-event-card")
+      .forEach((c) => c.classList.remove("selected", "dragging"));
+    draggedCard = null;
+    selectedCard = null;
   });
 
   checkBtn.addEventListener("click", () => {
     let correct = 0;
     const total = events.length;
 
-    root
-      .querySelectorAll(".dnd-slot")
-      .forEach((slot) => {
-        slot.classList.remove("dnd-correct", "dnd-incorrect");
-        const dateId = slot.getAttribute("data-date-id");
-        const slotEventEl = slot.querySelector("[data-slot-event]");
-        const chosenId = slotEventEl?.getAttribute("data-event-id") || null;
+    root.querySelectorAll(".dnd-slot").forEach((slot) => {
+      slot.classList.remove("dnd-correct", "dnd-incorrect");
+      const dateId = slot.getAttribute("data-date-id");
+      const slotEventEl = slot.querySelector("[data-slot-event]");
+      const chosenId = slotEventEl?.getAttribute("data-event-id") || null;
 
-        if (!chosenId) {
-          // treat as incorrect
-          slot.classList.add("dnd-incorrect");
-          return;
-        }
+      if (!chosenId) {
+        slot.classList.add("dnd-incorrect");
+        return;
+      }
 
-        if (chosenId === dateId) {
-          correct++;
-          slot.classList.add("dnd-correct");
-        } else {
-          slot.classList.add("dnd-incorrect");
-        }
-      });
+      if (chosenId === dateId) {
+        correct++;
+        slot.classList.add("dnd-correct");
+      } else {
+        slot.classList.add("dnd-incorrect");
+      }
+    });
 
     const percent = Math.round((correct / total) * 100);
     feedbackEl.textContent = `You matched ${correct}/${total} events correctly (${percent}%).`;
@@ -692,9 +722,18 @@ function setupOrderOnlyDnD(root, events) {
   const switchBtn = root.querySelector("#switchMatchMode");
 
   let draggedItem = null;
+  let selectedItem = null;
+
+  function clearSelection() {
+    if (selectedItem) {
+      selectedItem.classList.remove("selected");
+      selectedItem = null;
+    }
+  }
 
   function attachDndHandlers() {
     listEl.querySelectorAll(".dnd-order-item").forEach((item) => {
+      // Drag support (desktop)
       item.addEventListener("dragstart", () => {
         draggedItem = item;
         item.classList.add("dragging");
@@ -715,6 +754,22 @@ function setupOrderOnlyDnD(root, events) {
           } else {
             container.insertBefore(draggedItem, item.nextSibling);
           }
+          updateIndices();
+        }
+      });
+
+      // Tap / click: select first item, then tap another to move it above
+      item.addEventListener("click", () => {
+        if (!selectedItem) {
+          selectedItem = item;
+          item.classList.add("selected");
+        } else if (selectedItem === item) {
+          // Deselect
+          clearSelection();
+        } else {
+          // Move the previously selected item above the tapped item
+          listEl.insertBefore(selectedItem, item);
+          clearSelection();
           updateIndices();
         }
       });
@@ -741,8 +796,10 @@ function setupOrderOnlyDnD(root, events) {
     feedbackEl.textContent = "";
     feedbackEl.className = "feedback";
     items.forEach((it) =>
-      it.classList.remove("dnd-correct", "dnd-incorrect")
+      it.classList.remove("dnd-correct", "dnd-incorrect", "selected")
     );
+    draggedItem = null;
+    selectedItem = null;
     updateIndices();
     attachDndHandlers();
   });
