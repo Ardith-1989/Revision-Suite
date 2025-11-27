@@ -553,7 +553,101 @@
         flex-direction: column;
       }
     }
+    /* Placement activity – mobile-friendly single column layout */
 
+    .placement-card {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .placement-question {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .placement-event-main {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated);
+      padding: 10px 12px;
+    }
+
+    .placement-event-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .placement-event-date {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
+
+    .placement-anchors-panel {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated-soft);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .placement-choice {
+      border: none;
+      background: transparent;
+      padding: 4px 2px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-soft);
+    }
+
+    .placement-choice-label {
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .placement-choice.selected {
+      color: var(--accent-strong);
+    }
+
+    .placement-anchor-card {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated);
+      padding: 7px 8px;
+    }
+
+    .placement-anchor-date {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-strong);
+    }
+
+    .placement-anchor-label {
+      font-size: 13px;
+    }
+
+    .placement-choice.correct {
+      color: var(--success);
+    }
+
+    .placement-choice.incorrect {
+      color: var(--danger);
+    }
+
+    @media (max-width: 768px) {
+      .placement-card {
+        gap: 8px;
+      }
+      .placement-anchors-panel {
+        padding: 8px 10px;
+      }
+    }
         </style>
 </head>
 <body class="theme-light">
