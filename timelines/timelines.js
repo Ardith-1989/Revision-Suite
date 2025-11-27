@@ -363,10 +363,10 @@ function renderTimelineView() {
       }" data-mode="study">Study timeline</button>
       <button class="mode-tab ${
         currentMode === "match-dates" ? "active" : ""
-      }" data-mode="match-dates">Drag & drop (match dates)</button>
+      }" data-mode="match-dates">Match Dates</button>
       <button class="mode-tab ${
         currentMode === "order-only" ? "active" : ""
-      }" data-mode="order-only">Drag & drop (order only)</button>
+      }" data-mode="order-only">Order</button>
       <!-- <button class="mode-tab ${
         currentMode === "which-first" ? "active" : ""
       }" data-mode="which-first">Which came first?</button>
