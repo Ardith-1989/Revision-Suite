@@ -941,132 +941,288 @@ function renderPlacementActivity() {
   container.innerHTML = `
     <div class="controls-row">
       <p class="helper-text">
-        Decide where an event belongs relative to two neighbouring anchor events on the timeline.
+        Drag or tap the event card into the correct position relative to the two anchor events.
       </p>
     </div>
-    <div id="placementQuestion"></div>
+    <div class="placement-layout">
+      <div class="placement-event-wrapper">
+        <div class="placement-event-heading">Event to place</div>
+        <div class="placement-event-card" draggable="true" id="placementEventCard"></div>
+      </div>
+      <div class="placement-zones">
+        <div class="placement-zone" data-position="before">
+          <div class="placement-zone-title">Before</div>
+          <div class="placement-zone-body" id="placementBeforeBody">
+            <!-- left anchor summary -->
+          </div>
+        </div>
+        <div class="placement-zone" data-position="between">
+          <div class="placement-zone-title">Between</div>
+          <div class="placement-zone-body" id="placementBetweenBody">
+            <!-- both anchors -->
+          </div>
+        </div>
+        <div class="placement-zone" data-position="after">
+          <div class="placement-zone-title">After</div>
+          <div class="placement-zone-body" id="placementAfterBody">
+            <!-- right anchor summary -->
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="controls-bottom">
-      <button class="primary-button" id="nextPlacement">Next question</button>
+      <button class="secondary-button" id="resetPlacement">Reset</button>
+      <button class="primary-button" id="checkPlacement">Check answer</button>
+      <button class="secondary-button" id="nextPlacement">Next question</button>
       <button class="secondary-button" id="switchToWhichFirst">Switch to “Which came first?”</button>
     </div>
     <div class="feedback" id="placementFeedback"></div>
   `;
 
-  function buildPlacementQuestion() {
-    const qContainer = container.querySelector("#placementQuestion");
-    const feedbackEl = container.querySelector("#placementFeedback");
-    if (!qContainer) return;
+  const eventCardEl = container.querySelector("#placementEventCard");
+  const zones = Array.from(container.querySelectorAll(".placement-zone"));
+  const feedbackEl = container.querySelector("#placementFeedback");
+  const resetBtn = container.querySelector("#resetPlacement");
+  const checkBtn = container.querySelector("#checkPlacement");
+  const nextBtn = container.querySelector("#nextPlacement");
+  const switchBtn = container.querySelector("#switchToWhichFirst");
+  const eventWrapper = container.querySelector(".placement-event-wrapper");
 
+  let currentScenario = null; // {left,right,target,position}
+  let selectedPosition = null;
+  let dragged = false;
+
+  // Build a scenario where the correct answer can be before, between or after
+  function buildScenario(events) {
+    const n = events.length;
+
+    // Try a few times to find a usable pair of anchors
+    for (let attempt = 0; attempt < 30; attempt++) {
+      const i = Math.floor(Math.random() * (n - 1)); // left anchor index
+      const j = i + 1 + Math.floor(Math.random() * (n - 1 - i)); // right > left
+
+      const beforeIdx = [];
+      for (let k = 0; k < i; k++) beforeIdx.push(k);
+
+      const betweenIdx = [];
+      for (let k = i + 1; k < j; k++) betweenIdx.push(k);
+
+      const afterIdx = [];
+      for (let k = j + 1; k < n; k++) afterIdx.push(k);
+
+      const candidates = [];
+      if (beforeIdx.length) candidates.push({ pos: "before", indices: beforeIdx });
+      if (betweenIdx.length) candidates.push({ pos: "between", indices: betweenIdx });
+      if (afterIdx.length) candidates.push({ pos: "after", indices: afterIdx });
+
+      if (!candidates.length) continue;
+
+      const choice = candidates[Math.floor(Math.random() * candidates.length)];
+      const indices = choice.indices;
+      const targetIndex = indices[Math.floor(Math.random() * indices.length)];
+
+      return {
+        left: events[i],
+        right: events[j],
+        target: events[targetIndex],
+        position: choice.pos,
+      };
+    }
+
+    // Fallback: simple "between" scenario with a middle event
+    const mid = Math.floor(n / 2);
+    return {
+      left: events[mid - 1],
+      right: events[mid + 1],
+      target: events[mid],
+      position: "between",
+    };
+  }
+
+  function renderScenario() {
+    currentScenario = buildScenario(sortedEvents);
+    selectedPosition = null;
     feedbackEl.textContent = "";
     feedbackEl.className = "feedback";
 
-    // Pick an index that has both a previous and a next event
-    const idx = 1 + Math.floor(Math.random() * (sortedEvents.length - 2));
-    const target = sortedEvents[idx];
-    const prev = sortedEvents[idx - 1];
-    const next = sortedEvents[idx + 1];
-
-    const options = [
-      {
-        id: "before-prev",
-        label: `Before “${prev.label}”`,
-        correct: false,
-      },
-      {
-        id: "between",
-        label: `Between “${prev.label}” and “${next.label}”`,
-        correct: true,
-      },
-      {
-        id: "after-next",
-        label: `After “${next.label}”`,
-        correct: false,
-      },
-    ];
-
-    // Shuffle options
-    for (let i = options.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [options[i], options[j]] = [options[j], options[i]];
-    }
-
-    const optionsHtml = options
-      .map(
-        (opt, index) => `
-        <button class="option-btn" data-correct="${
-          opt.correct ? "true" : "false"
-        }">
-          <span class="option-label">${String.fromCharCode(
-            65 + index
-          )}.</span>
-          <span class="option-text">${opt.label}</span>
-        </button>
-      `
+    // Reset zone styling
+    zones.forEach((z) =>
+      z.classList.remove(
+        "selected-zone",
+        "correct-zone",
+        "incorrect-zone",
+        "highlight-drop"
       )
-      .join("");
+    );
 
-    qContainer.innerHTML = `
-      <p class="question-meta">
-        Where does this event belong on the timeline?
-      </p>
-      <p class="timeline-label" style="margin-bottom:6px;">
-        “${target.label}” (${target.displayDate || target.year})
-      </p>
-      <div class="timeline-note" style="margin-bottom:8px;">
-        Anchor events:
-        <br>Earlier anchor: <strong>${prev.displayDate || prev.year}</strong> – ${
-      prev.label
+    // Move card back to wrapper
+    if (eventCardEl.parentElement !== eventWrapper) {
+      eventWrapper.appendChild(eventCardEl);
     }
-        <br>Later anchor: <strong>${next.displayDate || next.year}</strong> – ${
-      next.label
-    }
-      </div>
-      <div class="options">
-        ${optionsHtml}
-      </div>
+
+    // Fill event card
+    const t = currentScenario.target;
+    eventCardEl.innerHTML = `
+      <div class="placement-event-title">${t.label}</div>
+      <div class="placement-event-date">${t.displayDate || t.year}</div>
     `;
 
-    qContainer.querySelectorAll(".option-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const isCorrect = btn.getAttribute("data-correct") === "true";
+    // Fill anchors in the zones
+    const left = currentScenario.left;
+    const right = currentScenario.right;
 
-        qContainer.querySelectorAll(".option-btn").forEach((b) => {
-          b.disabled = true;
-          const correct = b.getAttribute("data-correct") === "true";
-          if (correct) {
-            b.classList.add("correct");
-          }
-        });
-        if (!isCorrect) {
-          btn.classList.add("incorrect");
-        }
+    const beforeBody = container.querySelector("#placementBeforeBody");
+    const betweenBody = container.querySelector("#placementBetweenBody");
+    const afterBody = container.querySelector("#placementAfterBody");
 
-        feedbackEl.className =
-          "feedback " + (isCorrect ? "correct" : "incorrect");
-        feedbackEl.textContent = isCorrect
-          ? "Correct – that’s where this event sits between the anchors."
-          : "Incorrect – the correct slot is highlighted in green.";
-      });
-    });
+    if (beforeBody) {
+      beforeBody.innerHTML = `
+        <div class="placement-anchor">
+          <div class="placement-anchor-caption">Earlier anchor for context:</div>
+          <div class="placement-anchor-date">${left.displayDate || left.year}</div>
+          <div class="placement-anchor-label">${left.label}</div>
+        </div>
+      `;
+    }
+
+    if (betweenBody) {
+      betweenBody.innerHTML = `
+        <div class="placement-anchor">
+          <div class="placement-anchor-caption">Left anchor:</div>
+          <div class="placement-anchor-date">${left.displayDate || left.year}</div>
+          <div class="placement-anchor-label">${left.label}</div>
+        </div>
+        <div class="placement-anchor">
+          <div class="placement-anchor-caption">Right anchor:</div>
+          <div class="placement-anchor-date">${right.displayDate || right.year}</div>
+          <div class="placement-anchor-label">${right.label}</div>
+        </div>
+      `;
+    }
+
+    if (afterBody) {
+      afterBody.innerHTML = `
+        <div class="placement-anchor">
+          <div class="placement-anchor-caption">Later anchor for context:</div>
+          <div class="placement-anchor-date">${right.displayDate || right.year}</div>
+          <div class="placement-anchor-label">${right.label}</div>
+        </div>
+      `;
+    }
   }
 
-  const nextBtn = container.querySelector("#nextPlacement");
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      buildPlacementQuestion();
-    });
+  function selectZone(zone) {
+    zones.forEach((z) => z.classList.remove("selected-zone"));
+    if (zone) {
+      zone.classList.add("selected-zone");
+      selectedPosition = zone.getAttribute("data-position");
+      const body = zone.querySelector(".placement-zone-body");
+      if (body && eventCardEl.parentElement !== body) {
+        body.appendChild(eventCardEl);
+      }
+    }
   }
 
-  const switchWhichBtn = container.querySelector("#switchToWhichFirst");
-  if (switchWhichBtn) {
-    switchWhichBtn.addEventListener("click", () => {
-      currentMode = "which-first";
-      renderTimelineView();
-    });
-  }
+  // Drag support (desktop)
+  eventCardEl.addEventListener("dragstart", () => {
+    dragged = true;
+    eventCardEl.classList.add("dragging");
+  });
 
-  // Build initial question
-  buildPlacementQuestion();
+  eventCardEl.addEventListener("dragend", () => {
+    dragged = false;
+    eventCardEl.classList.remove("dragging");
+  });
+
+  zones.forEach((zone) => {
+    zone.addEventListener("dragover", (e) => {
+      if (!dragged) return;
+      e.preventDefault();
+      zone.classList.add("highlight-drop");
+    });
+
+    zone.addEventListener("dragleave", () => {
+      zone.classList.remove("highlight-drop");
+    });
+
+    zone.addEventListener("drop", (e) => {
+      if (!dragged) return;
+      e.preventDefault();
+      zones.forEach((z) => z.classList.remove("highlight-drop"));
+      selectZone(zone);
+    });
+
+    // Tap / click support (mobile + desktop)
+    zone.addEventListener("click", () => {
+      selectZone(zone);
+    });
+  });
+
+  resetBtn.addEventListener("click", () => {
+    selectedPosition = null;
+    feedbackEl.textContent = "";
+    feedbackEl.className = "feedback";
+    zones.forEach((z) =>
+      z.classList.remove("selected-zone", "correct-zone", "incorrect-zone", "highlight-drop")
+    );
+    if (eventCardEl.parentElement !== eventWrapper) {
+      eventWrapper.appendChild(eventCardEl);
+    }
+  });
+
+  checkBtn.addEventListener("click", () => {
+    if (!currentScenario) return;
+    if (!selectedPosition) {
+      feedbackEl.textContent = "Choose a position by dragging or tapping one of the zones first.";
+      feedbackEl.className = "feedback incorrect";
+      return;
+    }
+
+    zones.forEach((z) =>
+      z.classList.remove("correct-zone", "incorrect-zone", "highlight-drop")
+    );
+
+    const correctPos = currentScenario.position;
+    const selectedZone = zones.find(
+      (z) => z.getAttribute("data-position") === selectedPosition
+    );
+    const correctZone = zones.find(
+      (z) => z.getAttribute("data-position") === correctPos
+    );
+
+    if (selectedPosition === correctPos) {
+      if (selectedZone) selectedZone.classList.add("correct-zone");
+      feedbackEl.textContent =
+        "Correct – that is where this event belongs relative to the anchors.";
+      feedbackEl.className = "feedback correct";
+    } else {
+      if (selectedZone) selectedZone.classList.add("incorrect-zone");
+      if (correctZone) correctZone.classList.add("correct-zone");
+
+      let explanation;
+      if (correctPos === "before") {
+        explanation = "This event occurs before the left anchor.";
+      } else if (correctPos === "between") {
+        explanation = "This event falls between the two anchors.";
+      } else {
+        explanation = "This event occurs after the right anchor.";
+      }
+      feedbackEl.textContent = "Incorrect – " + explanation;
+      feedbackEl.className = "feedback incorrect";
+    }
+  });
+
+  nextBtn.addEventListener("click", () => {
+    renderScenario();
+  });
+
+  switchBtn.addEventListener("click", () => {
+    currentMode = "which-first";
+    renderTimelineView();
+  });
+
+  // Initial question
+  renderScenario();
 }
 
 /* ============================
