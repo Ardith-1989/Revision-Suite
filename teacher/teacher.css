@@ -1,0 +1,115 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.td-header {
+  background: #fafafa;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.td-main {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 60px);
+}
+
+.td-sidebar {
+  width: 280px;
+  border-right: 1px solid #ddd;
+  padding: 14px;
+  overflow-y: auto;
+}
+
+.td-sidebar h2 {
+  margin: 12px 0 6px;
+}
+
+.td-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+.td-sidebar li {
+  margin-bottom: 4px;
+}
+
+.td-sidebar button {
+  display: block;
+  text-align: left;
+  width: 100%;
+}
+
+.td-editor {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.td-textarea {
+  width: 100%;
+  height: 60vh;
+  resize: vertical;
+  padding: 12px;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.td-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.td-tab {
+  padding: 8px 14px;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.td-tab.active {
+  background: #0077ff;
+  color: white;
+  border-color: #0077ff;
+}
+
+.td-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+.td-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.td-btn-primary {
+  background: #0077ff;
+  color: white;
+  border: none;
+}
+
+.td-btn-outline {
+  background: white;
+  border: 1px solid #bbb;
+}
+
+.td-hidden {
+  display: none !important;
+}
+
+.td-backlink {
+  color: #0077ff;
+  text-decoration: none;
+}
