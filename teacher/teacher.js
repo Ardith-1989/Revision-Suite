@@ -176,7 +176,6 @@ function loadQuizList() {
   document.querySelector("#addQuizBtn").onclick = addNewQuiz;
 }
 
-
 function findQuizMeta(quizId, quizPath) {
   if (!selectedUnit.quizzes) return null;
 
@@ -190,12 +189,46 @@ function findQuizMeta(quizId, quizPath) {
 
   // Normalize and try again
   const normalPath = quizPath.replace(/^\.\.\//, "").replace(/^\//, "");
-  q = selectedUnit.quizzes.find(q => 
+  q = selectedUnit.quizzes.find(q =>
     q.path.replace(/^\.\.\//, "").replace(/^\//, "") === normalPath
   );
   return q || null;
 }
 
+function addNewQuiz() {
+  const title = prompt("Quiz Title?");
+  if (!title) return;
+
+  const quizId = title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+  // Path stored in modules.json is relative to /quizzes/index.html
+  // so it should be "quizzes/<module>/<unit>/<quiz-id>.json"
+  const path = `quizzes/${selectedModule.id}/${selectedUnit.id}/${quizId}.json`;
+
+  const quizObj = {
+    id: quizId,
+    title,
+    path
+  };
+
+  if (!selectedUnit.quizzes) selectedUnit.quizzes = [];
+  selectedUnit.quizzes.push(quizObj);
+
+  currentQuizMeta = quizObj;
+
+  jsonEditorEl.value = JSON.stringify(
+    {
+      id: quizId,
+      title,
+      questions: []
+    },
+    null,
+    2
+  );
+
+  enableEditor();
+  loadQuizList();
+}
 
 function loadQuizJSON() {
   if (!currentQuizMeta) {
@@ -203,14 +236,23 @@ function loadQuizJSON() {
     return;
   }
 
-  let p = currentQuizMeta.path;
+  // Path stored in modules.json is relative to /quizzes/index.html
+  // e.g. "quizzes/greekstates/persia/01-the-classical-greek-world.json"
+  const relativeFromQuizzesApp = currentQuizMeta.path;
 
-  // Ensure path starts without leading '../'
-  if (p.startsWith("../")) p = p.slice(3);
+  // From /teacher/index.html we need to go up to root, then into /quizzes/,
+  // then apply the same relative path used inside the quizzes app.
+  // Result example:
+  //   "../quizzes/quizzes/greekstates/persia/01-the-classical-greek-world.json"
+  const fetchPath = "../quizzes/" + relativeFromQuizzesApp;
 
-  fetch("../" + p)
+  fetch(fetchPath)
     .then(r => {
-      if (!r.ok) throw new Error("Quiz JSON not found at: " + p);
+      if (!r.ok) {
+        throw new Error(
+          "Quiz JSON not found at: " + fetchPath.replace(/^\.\.\//, "")
+        );
+      }
       return r.json();
     })
     .then(data => {
@@ -219,7 +261,7 @@ function loadQuizJSON() {
     })
     .catch(err => {
       alert("Failed to load quiz:\n" + err.message);
-      jsonEditorEl.value = "// Failed to load quiz\n" + err.message;
+      jsonEditorEl.value = "// Failed to load quiz\n// " + err.message;
       enableEditor();
     });
 }
@@ -231,8 +273,8 @@ function loadRandomiserSubset() {
   const moduleId = selectedModule.id;
   const unitId = selectedUnit.id;
 
-  const subset = randomiserData.filter(c => 
-    c.module === moduleId && c.unit === unitId
+  const subset = randomiserData.filter(
+    c => c.module === moduleId && c.unit === unitId
   );
 
   currentQuizMeta = null;
@@ -307,10 +349,14 @@ function addNewTimeline() {
 
   currentTimelineMeta = tObj;
 
-  jsonEditorEl.value = JSON.stringify({
-    title,
-    events: []
-  }, null, 2);
+  jsonEditorEl.value = JSON.stringify(
+    {
+      title,
+      events: []
+    },
+    null,
+    2
+  );
 
   enableEditor();
   loadTimelineList();
@@ -324,10 +370,14 @@ function loadTimelineJSON() {
       enableEditor();
     })
     .catch(() => {
-      jsonEditorEl.value = JSON.stringify({
-        title: currentTimelineMeta.title,
-        events: []
-      }, null, 2);
+      jsonEditorEl.value = JSON.stringify(
+        {
+          title: currentTimelineMeta.title,
+          events: []
+        },
+        null,
+        2
+      );
       enableEditor();
     });
 }
