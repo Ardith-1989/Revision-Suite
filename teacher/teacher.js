@@ -1,51 +1,83 @@
-let curriculum = null;
+/******************************************************
+ * Teacher Dashboard – Full structured JSON editor
+ * Supports:
+ * - Multi-quiz selection and editing
+ * - Add new quiz (updates modules.json)
+ * - Unit-filtered randomiser card editing
+ * - Add new cards
+ * - Timeline editing and JSON creation
+ * - Auto filename generation
+ * - Export updated modules.json
+ ******************************************************/
+
+// Paths
+const MODULES_PATH = "../quizzes/modules.json";
+const RANDOMISER_PATH = "../revision/cards_data.json";
+
+// State
+let modulesData = null;
+let randomiserData = null;
+
 let selectedModule = null;
 let selectedUnit = null;
 let activeTab = null;
 
-const moduleListEl     = document.querySelector("#moduleList");
-const unitSectionEl    = document.querySelector("#unitSection");
-const unitListEl       = document.querySelector("#unitList");
-const tabsEl           = document.querySelector("#editorTabs");
-const jsonEditorEl     = document.querySelector("#jsonEditor");
-const editorTitleEl    = document.querySelector("#editorTitle");
-const validateBtn      = document.querySelector("#validateBtn");
-const downloadBtn      = document.querySelector("#downloadBtn");
-const actionsEl        = document.querySelector("#actions");
+let currentQuizMeta = null;
+let currentTimelineMeta = null;
+
+// DOM
+const moduleListEl = document.querySelector("#moduleList");
+const unitSectionEl = document.querySelector("#unitSection");
+const unitListEl = document.querySelector("#unitList");
+
+const tabsEl = document.querySelector("#editorTabs");
+const jsonEditorEl = document.querySelector("#jsonEditor");
+const editorTitleEl = document.querySelector("#editorTitle");
+const listPanelEl = document.querySelector("#listPanel");
+
+const validateBtn = document.querySelector("#validateBtn");
+const downloadBtn = document.querySelector("#downloadBtn");
+const downloadModulesBtn = document.querySelector("#downloadModulesBtn");
+const actionsEl = document.querySelector("#actions");
 
 // Load modules.json
-fetch("../quizzes/modules.json")
+fetch(MODULES_PATH)
   .then(r => r.json())
-  .then(data => {
-    curriculum = data;
+  .then(async data => {
+    modulesData = data;
+
+    // Load randomiser file
+    randomiserData = await fetch(RANDOMISER_PATH).then(r => r.json());
     renderModules();
   });
 
+/******************************
+ * Module & Unit Navigation
+ ******************************/
 function renderModules() {
   moduleListEl.innerHTML = "";
-
-  curriculum.forEach(mod => {
+  modulesData.forEach(mod => {
     const li = document.createElement("li");
-
     const btn = document.createElement("button");
     btn.textContent = mod.name;
     btn.className = "td-btn td-btn-outline";
     btn.onclick = () => {
       selectedModule = mod;
       selectedUnit = null;
+      currentQuizMeta = null;
+      currentTimelineMeta = null;
       renderUnits();
+      resetEditor();
       editorTitleEl.textContent = "Select a Unit";
-      hideEditor();
     };
-
     li.appendChild(btn);
     moduleListEl.appendChild(li);
   });
 }
 
 function renderUnits() {
-  unitListEl.innerHTML = "";
   unitSectionEl.classList.remove("td-hidden");
+  unitListEl.innerHTML = "";
 
   selectedModule.units.forEach(u => {
     const li = document.createElement("li");
@@ -54,63 +86,233 @@ function renderUnits() {
     btn.className = "td-btn td-btn-outline";
     btn.onclick = () => {
       selectedUnit = u;
+      resetEditor();
       editorTitleEl.textContent = selectedUnit.name;
-      showTabs();
-      hideEditor();
+      tabsEl.classList.remove("td-hidden");
     };
     li.appendChild(btn);
     unitListEl.appendChild(li);
   });
 }
 
-function showTabs() {
-  tabsEl.classList.remove("td-hidden");
+function resetEditor() {
+  currentQuizMeta = null;
+  currentTimelineMeta = null;
+  listPanelEl.classList.add("td-hidden");
   jsonEditorEl.classList.add("td-hidden");
   actionsEl.classList.add("td-hidden");
-
-  tabsEl.querySelectorAll(".td-tab").forEach(tab => {
-    tab.classList.remove("active");
-    tab.onclick = () => {
-      tabsEl.querySelectorAll(".td-tab").forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-      activeTab = tab.dataset.tab;
-      loadEditorJSON();
-    };
-  });
+  tabsEl.querySelectorAll(".td-tab").forEach(tab => tab.classList.remove("active"));
 }
 
-function loadEditorJSON() {
+/******************************
+ * Tabs
+ ******************************/
+tabsEl.querySelectorAll(".td-tab").forEach(tab => {
+  tab.onclick = () => {
+    tabsEl.querySelectorAll(".td-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeTab = tab.dataset.tab;
+    loadContentForTab();
+  };
+});
+
+function loadContentForTab() {
   if (!selectedUnit) return;
 
+  listPanelEl.innerHTML = "";
+  listPanelEl.classList.remove("td-hidden");
+
+  if (activeTab === "mcq") loadQuizList();
+  if (activeTab === "randomiser") loadRandomiserSubset();
+  if (activeTab === "timeline") loadTimelineList();
+}
+
+/******************************
+ * MCQ TAB
+ ******************************/
+function loadQuizList() {
+  const quizzes = selectedUnit.quizzes || [];
+
+  let html = `<h3>MCQ Quizzes for this Unit</h3>`;
+  if (!quizzes.length) html += `<p>No quizzes yet.</p>`;
+
+  quizzes.forEach(q => {
+    html += `
+      <div class="td-listrow">
+        <div>
+          <strong>${q.title}</strong><br>
+          <small>${q.path}</small>
+        </div>
+        <button class="td-btn td-btn-outline" data-quiz="${q.id}">Edit</button>
+      </div>`;
+  });
+
+  html += `<button id="addQuizBtn" class="td-btn td-btn-primary">+ Add New Quiz</button>`;
+
+  listPanelEl.innerHTML = html;
+
+  listPanelEl.querySelectorAll("[data-quiz]").forEach(btn => {
+    btn.onclick = () => {
+      const quizId = btn.dataset.quiz;
+      currentQuizMeta = selectedUnit.quizzes.find(q => q.id === quizId);
+      loadQuizJSON();
+    };
+  });
+
+  document.querySelector("#addQuizBtn").onclick = addNewQuiz;
+}
+
+function addNewQuiz() {
+  const title = prompt("Quiz Title?");
+  if (!title) return;
+
+  const quizId = title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const path = `quizzes/quizzes/${selectedModule.id}/${selectedUnit.id}/${quizId}.json`;
+
+  const quizObj = {
+    id: quizId,
+    title,
+    path
+  };
+
+  if (!selectedUnit.quizzes) selectedUnit.quizzes = [];
+  selectedUnit.quizzes.push(quizObj);
+
+  currentQuizMeta = quizObj;
+
+  jsonEditorEl.value = JSON.stringify({
+    id: quizId,
+    title,
+    questions: []
+  }, null, 2);
+
+  enableEditor();
+  loadQuizList();
+}
+
+function loadQuizJSON() {
+  fetch("../" + currentQuizMeta.path)
+    .then(r => r.json())
+    .then(data => {
+      jsonEditorEl.value = JSON.stringify(data, null, 2);
+      enableEditor();
+    });
+}
+
+/******************************
+ * RANDOMISER TAB
+ ******************************/
+function loadRandomiserSubset() {
+  const moduleId = selectedModule.id;
+  const unitId = selectedUnit.id;
+
+  const subset = randomiserData.filter(c => 
+    c.module === moduleId && c.unit === unitId
+  );
+
+  currentQuizMeta = null;
+  currentTimelineMeta = null;
+
+  jsonEditorEl.value = JSON.stringify(subset, null, 2);
+  enableEditor();
+
+  listPanelEl.innerHTML = `
+    <h3>Cards for this Unit</h3>
+    <p>Editing filtered subset from cards_data.json</p>
+    <button id="addCardBtn" class="td-btn td-btn-primary">+ Add Card</button>
+  `;
+
+  document.querySelector("#addCardBtn").onclick = addNewRandomiserCard;
+}
+
+function addNewRandomiserCard() {
+  const subset = JSON.parse(jsonEditorEl.value);
+  subset.push({
+    module: selectedModule.id,
+    unit: selectedUnit.id,
+    type: "content",
+    text: ""
+  });
+  jsonEditorEl.value = JSON.stringify(subset, null, 2);
+}
+
+/******************************
+ * TIMELINE TAB
+ ******************************/
+function loadTimelineList() {
+  const timelines = selectedUnit.timelines || [];
+  let html = `<h3>Timelines for this Unit</h3>`;
+  if (!timelines.length) html += `<p>No timelines yet.</p>`;
+
+  timelines.forEach(t => {
+    html += `
+      <div class="td-listrow">
+        <div>
+          <strong>${t.title}</strong><br>
+          <small>${t.path}</small>
+        </div>
+        <button class="td-btn td-btn-outline" data-timeline="${t.id}">Edit</button>
+      </div>`;
+  });
+
+  html += `<button id="addTimelineBtn" class="td-btn td-btn-primary">+ Add New Timeline</button>`;
+  listPanelEl.innerHTML = html;
+
+  listPanelEl.querySelectorAll("[data-timeline]").forEach(btn => {
+    btn.onclick = () => {
+      const id = btn.dataset.timeline;
+      currentTimelineMeta = selectedUnit.timelines.find(t => t.id === id);
+      loadTimelineJSON();
+    };
+  });
+
+  document.querySelector("#addTimelineBtn").onclick = addNewTimeline;
+}
+
+function addNewTimeline() {
+  const title = prompt("Timeline Title?");
+  if (!title) return;
+
+  const id = title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const path = `timelines/${selectedModule.id}/${selectedUnit.id}/${id}.json`;
+
+  if (!selectedUnit.timelines) selectedUnit.timelines = [];
+  const tObj = { id, title, path };
+  selectedUnit.timelines.push(tObj);
+
+  currentTimelineMeta = tObj;
+
+  jsonEditorEl.value = JSON.stringify({
+    title,
+    events: []
+  }, null, 2);
+
+  enableEditor();
+  loadTimelineList();
+}
+
+function loadTimelineJSON() {
+  fetch("../" + currentTimelineMeta.path)
+    .then(r => r.json())
+    .then(data => {
+      jsonEditorEl.value = JSON.stringify(data, null, 2);
+      enableEditor();
+    })
+    .catch(() => {
+      jsonEditorEl.value = JSON.stringify({
+        title: currentTimelineMeta.title,
+        events: []
+      }, null, 2);
+      enableEditor();
+    });
+}
+
+/******************************
+ * JSON Editor Helpers
+ ******************************/
+function enableEditor() {
   jsonEditorEl.classList.remove("td-hidden");
   actionsEl.classList.remove("td-hidden");
-
-  if (activeTab === "mcq") {
-    const quizMeta = selectedUnit.quizzes || [];
-    if (!quizMeta.length) {
-      jsonEditorEl.value = "// No quizzes found for this unit.";
-      return;
-    }
-    const path = quizMeta[0].path;
-    fetch("../" + path)
-      .then(r => r.json())
-      .then(data => jsonEditorEl.value = JSON.stringify(data, null, 2));
-  }
-
-  if (activeTab === "randomiser") {
-    fetch("../revision/cards_data.json")
-      .then(r => r.json())
-      .then(data => jsonEditorEl.value = JSON.stringify(data, null, 2));
-  }
-
-  if (activeTab === "timeline") {
-    // Generate basic timeline structure
-    const timelineStub = {
-      title: selectedUnit.name + " Timeline",
-      events: []
-    };
-    jsonEditorEl.value = JSON.stringify(timelineStub, null, 2);
-  }
 }
 
 validateBtn.onclick = () => {
@@ -124,28 +326,23 @@ validateBtn.onclick = () => {
 
 downloadBtn.onclick = () => {
   let filename = "";
-
-  if (activeTab === "mcq") {
-    filename = selectedUnit.quizzes[0].path.split("/").pop();
-  }
-  if (activeTab === "randomiser") {
-    filename = "cards_data.json";
-  }
-  if (activeTab === "timeline") {
-    filename = selectedUnit.id + "-timeline.json";
-  }
+  if (activeTab === "mcq") filename = currentQuizMeta.path.split("/").pop();
+  if (activeTab === "randomiser") filename = "cards_data.json";
+  if (activeTab === "timeline") filename = currentTimelineMeta.id + ".json";
 
   const blob = new Blob([jsonEditorEl.value], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-
   const a = document.createElement("a");
-  a.href = url;
+  a.href = URL.createObjectURL(blob);
   a.download = filename;
   a.click();
-  URL.revokeObjectURL(url);
 };
 
-function hideEditor() {
-  jsonEditorEl.classList.add("td-hidden");
-  actionsEl.classList.add("td-hidden");
-}
+downloadModulesBtn.onclick = () => {
+  const blob = new Blob([JSON.stringify(modulesData, null, 2)], {
+    type: "application/json"
+  });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "modules.json";
+  a.click();
+};
