@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Teacher Dashboard</title>
+  <link rel="stylesheet" href="teacher.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+  <header class="td-header">
+    <h1>Teacher Dashboard</h1>
+    <a href="../index.html" class="td-backlink">← Back to Portal</a>
+  </header>
+
+  <main class="td-main">
+    <aside class="td-sidebar">
+      <h2>Modules</h2>
+      <ul id="moduleList"></ul>
+      <button id="addModuleBtn" class="td-btn td-btn-outline">+ Add Module</button>
+
+      <div id="unitSection" class="td-hidden">
+        <h2>Units</h2>
+        <ul id="unitList"></ul>
+        <button id="addUnitBtn" class="td-btn td-btn-outline">+ Add Unit</button>
+      </div>
+    </aside>
+
+    <section class="td-editor">
+      <h2 id="editorTitle">Select a Unit</h2>
+
+      <div id="editorTabs" class="td-tabs td-hidden">
+        <button class="td-tab" data-tab="mcq">MCQ JSON</button>
+        <button class="td-tab" data-tab="randomiser">Randomiser Cards JSON</button>
+        <button class="td-tab" data-tab="timeline">Timeline JSON</button>
+      </div>
+
+      <textarea id="jsonEditor" class="td-textarea td-hidden"></textarea>
+
+      <div id="actions" class="td-actions td-hidden">
+        <button id="validateBtn" class="td-btn td-btn-primary">Validate JSON</button>
+        <button id="downloadBtn" class="td-btn td-btn-outline">Download Edited JSON</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="teacher.js"></script>
+</body>
+</html>
