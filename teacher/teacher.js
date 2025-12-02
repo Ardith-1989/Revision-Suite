@@ -143,58 +143,83 @@ function loadQuizList() {
           <strong>${q.title}</strong><br>
           <small>${q.path}</small>
         </div>
-        <button class="td-btn td-btn-outline" data-quiz="${q.id}">Edit</button>
-      </div>`;
+        <button class="td-btn td-btn-outline td-quiz-edit" 
+           data-quizid="${q.id}" 
+           data-quizpath="${q.path}">
+          Edit
+        </button>
+      </div>
+    `;
   });
 
   html += `<button id="addQuizBtn" class="td-btn td-btn-primary">+ Add New Quiz</button>`;
-
   listPanelEl.innerHTML = html;
 
-  listPanelEl.querySelectorAll("[data-quiz]").forEach(btn => {
-    btn.onclick = () => {
-      const quizId = btn.dataset.quiz;
-      currentQuizMeta = selectedUnit.quizzes.find(q => q.id === quizId);
-      loadQuizJSON();
-    };
-  });
+  // Delegated listener on listContainer
+  listPanelEl.onclick = (ev) => {
+    const btn = ev.target.closest(".td-quiz-edit");
+    if (!btn) return;
+
+    const qid = btn.getAttribute("data-quizid");
+    const path = btn.getAttribute("data-quizpath");
+
+    currentQuizMeta = findQuizMeta(qid, path);
+
+    if (!currentQuizMeta) {
+      alert("Could not locate quiz metadata from modules.json");
+      return;
+    }
+
+    loadQuizJSON();
+  };
 
   document.querySelector("#addQuizBtn").onclick = addNewQuiz;
 }
 
-function addNewQuiz() {
-  const title = prompt("Quiz Title?");
-  if (!title) return;
 
-  const quizId = title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  const path = `quizzes/quizzes/${selectedModule.id}/${selectedUnit.id}/${quizId}.json`;
+function findQuizMeta(quizId, quizPath) {
+  if (!selectedUnit.quizzes) return null;
 
-  const quizObj = {
-    id: quizId,
-    title,
-    path
-  };
+  // 1. direct ID match
+  let q = selectedUnit.quizzes.find(q => q.id === quizId);
+  if (q) return q;
 
-  if (!selectedUnit.quizzes) selectedUnit.quizzes = [];
-  selectedUnit.quizzes.push(quizObj);
+  // 2. fallback: match by path
+  q = selectedUnit.quizzes.find(q => q.path === quizPath);
+  if (q) return q;
 
-  currentQuizMeta = quizObj;
-
-  jsonEditorEl.value = JSON.stringify({
-    id: quizId,
-    title,
-    questions: []
-  }, null, 2);
-
-  enableEditor();
-  loadQuizList();
+  // Normalize and try again
+  const normalPath = quizPath.replace(/^\.\.\//, "").replace(/^\//, "");
+  q = selectedUnit.quizzes.find(q => 
+    q.path.replace(/^\.\.\//, "").replace(/^\//, "") === normalPath
+  );
+  return q || null;
 }
 
+
 function loadQuizJSON() {
-  fetch("../" + currentQuizMeta.path)
-    .then(r => r.json())
+  if (!currentQuizMeta) {
+    alert("Error: No quiz metadata.");
+    return;
+  }
+
+  let p = currentQuizMeta.path;
+
+  // Ensure path starts without leading '../'
+  if (p.startsWith("../")) p = p.slice(3);
+
+  fetch("../" + p)
+    .then(r => {
+      if (!r.ok) throw new Error("Quiz JSON not found at: " + p);
+      return r.json();
+    })
     .then(data => {
       jsonEditorEl.value = JSON.stringify(data, null, 2);
+      enableEditor();
+    })
+    .catch(err => {
+      alert("Failed to load quiz:\n" + err.message);
+      jsonEditorEl.value = "// Failed to load quiz\n" + err.message;
       enableEditor();
     });
 }
