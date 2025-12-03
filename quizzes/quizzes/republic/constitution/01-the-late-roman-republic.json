@@ -4,11 +4,6 @@
   "description": "01. The Late Roman Republic",
   "questions": [
     {
-      "question": "The Late Roman Republic",
-      "options": [],
-      "correctIndex": null
-    },
-    {
       "question": "What is the traditional year given for the founding of Rome?",
       "options": [
         "753 BCE",
@@ -26,7 +21,7 @@
         "Greece",
         "Gauls"
       ],
-      "correctIndex": null
+      "correctIndex": 1
     },
     {
       "question": "Who did Rome fight in the Social War?",
@@ -36,7 +31,7 @@
         "Some of their Italian Allies",
         "Sparta"
       ],
-      "correctIndex": null
+      "correctIndex": 2
     },
     {
       "question": "When did the Social War begin and end?",
@@ -46,7 +41,7 @@
         "80-75",
         "91-88"
       ],
-      "correctIndex": null
+      "correctIndex": 3
     },
     {
       "question": "When was Rome made into a Republic?",
@@ -56,7 +51,7 @@
         "300 BCE",
         "350 BCE"
       ],
-      "correctIndex": null
+      "correctIndex": 1
     },
     {
       "question": "What were the four major kingdoms/empires to the east of the Roman Empire in 88 BCE?",
@@ -66,7 +61,7 @@
         "Seleucid Empire, Parthian Kingdom, Greece, Rome",
         "Parthian Empire, Seleucid Empire, Egypt, Carthage"
       ],
-      "correctIndex": null
+      "correctIndex": 1
     }
   ]
 }
