@@ -646,19 +646,24 @@ function setupMatchDatesMobilePointer(root) {
     if (card) card.style.display = "none";
   }
 
-  // tap placed event -> return to pool
-  root.querySelectorAll("[data-slot-event]").forEach((el) => {
-    el.style.cursor = "pointer";
-    el.addEventListener("click", () => {
-      const eventId = el.getAttribute("data-event-id");
+  // tap a slot (anywhere) -> if it contains an event, return that event card to the pool
+  root.querySelectorAll(".dnd-slot").forEach((slot) => {
+    slot.style.cursor = "pointer";
+    slot.addEventListener("click", () => {
+      const slotEventEl = slot.querySelector("[data-slot-event]");
+      if (!slotEventEl) return;
+
+      const eventId = slotEventEl.getAttribute("data-event-id");
       if (!eventId) return;
+
       const card = root.querySelector(`.dnd-event-card[data-event-id="${eventId}"]`);
       if (card) {
         card.style.display = "";
         if (pool) pool.appendChild(card);
       }
-      el.textContent = "";
-      el.removeAttribute("data-event-id");
+
+      slotEventEl.textContent = "";
+      slotEventEl.removeAttribute("data-event-id");
     });
   });
 
