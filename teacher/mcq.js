@@ -12,6 +12,7 @@ const moduleSelect = el("moduleSelect");
 const unitSelect = el("unitSelect");
 const quizSelect = el("quizSelect");
 const quizFolderInput = el("quizFolderInput");
+const quizDescInput = el("quizDescInput");
 
 const newQuizBtn = el("newQuizBtn");
 const loadQuizBtn = el("loadQuizBtn");
