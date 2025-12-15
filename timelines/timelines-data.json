@@ -1,1 +1,20 @@
-
+[
+  {
+    "id": "late-republic",
+    "name": "Late Roman Republic",
+    "units": [
+      {
+        "id": "caesar-pompey",
+        "name": "Caesar vs Pompey",
+        "timelines": [
+          {
+            "id": "from-alliance-to-civil-war",
+            "title": "From Alliance to Civil War",
+            "description": "Key events from the First Triumvirate to the outbreak of civil war.",
+            "path": "timelines/late-republic/caesar-pompey/from-alliance-to-civil-war.json"
+          }
+        ]
+      }
+    ]
+  }
+]
