@@ -295,13 +295,6 @@ function renderUnitList(moduleId) {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const unitId = btn.getAttribute("data-unit-id");
-      const unit = mod.units.find((u) => u.id === unitId);
-      if (!unit) return;
-      currentUnit = unit;
-      renderTimelineList();
-    });
-  });
-      const unitId = btn.getAttribute("data-unit-id");
       const action = btn.getAttribute("data-action");
       const unit = mod.units.find((u) => u.id === unitId);
       if (!unit || !unit.timelines || !unit.timelines.length) return;
@@ -335,7 +328,7 @@ function renderTimelineList() {
   const timelines = currentUnit.timelines || [];
   pillRightEl.textContent = `${timelines.length} timeline${timelines.length !== 1 ? "s" : ""}`;
 
-  setBreadcrumbs("activity");
+  setBreadcrumbs("timeline");
 
   if (!timelines.length) {
     contentEl.innerHTML = `<p class="helper-text">No timelines for this unit yet.</p>`;
@@ -393,7 +386,7 @@ function renderTimelineView() {
   pillRightEl.textContent = `${currentTimeline.events.length} event${
     currentTimeline.events.length !== 1 ? "s" : ""
   }`;
-  setBreadcrumbs("timeline");
+  setBreadcrumbs("activity");
 
   const sortedEvents = sortEventsByDate(currentTimeline.events);
 
@@ -414,7 +407,7 @@ function renderTimelineView() {
       }" data-mode="which-first">Which came first?</button>
       <button class="mode-tab ${
         currentMode === "placement" ? "active" : ""
-      }" data-mode="placement">Placement</button> --!>
+      }" data-mode="placement">Placement</button> -->
     </div>
   `;
 
