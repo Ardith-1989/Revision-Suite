@@ -80,16 +80,12 @@ function fetchQuizJSONFromMeta(meta) {
 
 // Normalise to our editor schema
 function normaliseQuiz(data, fallbackId, fallbackTitle) {
-  // Expected editor schema:
-  // { id, title, questions:[{ question, options:[A,B,C,D], correctIndex }] }
+  const id = data?.id || fallbackId;
+  const title = data?.title || fallbackTitle;
+  const description = typeof data?.description === "string" ? data.description : "";
 
   if (data && Array.isArray(data.questions)) {
-    // Try to handle common shapes
-    const id = data.id || fallbackId;
-    const title = data.title || fallbackTitle;
-
     const questions = data.questions.map((q) => {
-      // Shape A: {question, options:[...], correctIndex}
       if (Array.isArray(q.options) && Number.isInteger(q.correctIndex)) {
         return {
           question: q.question || "",
@@ -103,7 +99,6 @@ function normaliseQuiz(data, fallbackId, fallbackTitle) {
         };
       }
 
-      // Shape B: {question, answers:{A,B,C,D}, correctAnswer:"A"}
       if (q.answers && typeof q.answers === "object") {
         const opts = [q.answers.A, q.answers.B, q.answers.C, q.answers.D].map(v => v ?? "");
         const map = { A: 0, B: 1, C: 2, D: 3 };
@@ -111,31 +106,20 @@ function normaliseQuiz(data, fallbackId, fallbackTitle) {
         return { question: q.question || "", options: opts, correctIndex };
       }
 
-      // Fallback
       return { question: q.question || "", options: ["", "", "", ""], correctIndex: 0 };
     });
 
-    return { id, title, questions };
+    return { id, title, description, questions };
   }
 
-  // If file is a raw array (rare): assume array of questions in some form
-  if (Array.isArray(data)) {
-    return {
-      id: fallbackId,
-      title: fallbackTitle,
-      questions: data.map(() => ({ question: "", options: ["", "", "", ""], correctIndex: 0 })),
-    };
-  }
-
-  // Otherwise create empty
-  return { id: fallbackId, title: fallbackTitle, questions: [] };
+  return { id, title, description, questions: [] };
 }
 
 function buildQuizToSave() {
-  // Always save in the editor schema:
   return {
     id: workingQuiz.id,
     title: quizTitleInput.value.trim(),
+    description: quizDescInput.value.trim(),
     questions: workingQuiz.questions.map((q) => ({
       question: q.question,
       options: q.options,
@@ -289,6 +273,8 @@ async function loadSelectedQuiz() {
 
   quizIdInput.value = selectedQuizMeta.id || "";
   quizTitleInput.value = selectedQuizMeta.title || "";
+  quizDescInput.value = workingQuiz.description || "";
+
 
   try {
     const raw = await fetchQuizJSONFromMeta(selectedQuizMeta);
@@ -340,7 +326,9 @@ async function createNewQuizFlow() {
   quizSelect.value = String((selectedUnit.quizzes.length - 1));
 
   selectedQuizMeta = quizMeta;
-  workingQuiz = { id: quizId, title, questions: [] };
+  workingQuiz = { id: quizId, title, description: "", questions: [] };
+  quizDescInput.value = "";
+
 
   setEditorVisible(true);
   editorHeading.textContent = "Creating: " + title;
