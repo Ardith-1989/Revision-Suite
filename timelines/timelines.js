@@ -39,48 +39,74 @@ const contentEl = document.getElementById("timelineContent");
 const themeBtnEl = document.getElementById("toggleThemeBtn");
 
 /* ============================
-   DATA MODEL (index + per-timeline JSON)
-   ============================
+   SIMPLE IN-MEMORY DATA MODEL
+   (Replace with JSON fetch later)
+   ============================ */
 
-   This app now loads:
-   1) timelines-data.json (modules -> units -> timelines metadata)
-   2) individual timeline JSON files (events live in those files)
-
-   Folder structure (recommended):
-   /timelines/timelines-data.json
-   /timelines/timelines/<module-id>/<unit-folder>/<timeline-id>.json
-
-   In timelines-data.json, each timeline entry stores a path RELATIVE to /timelines/index.html,
-   e.g. "timelines/late-republic/caesar-pompey/from-alliance-to-civil-war.json"
-*/
-
-const TIMELINES_INDEX_PATH = "timelines-data.json";
-
-// Loaded from timelines-data.json
-let TIMELINE_DATA = [];
-
-// Metadata for the currently opened timeline (from the index)
-let currentTimelineMeta = null;
-
-// Timeline content loaded from an individual JSON file
-// Expected shape: { id, title, description, events:[ {id,label,year,displayDate,note} ] }
-
-async function loadTimelinesIndex() {
-  const res = await fetch(TIMELINES_INDEX_PATH, { cache: "no-store" });
-  if (!res.ok) throw new Error("Could not load timelines index: " + TIMELINES_INDEX_PATH);
-  const data = await res.json();
-  if (!Array.isArray(data)) throw new Error("timelines-data.json must be an array");
-  TIMELINE_DATA = data;
-}
-
-async function loadTimelineByMeta(meta) {
-  if (!meta?.path) throw new Error("Timeline metadata missing path");
-  const res = await fetch(meta.path, { cache: "no-store" });
-  if (!res.ok) throw new Error("Could not load timeline JSON: " + meta.path);
-  const data = await res.json();
-  if (!data || !Array.isArray(data.events)) throw new Error("Timeline JSON missing events[]: " + meta.path);
-  return data;
-}
+const TIMELINE_DATA = [
+  {
+    id: "late-republic",
+    name: "Late Roman Republic",
+    units: [
+      {
+        id: "caesar-pompey",
+        name: "Caesar vs Pompey",
+        timelines: [
+          {
+            id: "caesar-pompey-timeline-1",
+            title: "From Alliance to Civil War",
+            description:
+              "Key events from the First Triumvirate to the outbreak of civil war.",
+            events: [
+              {
+                id: "consulship-59",
+                label: "Caesar's first consulship with Bibulus",
+                year: -59,
+                displayDate: "59 BCE",
+                note: "Caesar uses radical measures, clashing with the Senate."
+              },
+              {
+                id: "first-triumvirate",
+                label: "Informal 'First Triumvirate' agreement",
+                year: -60,
+                displayDate: "60 BCE",
+                note: "Political alliance between Caesar, Pompey, and Crassus."
+              },
+              {
+                id: "death-julia",
+                label: "Death of Julia",
+                year: -54,
+                displayDate: "54 BCE",
+                note: "Removes the family tie between Caesar and Pompey."
+              },
+              {
+                id: "sole-consul-52",
+                label: "Pompey appointed sole consul",
+                year: -52,
+                displayDate: "52 BCE",
+                note: "Violence in Rome after Clodius' death leads to Pompey's sole consulship."
+              },
+              {
+                id: "rubicon-49",
+                label: "Caesar crosses the Rubicon",
+                year: -49,
+                displayDate: "49 BCE",
+                note: "Triggers civil war between Caesar and Pompey."
+              },
+              {
+                id: "pharsalus-48",
+                label: "Battle of Pharsalus",
+                year: -48,
+                displayDate: "48 BCE",
+                note: "Decisive victory for Caesar over Pompey."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+];
 
 /* ============================
    APP STATE
@@ -114,9 +140,9 @@ function setBreadcrumbs(level) {
     );
   }
 
-  if (currentTimelineMeta && level === "activity") {
+  if (currentTimeline && level === "activity") {
     bits.push("›");
-    bits.push(`<span>${currentTimeline.title || currentTimelineMeta.title}</span>`);
+    bits.push(`<span>${currentTimeline.title}</span>`);
   }
 
   breadcrumbsEl.innerHTML = bits.join(" ");
@@ -140,10 +166,8 @@ function setBreadcrumbs(level) {
           if (mod && unit) {
             currentModule = mod;
             currentUnit = unit;
-            currentTimelineMeta = null;
-            currentTimeline = null;
-            currentMode = "study";
-            renderTimelineList();
+            currentTimeline = unit.timelines[0] || null;
+            renderTimelineView();
           }
         }
       })
@@ -279,18 +303,21 @@ function renderUnitList(moduleId) {
     </p>
   `;
 
-  // Click card or buttons -> open timeline list for that unit
+  // Click anywhere on card → default to Study first timeline
   contentEl.querySelectorAll(".list-item").forEach((card) => {
     card.addEventListener("click", (e) => {
       const unitId = card.getAttribute("data-unit-id");
       if (e.target.closest("button")) return;
       const unit = mod.units.find((u) => u.id === unitId);
-      if (!unit) return;
+      if (!unit || !unit.timelines || !unit.timelines.length) return;
       currentUnit = unit;
-      renderTimelineList();
+      currentTimeline = unit.timelines[0];
+      currentMode = "study";
+      renderTimelineView();
     });
   });
 
+  // Button-specific actions
   contentEl.querySelectorAll("button[data-unit-id]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -311,68 +338,6 @@ function renderUnitList(moduleId) {
   });
 }
 
-
-/* ============================
-   RENDER: TIMELINE LIST (within unit)
-   ============================ */
-
-function renderTimelineList() {
-  if (!currentModule || !currentUnit) return;
-
-  currentTimelineMeta = null;
-  currentTimeline = null;
-  currentMode = "study";
-
-  cardTitleEl.textContent = currentUnit.name;
-  cardSubtitleEl.textContent = "Choose a timeline to study or test.";
-  const timelines = currentUnit.timelines || [];
-  pillRightEl.textContent = `${timelines.length} timeline${timelines.length !== 1 ? "s" : ""}`;
-
-  setBreadcrumbs("timeline");
-
-  if (!timelines.length) {
-    contentEl.innerHTML = `<p class="helper-text">No timelines for this unit yet.</p>`;
-    return;
-  }
-
-  contentEl.innerHTML = `
-    <div class="list">
-      ${timelines.map(t => `
-        <div class="list-item" data-timeline-id="${t.id}">
-          <div class="list-main">
-            <div class="list-title">${t.title}</div>
-            <div class="list-meta"><span>${t.description || ""}</span></div>
-          </div>
-          <button class="tag-button" data-timeline-id="${t.id}">Open ›</button>
-        </div>
-      `).join("")}
-    </div>
-    <p class="helper-text">Open a timeline, then choose Study or an activity.</p>
-  `;
-
-  contentEl.querySelectorAll("[data-timeline-id]").forEach((el) => {
-    el.addEventListener("click", async (e) => {
-      e.stopPropagation();
-      const id = el.getAttribute("data-timeline-id");
-      const meta = timelines.find(t => t.id === id);
-      if (!meta) return;
-
-      pillRightEl.textContent = "Loading…";
-      try {
-        currentTimelineMeta = meta;
-        currentTimeline = await loadTimelineByMeta(meta);
-        currentMode = "study";
-        renderTimelineView();
-      } catch (err) {
-        currentTimelineMeta = meta;
-        currentTimeline = null;
-        contentEl.innerHTML = `<p class="helper-text">Could not load timeline: ${String(err.message || err)}</p>`;
-        pillRightEl.textContent = "Error";
-      }
-    });
-  });
-}
-
 /* ============================
    RENDER: TIMELINE VIEW
    (Study + mode tabs)
@@ -381,12 +346,12 @@ function renderTimelineList() {
 function renderTimelineView() {
   if (!currentModule || !currentUnit || !currentTimeline) return;
 
-  cardTitleEl.textContent = currentTimeline.title || currentTimelineMeta?.title || "Timeline";
-  cardSubtitleEl.textContent = currentTimeline.description || currentTimelineMeta?.description || "";
+  cardTitleEl.textContent = currentTimeline.title;
+  cardSubtitleEl.textContent = currentTimeline.description || "";
   pillRightEl.textContent = `${currentTimeline.events.length} event${
     currentTimeline.events.length !== 1 ? "s" : ""
   }`;
-  setBreadcrumbs("activity");
+  setBreadcrumbs("timeline");
 
   const sortedEvents = sortEventsByDate(currentTimeline.events);
 
@@ -407,7 +372,7 @@ function renderTimelineView() {
       }" data-mode="which-first">Which came first?</button>
       <button class="mode-tab ${
         currentMode === "placement" ? "active" : ""
-      }" data-mode="placement">Placement</button> -->
+      }" data-mode="placement">Placement</button> --!>
     </div>
   `;
 
@@ -636,120 +601,141 @@ function renderDragDropActivity(mode) {
    DND: MATCH DATES MODE
    ============================ */
 
+
 /* ============================
-   MOBILE/TABLET DRAG & DROP (Pointer Events)
-   Why: HTML5 drag events are poorly supported on touch devices.
-   This adds a pointer-based fallback for:
-   - match-dates: drag event cards onto date slots
-   - order-only: reorder list items by dragging
+   MOBILE DRAG FIXES (Pointer Events)
+   - HTML5 drag/drop is unreliable on touch devices.
+   - For touch, we use pointerdown/move/up with a floating clone + placeholder.
    ============================ */
 
-function enablePointerDnDMatchDates(root) {
+function isTouchLikePointer(e) {
+  return e && e.pointerType && e.pointerType !== "mouse";
+}
+
+function setupMatchDatesMobilePointer(root) {
+  const pool = root.querySelector("#eventsPool");
   const cards = Array.from(root.querySelectorAll(".dnd-event-card"));
   const slots = Array.from(root.querySelectorAll(".dnd-slot"));
 
-  // If device supports hover, HTML5 DnD is usually fine; still keep pointer support (harmless).
-  // We attach pointer listeners regardless, but they only run when pointerType !== "mouse".
-  let active = null; // {el, startX, startY, origX, origY, offsetX, offsetY}
-
   function clearHighlights() {
-    slots.forEach(s => s.classList.remove("highlight-drop"));
+    slots.forEach((s) => s.classList.remove("highlight-drop"));
   }
 
-  function setDraggingStyles(el, dragging) {
-    if (dragging) {
-      el.classList.add("dragging");
-      el.style.position = "relative";
-      el.style.zIndex = "50";
-      el.style.pointerEvents = "none"; // let elementFromPoint see targets underneath
-    } else {
-      el.classList.remove("dragging");
-      el.style.transform = "";
-      el.style.position = "";
-      el.style.zIndex = "";
-      el.style.pointerEvents = "";
-    }
-  }
-
-  function findSlotUnderPointer(clientX, clientY) {
-    const el = document.elementFromPoint(clientX, clientY);
+  function slotUnder(x, y) {
+    const el = document.elementFromPoint(x, y);
     return el ? el.closest(".dnd-slot") : null;
   }
 
+  function placeEvent(eventId, slot) {
+    if (!eventId || !slot) return;
+    const slotEventEl = slot.querySelector("[data-slot-event]");
+    if (!slotEventEl) return;
+
+    // clear any previous slot holding this event
+    const prev = root.querySelector(`.dnd-slot [data-slot-event][data-event-id="${eventId}"]`);
+    if (prev) {
+      prev.textContent = "";
+      prev.removeAttribute("data-event-id");
+    }
+
+    const card = root.querySelector(`.dnd-event-card[data-event-id="${eventId}"]`);
+    slotEventEl.textContent = card ? card.textContent.trim() : slotEventEl.textContent;
+    slotEventEl.setAttribute("data-event-id", eventId);
+
+    // hide in pool
+    if (card) card.style.display = "none";
+  }
+
+  // tap placed event -> return to pool
+  root.querySelectorAll("[data-slot-event]").forEach((el) => {
+    el.style.cursor = "pointer";
+    el.addEventListener("click", () => {
+      const eventId = el.getAttribute("data-event-id");
+      if (!eventId) return;
+      const card = root.querySelector(`.dnd-event-card[data-event-id="${eventId}"]`);
+      if (card) {
+        card.style.display = "";
+        if (pool) pool.appendChild(card);
+      }
+      el.textContent = "";
+      el.removeAttribute("data-event-id");
+    });
+  });
+
+  let drag = null; // {eventId, clone, baseLeft, baseTop, offsetX, offsetY}
+
   cards.forEach((card) => {
-    // Improve touch behaviour (CSS may not set this)
     card.style.touchAction = "none";
 
     card.addEventListener("pointerdown", (e) => {
-      if (e.pointerType === "mouse") return; // mouse uses HTML5 DnD already
+      if (!isTouchLikePointer(e)) return;
       e.preventDefault();
 
       const rect = card.getBoundingClientRect();
-      active = {
-        el: card,
-        startX: e.clientX,
-        startY: e.clientY,
+      const clone = card.cloneNode(true);
+      clone.classList.add("dragging");
+      clone.style.position = "fixed";
+      clone.style.left = rect.left + "px";
+      clone.style.top = rect.top + "px";
+      clone.style.width = rect.width + "px";
+      clone.style.zIndex = "9999";
+      clone.style.pointerEvents = "none";
+      clone.style.margin = "0";
+      document.body.appendChild(clone);
+
+      drag = {
+        eventId: card.getAttribute("data-event-id"),
+        clone,
+        baseLeft: rect.left,
+        baseTop: rect.top,
         offsetX: e.clientX - rect.left,
         offsetY: e.clientY - rect.top,
       };
 
       card.setPointerCapture(e.pointerId);
-      setDraggingStyles(card, true);
       clearHighlights();
     });
 
     card.addEventListener("pointermove", (e) => {
-      if (!active || active.el !== card) return;
-      if (e.pointerType === "mouse") return;
+      if (!drag) return;
+      if (!isTouchLikePointer(e)) return;
       e.preventDefault();
 
-      const dx = e.clientX - active.startX;
-      const dy = e.clientY - active.startY;
-      card.style.transform = `translate(${dx}px, ${dy}px)`;
+      const x = e.clientX - drag.offsetX;
+      const y = e.clientY - drag.offsetY;
+      drag.clone.style.transform = `translate(${x - drag.baseLeft}px, ${y - drag.baseTop}px)`;
 
       clearHighlights();
-      const slot = findSlotUnderPointer(e.clientX, e.clientY);
+      const slot = slotUnder(e.clientX, e.clientY);
       if (slot) slot.classList.add("highlight-drop");
     });
 
-    function finishPointerDrag(e) {
-      if (!active || active.el !== card) return;
-      if (e.pointerType === "mouse") return;
+    function finish(e) {
+      if (!drag) return;
+      if (!isTouchLikePointer(e)) return;
 
       clearHighlights();
+      const slot = slotUnder(e.clientX, e.clientY);
+      if (slot) placeEvent(drag.eventId, slot);
 
-      const slot = findSlotUnderPointer(e.clientX, e.clientY);
-      if (slot) {
-        const slotEventEl = slot.querySelector("[data-slot-event]");
-        if (slotEventEl) {
-          // Clear this card from any previous slot
-          const previousSlotEventEl = root.querySelector(
-            `.dnd-slot [data-slot-event][data-event-id="${card.getAttribute("data-event-id")}"]`
-          );
-          if (previousSlotEventEl) {
-            previousSlotEventEl.textContent = "";
-            previousSlotEventEl.removeAttribute("data-event-id");
-          }
-
-          slotEventEl.textContent = card.textContent.trim();
-          slotEventEl.setAttribute("data-event-id", card.getAttribute("data-event-id"));
-        }
-      }
-
-      setDraggingStyles(card, false);
-      active = null;
+      drag.clone.remove();
+      drag = null;
     }
 
-    card.addEventListener("pointerup", finishPointerDrag);
-    card.addEventListener("pointercancel", finishPointerDrag);
+    card.addEventListener("pointerup", finish);
+    card.addEventListener("pointercancel", finish);
   });
+
+  // expose to HTML5 drop logic
+  root.__matchDatesPlaceEvent = placeEvent;
 }
 
-function enablePointerDnDOrderOnly(root) {
+function setupOrderOnlyMobilePointer(root) {
   const listEl = root.querySelector("#orderList");
   if (!listEl) return;
 
-  let active = null; // {el, startX, startY}
+  let placeholder = null;
+  let active = null; // {item, clone, baseLeft, baseTop, offsetX, offsetY}
 
   function updateIndices() {
     listEl.querySelectorAll(".dnd-order-item").forEach((item, idx) => {
@@ -758,65 +744,102 @@ function enablePointerDnDOrderOnly(root) {
     });
   }
 
-  function setDraggingStyles(el, dragging) {
-    if (dragging) {
-      el.classList.add("dragging");
-      el.style.position = "relative";
-      el.style.zIndex = "50";
-      el.style.pointerEvents = "none";
-    } else {
-      el.classList.remove("dragging");
-      el.style.transform = "";
-      el.style.position = "";
-      el.style.zIndex = "";
-      el.style.pointerEvents = "";
-    }
+  function ensurePlaceholder(height) {
+    if (placeholder) return;
+    placeholder = document.createElement("div");
+    placeholder.className = "dnd-order-item";
+    placeholder.style.opacity = "0.25";
+    placeholder.style.height = height + "px";
+    placeholder.style.borderStyle = "dashed";
+    placeholder.style.cursor = "default";
+    placeholder.innerHTML = `<div class="dnd-order-item-index"></div><div>Drop here</div>`;
   }
 
-  function itemUnderPointer(clientX, clientY) {
-    const el = document.elementFromPoint(clientX, clientY);
-    const item = el ? el.closest(".dnd-order-item") : null;
-    // Ignore the active element itself (since pointerEvents is none while dragging)
-    return item;
+  function clearPlaceholder() {
+    if (placeholder && placeholder.parentElement) placeholder.parentElement.removeChild(placeholder);
+    placeholder = null;
+  }
+
+  function itemUnder(x, y) {
+    const el = document.elementFromPoint(x, y);
+    return el ? el.closest(".dnd-order-item") : null;
+  }
+
+  function autoScroll(clientY) {
+    const margin = 70;
+    const speed = 10;
+    const vh = window.innerHeight;
+    if (clientY < margin) window.scrollBy(0, -speed);
+    else if (clientY > vh - margin) window.scrollBy(0, speed);
   }
 
   Array.from(listEl.querySelectorAll(".dnd-order-item")).forEach((item) => {
     item.style.touchAction = "none";
 
     item.addEventListener("pointerdown", (e) => {
-      if (e.pointerType === "mouse") return;
+      if (!isTouchLikePointer(e)) return;
       e.preventDefault();
-      active = { el: item, startX: e.clientX, startY: e.clientY };
+
+      const rect = item.getBoundingClientRect();
+      const clone = item.cloneNode(true);
+      clone.classList.add("dragging");
+      clone.style.position = "fixed";
+      clone.style.left = rect.left + "px";
+      clone.style.top = rect.top + "px";
+      clone.style.width = rect.width + "px";
+      clone.style.zIndex = "9999";
+      clone.style.pointerEvents = "none";
+      clone.style.margin = "0";
+      document.body.appendChild(clone);
+
+      ensurePlaceholder(rect.height);
+      listEl.insertBefore(placeholder, item);
+      item.style.display = "none";
+
+      active = {
+        item,
+        clone,
+        baseLeft: rect.left,
+        baseTop: rect.top,
+        offsetX: e.clientX - rect.left,
+        offsetY: e.clientY - rect.top,
+      };
+
       item.setPointerCapture(e.pointerId);
-      setDraggingStyles(item, true);
     });
 
     item.addEventListener("pointermove", (e) => {
-      if (!active || active.el !== item) return;
-      if (e.pointerType === "mouse") return;
+      if (!active || active.item !== item) return;
+      if (!isTouchLikePointer(e)) return;
       e.preventDefault();
 
-      const dx = e.clientX - active.startX;
-      const dy = e.clientY - active.startY;
-      item.style.transform = `translate(${dx}px, ${dy}px)`;
+      autoScroll(e.clientY);
 
-      const over = itemUnderPointer(e.clientX, e.clientY);
-      if (over && over !== item) {
-        const bbox = over.getBoundingClientRect();
-        const insertBefore = e.clientY < bbox.top + bbox.height / 2;
-        if (insertBefore) {
-          listEl.insertBefore(item, over);
-        } else {
-          listEl.insertBefore(item, over.nextSibling);
-        }
-        updateIndices();
-      }
+      const x = e.clientX - active.offsetX;
+      const y = e.clientY - active.offsetY;
+      active.clone.style.transform = `translate(${x - active.baseLeft}px, ${y - active.baseTop}px)`;
+
+      const over = itemUnder(e.clientX, e.clientY);
+      if (!over || over === placeholder || over === active.item) return;
+
+      const bbox = over.getBoundingClientRect();
+      const insertBefore = e.clientY < bbox.top + bbox.height / 2;
+
+      if (insertBefore) listEl.insertBefore(placeholder, over);
+      else listEl.insertBefore(placeholder, over.nextSibling);
+
+      updateIndices();
     });
 
     function finish(e) {
-      if (!active || active.el !== item) return;
-      if (e.pointerType === "mouse") return;
-      setDraggingStyles(item, false);
+      if (!active || active.item !== item) return;
+      if (!isTouchLikePointer(e)) return;
+
+      item.style.display = "";
+      listEl.insertBefore(item, placeholder);
+      clearPlaceholder();
+
+      if (active.clone) active.clone.remove();
       active = null;
       updateIndices();
     }
@@ -825,6 +848,7 @@ function enablePointerDnDOrderOnly(root) {
     item.addEventListener("pointercancel", finish);
   });
 }
+
 
 function setupMatchDatesDnD(root, events) {
   const eventCards = root.querySelectorAll(".dnd-event-card");
@@ -847,10 +871,6 @@ function setupMatchDatesDnD(root, events) {
     });
   });
 
-
-  // Pointer-events fallback for mobile/tablet
-  enablePointerDnDMatchDates(root);
-
   slots.forEach((slot) => {
     slot.addEventListener("dragover", (e) => {
       e.preventDefault();
@@ -862,6 +882,11 @@ function setupMatchDatesDnD(root, events) {
     slot.addEventListener("drop", () => {
       slot.classList.remove("highlight-drop");
       if (!draggedCard) return;
+      const eventId = draggedCard.getAttribute("data-event-id");
+      if (typeof root.__matchDatesPlaceEvent === "function") {
+        root.__matchDatesPlaceEvent(eventId, slot);
+        return;
+      }
       const slotEventEl = slot.querySelector("[data-slot-event]");
       if (!slotEventEl) return;
 
@@ -877,17 +902,22 @@ function setupMatchDatesDnD(root, events) {
       }
 
       slotEventEl.textContent = draggedCard.textContent.trim();
-      slotEventEl.setAttribute(
-        "data-event-id",
-        draggedCard.getAttribute("data-event-id")
-      );
+      slotEventEl.setAttribute("data-event-id", eventId);
+      // Hide card once placed
+      draggedCard.style.display = "none";
     });
   });
 
   resetBtn.addEventListener("click", () => {
+    const pool = root.querySelector("#eventsPool");
     root.querySelectorAll("[data-slot-event]").forEach((el) => {
       el.textContent = "";
       el.removeAttribute("data-event-id");
+    });
+    // Return cards to pool
+    root.querySelectorAll(".dnd-event-card").forEach((card) => {
+      card.style.display = "";
+      if (pool) pool.appendChild(card);
     });
     feedbackEl.textContent = "";
     feedbackEl.className = "feedback";
@@ -944,6 +974,13 @@ function setupOrderOnlyDnD(root, events) {
 
   let draggedItem = null;
 
+  const isTouch = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
+  if (isTouch) {
+    // Use pointer-based reorder on touch devices (more reliable than HTML5 drag/drop)
+    setupOrderOnlyMobilePointer(root);
+  }
+
+
   function attachDndHandlers() {
     listEl.querySelectorAll(".dnd-order-item").forEach((item) => {
       item.addEventListener("dragstart", () => {
@@ -981,9 +1018,6 @@ function setupOrderOnlyDnD(root, events) {
 
   attachDndHandlers();
 
-  // Pointer-events fallback for mobile/tablet
-  enablePointerDnDOrderOnly(root);
-
   reshuffleBtn.addEventListener("click", () => {
     const items = Array.from(listEl.children);
     for (let i = items.length - 1; i > 0; i--) {
@@ -999,7 +1033,6 @@ function setupOrderOnlyDnD(root, events) {
     );
     updateIndices();
     attachDndHandlers();
-    enablePointerDnDOrderOnly(root);
   });
 
   checkBtn.addEventListener("click", () => {
@@ -1392,17 +1425,10 @@ function renderPlacementActivity() {
    INITIALISATION
    ============================ */
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   applyStoredTheme();
-  if (themeBtnEl) themeBtnEl.addEventListener("click", toggleTheme);
-
-  try {
-    await loadTimelinesIndex();
-  } catch (err) {
-    // If index fails, show empty state
-    TIMELINE_DATA = [];
-    console.warn(err);
+  if (themeBtnEl) {
+    themeBtnEl.addEventListener("click", toggleTheme);
   }
-
   renderModuleList();
 });
