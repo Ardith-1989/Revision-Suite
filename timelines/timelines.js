@@ -39,74 +39,48 @@ const contentEl = document.getElementById("timelineContent");
 const themeBtnEl = document.getElementById("toggleThemeBtn");
 
 /* ============================
-   SIMPLE IN-MEMORY DATA MODEL
-   (Replace with JSON fetch later)
-   ============================ */
+   DATA MODEL (index + per-timeline JSON)
+   ============================
 
-const TIMELINE_DATA = [
-  {
-    id: "late-republic",
-    name: "Late Roman Republic",
-    units: [
-      {
-        id: "caesar-pompey",
-        name: "Caesar vs Pompey",
-        timelines: [
-          {
-            id: "caesar-pompey-timeline-1",
-            title: "From Alliance to Civil War",
-            description:
-              "Key events from the First Triumvirate to the outbreak of civil war.",
-            events: [
-              {
-                id: "consulship-59",
-                label: "Caesar's first consulship with Bibulus",
-                year: -59,
-                displayDate: "59 BCE",
-                note: "Caesar uses radical measures, clashing with the Senate."
-              },
-              {
-                id: "first-triumvirate",
-                label: "Informal 'First Triumvirate' agreement",
-                year: -60,
-                displayDate: "60 BCE",
-                note: "Political alliance between Caesar, Pompey, and Crassus."
-              },
-              {
-                id: "death-julia",
-                label: "Death of Julia",
-                year: -54,
-                displayDate: "54 BCE",
-                note: "Removes the family tie between Caesar and Pompey."
-              },
-              {
-                id: "sole-consul-52",
-                label: "Pompey appointed sole consul",
-                year: -52,
-                displayDate: "52 BCE",
-                note: "Violence in Rome after Clodius' death leads to Pompey's sole consulship."
-              },
-              {
-                id: "rubicon-49",
-                label: "Caesar crosses the Rubicon",
-                year: -49,
-                displayDate: "49 BCE",
-                note: "Triggers civil war between Caesar and Pompey."
-              },
-              {
-                id: "pharsalus-48",
-                label: "Battle of Pharsalus",
-                year: -48,
-                displayDate: "48 BCE",
-                note: "Decisive victory for Caesar over Pompey."
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-];
+   This app now loads:
+   1) timelines-data.json (modules -> units -> timelines metadata)
+   2) individual timeline JSON files (events live in those files)
+
+   Folder structure (recommended):
+   /timelines/timelines-data.json
+   /timelines/timelines/<module-id>/<unit-folder>/<timeline-id>.json
+
+   In timelines-data.json, each timeline entry stores a path RELATIVE to /timelines/index.html,
+   e.g. "timelines/late-republic/caesar-pompey/from-alliance-to-civil-war.json"
+*/
+
+const TIMELINES_INDEX_PATH = "timelines-data.json";
+
+// Loaded from timelines-data.json
+let TIMELINE_DATA = [];
+
+// Metadata for the currently opened timeline (from the index)
+let currentTimelineMeta = null;
+
+// Timeline content loaded from an individual JSON file
+// Expected shape: { id, title, description, events:[ {id,label,year,displayDate,note} ] }
+
+async function loadTimelinesIndex() {
+  const res = await fetch(TIMELINES_INDEX_PATH, { cache: "no-store" });
+  if (!res.ok) throw new Error("Could not load timelines index: " + TIMELINES_INDEX_PATH);
+  const data = await res.json();
+  if (!Array.isArray(data)) throw new Error("timelines-data.json must be an array");
+  TIMELINE_DATA = data;
+}
+
+async function loadTimelineByMeta(meta) {
+  if (!meta?.path) throw new Error("Timeline metadata missing path");
+  const res = await fetch(meta.path, { cache: "no-store" });
+  if (!res.ok) throw new Error("Could not load timeline JSON: " + meta.path);
+  const data = await res.json();
+  if (!data || !Array.isArray(data.events)) throw new Error("Timeline JSON missing events[]: " + meta.path);
+  return data;
+}
 
 /* ============================
    APP STATE
@@ -140,9 +114,9 @@ function setBreadcrumbs(level) {
     );
   }
 
-  if (currentTimeline && level === "activity") {
+  if (currentTimelineMeta && level === "activity") {
     bits.push("›");
-    bits.push(`<span>${currentTimeline.title}</span>`);
+    bits.push(`<span>${currentTimeline.title || currentTimelineMeta.title}</span>`);
   }
 
   breadcrumbsEl.innerHTML = bits.join(" ");
@@ -166,8 +140,10 @@ function setBreadcrumbs(level) {
           if (mod && unit) {
             currentModule = mod;
             currentUnit = unit;
-            currentTimeline = unit.timelines[0] || null;
-            renderTimelineView();
+            currentTimelineMeta = null;
+            currentTimeline = null;
+            currentMode = "study";
+            renderTimelineList();
           }
         }
       })
@@ -303,24 +279,28 @@ function renderUnitList(moduleId) {
     </p>
   `;
 
-  // Click anywhere on card → default to Study first timeline
+  // Click card or buttons -> open timeline list for that unit
   contentEl.querySelectorAll(".list-item").forEach((card) => {
     card.addEventListener("click", (e) => {
       const unitId = card.getAttribute("data-unit-id");
       if (e.target.closest("button")) return;
       const unit = mod.units.find((u) => u.id === unitId);
-      if (!unit || !unit.timelines || !unit.timelines.length) return;
+      if (!unit) return;
       currentUnit = unit;
-      currentTimeline = unit.timelines[0];
-      currentMode = "study";
-      renderTimelineView();
+      renderTimelineList();
     });
   });
 
-  // Button-specific actions
   contentEl.querySelectorAll("button[data-unit-id]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
+      const unitId = btn.getAttribute("data-unit-id");
+      const unit = mod.units.find((u) => u.id === unitId);
+      if (!unit) return;
+      currentUnit = unit;
+      renderTimelineList();
+    });
+  });
       const unitId = btn.getAttribute("data-unit-id");
       const action = btn.getAttribute("data-action");
       const unit = mod.units.find((u) => u.id === unitId);
@@ -338,6 +318,68 @@ function renderUnitList(moduleId) {
   });
 }
 
+
+/* ============================
+   RENDER: TIMELINE LIST (within unit)
+   ============================ */
+
+function renderTimelineList() {
+  if (!currentModule || !currentUnit) return;
+
+  currentTimelineMeta = null;
+  currentTimeline = null;
+  currentMode = "study";
+
+  cardTitleEl.textContent = currentUnit.name;
+  cardSubtitleEl.textContent = "Choose a timeline to study or test.";
+  const timelines = currentUnit.timelines || [];
+  pillRightEl.textContent = `${timelines.length} timeline${timelines.length !== 1 ? "s" : ""}`;
+
+  setBreadcrumbs("activity");
+
+  if (!timelines.length) {
+    contentEl.innerHTML = `<p class="helper-text">No timelines for this unit yet.</p>`;
+    return;
+  }
+
+  contentEl.innerHTML = `
+    <div class="list">
+      ${timelines.map(t => `
+        <div class="list-item" data-timeline-id="${t.id}">
+          <div class="list-main">
+            <div class="list-title">${t.title}</div>
+            <div class="list-meta"><span>${t.description || ""}</span></div>
+          </div>
+          <button class="tag-button" data-timeline-id="${t.id}">Open ›</button>
+        </div>
+      `).join("")}
+    </div>
+    <p class="helper-text">Open a timeline, then choose Study or an activity.</p>
+  `;
+
+  contentEl.querySelectorAll("[data-timeline-id]").forEach((el) => {
+    el.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const id = el.getAttribute("data-timeline-id");
+      const meta = timelines.find(t => t.id === id);
+      if (!meta) return;
+
+      pillRightEl.textContent = "Loading…";
+      try {
+        currentTimelineMeta = meta;
+        currentTimeline = await loadTimelineByMeta(meta);
+        currentMode = "study";
+        renderTimelineView();
+      } catch (err) {
+        currentTimelineMeta = meta;
+        currentTimeline = null;
+        contentEl.innerHTML = `<p class="helper-text">Could not load timeline: ${String(err.message || err)}</p>`;
+        pillRightEl.textContent = "Error";
+      }
+    });
+  });
+}
+
 /* ============================
    RENDER: TIMELINE VIEW
    (Study + mode tabs)
@@ -346,8 +388,8 @@ function renderUnitList(moduleId) {
 function renderTimelineView() {
   if (!currentModule || !currentUnit || !currentTimeline) return;
 
-  cardTitleEl.textContent = currentTimeline.title;
-  cardSubtitleEl.textContent = currentTimeline.description || "";
+  cardTitleEl.textContent = currentTimeline.title || currentTimelineMeta?.title || "Timeline";
+  cardSubtitleEl.textContent = currentTimeline.description || currentTimelineMeta?.description || "";
   pillRightEl.textContent = `${currentTimeline.events.length} event${
     currentTimeline.events.length !== 1 ? "s" : ""
   }`;
@@ -1159,10 +1201,17 @@ function renderPlacementActivity() {
    INITIALISATION
    ============================ */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   applyStoredTheme();
-  if (themeBtnEl) {
-    themeBtnEl.addEventListener("click", toggleTheme);
+  if (themeBtnEl) themeBtnEl.addEventListener("click", toggleTheme);
+
+  try {
+    await loadTimelinesIndex();
+  } catch (err) {
+    // If index fails, show empty state
+    TIMELINE_DATA = [];
+    console.warn(err);
   }
+
   renderModuleList();
 });
