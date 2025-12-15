@@ -301,8 +301,23 @@ function renderUnitList(moduleId) {
       renderTimelineList();
     });
   });
-
+      const unitId = btn.getAttribute("data-unit-id");
+      const action = btn.getAttribute("data-action");
+      const unit = mod.units.find((u) => u.id === unitId);
+      if (!unit || !unit.timelines || !unit.timelines.length) return;
+      currentUnit = unit;
+      currentTimeline = unit.timelines[0];
+      if (action === "study") {
+        currentMode = "study";
+        renderTimelineView();
+      } else {
+        currentMode = "match-dates";
+        renderTimelineView();
+      }
+    });
+  });
 }
+
 
 /* ============================
    RENDER: TIMELINE LIST (within unit)
@@ -320,7 +335,7 @@ function renderTimelineList() {
   const timelines = currentUnit.timelines || [];
   pillRightEl.textContent = `${timelines.length} timeline${timelines.length !== 1 ? "s" : ""}`;
 
-  setBreadcrumbs("timeline");
+  setBreadcrumbs("activity");
 
   if (!timelines.length) {
     contentEl.innerHTML = `<p class="helper-text">No timelines for this unit yet.</p>`;
@@ -378,7 +393,7 @@ function renderTimelineView() {
   pillRightEl.textContent = `${currentTimeline.events.length} event${
     currentTimeline.events.length !== 1 ? "s" : ""
   }`;
-  setBreadcrumbs("activity");
+  setBreadcrumbs("timeline");
 
   const sortedEvents = sortEventsByDate(currentTimeline.events);
 
@@ -628,6 +643,196 @@ function renderDragDropActivity(mode) {
    DND: MATCH DATES MODE
    ============================ */
 
+/* ============================
+   MOBILE/TABLET DRAG & DROP (Pointer Events)
+   Why: HTML5 drag events are poorly supported on touch devices.
+   This adds a pointer-based fallback for:
+   - match-dates: drag event cards onto date slots
+   - order-only: reorder list items by dragging
+   ============================ */
+
+function enablePointerDnDMatchDates(root) {
+  const cards = Array.from(root.querySelectorAll(".dnd-event-card"));
+  const slots = Array.from(root.querySelectorAll(".dnd-slot"));
+
+  // If device supports hover, HTML5 DnD is usually fine; still keep pointer support (harmless).
+  // We attach pointer listeners regardless, but they only run when pointerType !== "mouse".
+  let active = null; // {el, startX, startY, origX, origY, offsetX, offsetY}
+
+  function clearHighlights() {
+    slots.forEach(s => s.classList.remove("highlight-drop"));
+  }
+
+  function setDraggingStyles(el, dragging) {
+    if (dragging) {
+      el.classList.add("dragging");
+      el.style.position = "relative";
+      el.style.zIndex = "50";
+      el.style.pointerEvents = "none"; // let elementFromPoint see targets underneath
+    } else {
+      el.classList.remove("dragging");
+      el.style.transform = "";
+      el.style.position = "";
+      el.style.zIndex = "";
+      el.style.pointerEvents = "";
+    }
+  }
+
+  function findSlotUnderPointer(clientX, clientY) {
+    const el = document.elementFromPoint(clientX, clientY);
+    return el ? el.closest(".dnd-slot") : null;
+  }
+
+  cards.forEach((card) => {
+    // Improve touch behaviour (CSS may not set this)
+    card.style.touchAction = "none";
+
+    card.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse") return; // mouse uses HTML5 DnD already
+      e.preventDefault();
+
+      const rect = card.getBoundingClientRect();
+      active = {
+        el: card,
+        startX: e.clientX,
+        startY: e.clientY,
+        offsetX: e.clientX - rect.left,
+        offsetY: e.clientY - rect.top,
+      };
+
+      card.setPointerCapture(e.pointerId);
+      setDraggingStyles(card, true);
+      clearHighlights();
+    });
+
+    card.addEventListener("pointermove", (e) => {
+      if (!active || active.el !== card) return;
+      if (e.pointerType === "mouse") return;
+      e.preventDefault();
+
+      const dx = e.clientX - active.startX;
+      const dy = e.clientY - active.startY;
+      card.style.transform = `translate(${dx}px, ${dy}px)`;
+
+      clearHighlights();
+      const slot = findSlotUnderPointer(e.clientX, e.clientY);
+      if (slot) slot.classList.add("highlight-drop");
+    });
+
+    function finishPointerDrag(e) {
+      if (!active || active.el !== card) return;
+      if (e.pointerType === "mouse") return;
+
+      clearHighlights();
+
+      const slot = findSlotUnderPointer(e.clientX, e.clientY);
+      if (slot) {
+        const slotEventEl = slot.querySelector("[data-slot-event]");
+        if (slotEventEl) {
+          // Clear this card from any previous slot
+          const previousSlotEventEl = root.querySelector(
+            `.dnd-slot [data-slot-event][data-event-id="${card.getAttribute("data-event-id")}"]`
+          );
+          if (previousSlotEventEl) {
+            previousSlotEventEl.textContent = "";
+            previousSlotEventEl.removeAttribute("data-event-id");
+          }
+
+          slotEventEl.textContent = card.textContent.trim();
+          slotEventEl.setAttribute("data-event-id", card.getAttribute("data-event-id"));
+        }
+      }
+
+      setDraggingStyles(card, false);
+      active = null;
+    }
+
+    card.addEventListener("pointerup", finishPointerDrag);
+    card.addEventListener("pointercancel", finishPointerDrag);
+  });
+}
+
+function enablePointerDnDOrderOnly(root) {
+  const listEl = root.querySelector("#orderList");
+  if (!listEl) return;
+
+  let active = null; // {el, startX, startY}
+
+  function updateIndices() {
+    listEl.querySelectorAll(".dnd-order-item").forEach((item, idx) => {
+      const idxEl = item.querySelector(".dnd-order-item-index");
+      if (idxEl) idxEl.textContent = `${idx + 1}.`;
+    });
+  }
+
+  function setDraggingStyles(el, dragging) {
+    if (dragging) {
+      el.classList.add("dragging");
+      el.style.position = "relative";
+      el.style.zIndex = "50";
+      el.style.pointerEvents = "none";
+    } else {
+      el.classList.remove("dragging");
+      el.style.transform = "";
+      el.style.position = "";
+      el.style.zIndex = "";
+      el.style.pointerEvents = "";
+    }
+  }
+
+  function itemUnderPointer(clientX, clientY) {
+    const el = document.elementFromPoint(clientX, clientY);
+    const item = el ? el.closest(".dnd-order-item") : null;
+    // Ignore the active element itself (since pointerEvents is none while dragging)
+    return item;
+  }
+
+  Array.from(listEl.querySelectorAll(".dnd-order-item")).forEach((item) => {
+    item.style.touchAction = "none";
+
+    item.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse") return;
+      e.preventDefault();
+      active = { el: item, startX: e.clientX, startY: e.clientY };
+      item.setPointerCapture(e.pointerId);
+      setDraggingStyles(item, true);
+    });
+
+    item.addEventListener("pointermove", (e) => {
+      if (!active || active.el !== item) return;
+      if (e.pointerType === "mouse") return;
+      e.preventDefault();
+
+      const dx = e.clientX - active.startX;
+      const dy = e.clientY - active.startY;
+      item.style.transform = `translate(${dx}px, ${dy}px)`;
+
+      const over = itemUnderPointer(e.clientX, e.clientY);
+      if (over && over !== item) {
+        const bbox = over.getBoundingClientRect();
+        const insertBefore = e.clientY < bbox.top + bbox.height / 2;
+        if (insertBefore) {
+          listEl.insertBefore(item, over);
+        } else {
+          listEl.insertBefore(item, over.nextSibling);
+        }
+        updateIndices();
+      }
+    });
+
+    function finish(e) {
+      if (!active || active.el !== item) return;
+      if (e.pointerType === "mouse") return;
+      setDraggingStyles(item, false);
+      active = null;
+      updateIndices();
+    }
+
+    item.addEventListener("pointerup", finish);
+    item.addEventListener("pointercancel", finish);
+  });
+}
+
 function setupMatchDatesDnD(root, events) {
   const eventCards = root.querySelectorAll(".dnd-event-card");
   const slots = root.querySelectorAll(".dnd-slot");
@@ -648,6 +853,10 @@ function setupMatchDatesDnD(root, events) {
       draggedCard = null;
     });
   });
+
+
+  // Pointer-events fallback for mobile/tablet
+  enablePointerDnDMatchDates(root);
 
   slots.forEach((slot) => {
     slot.addEventListener("dragover", (e) => {
@@ -779,6 +988,9 @@ function setupOrderOnlyDnD(root, events) {
 
   attachDndHandlers();
 
+  // Pointer-events fallback for mobile/tablet
+  enablePointerDnDOrderOnly(root);
+
   reshuffleBtn.addEventListener("click", () => {
     const items = Array.from(listEl.children);
     for (let i = items.length - 1; i > 0; i--) {
@@ -794,6 +1006,7 @@ function setupOrderOnlyDnD(root, events) {
     );
     updateIndices();
     attachDndHandlers();
+    enablePointerDnDOrderOnly(root);
   });
 
   checkBtn.addEventListener("click", () => {
