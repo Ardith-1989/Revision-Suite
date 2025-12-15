@@ -1,0 +1,27 @@
+{
+  "id": "01-athens-and-attica",
+  "title": "01. Athens and Attica",
+  "description": "",
+  "questions": [
+    {
+      "question": "Where is Athens?",
+      "options": [
+        "Attica",
+        "Laconia",
+        "The Megarid",
+        "Phocis"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "question": "How is Attica divided up?",
+      "options": [
+        "Demes",
+        "Counties",
+        "Boroughs",
+        "Cities"
+      ],
+      "correctIndex": 0
+    }
+  ]
+}
