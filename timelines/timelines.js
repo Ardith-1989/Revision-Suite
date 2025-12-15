@@ -43,7 +43,7 @@ const themeBtnEl = document.getElementById("toggleThemeBtn");
    (Replace with JSON fetch later)
    ============================ */
 
-const TIMELINE_DATA = [
+let TIMELINE_DATA = [
   {
     id: "late-republic",
     name: "Late Roman Republic",
@@ -107,6 +107,26 @@ const TIMELINE_DATA = [
     ]
   }
 ];
+
+// If present, load module/unit/timeline index from timelines-data.json (GitHub Pages friendly).
+// Falls back to the hardwired TIMELINE_DATA above if the fetch fails.
+const TIMELINES_INDEX_PATH = "timelines-data.json";
+
+async function tryLoadTimelinesIndex() {
+  try {
+    const res = await fetch(TIMELINES_INDEX_PATH, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    if (Array.isArray(data) && data.length) {
+      // Convert JSON shape (quoted keys) to the in-app shape if needed.
+      // We accept either {id,name,units:[{id,name,timelines:[...]}]} or the hardwired object form.
+      TIMELINE_DATA = data;
+    }
+  } catch (e) {
+    // keep fallback hardwired data
+    console.warn("Timelines index load failed; using fallback TIMELINE_DATA.", e);
+  }
+}
 
 /* ============================
    APP STATE
@@ -601,6 +621,259 @@ function renderDragDropActivity(mode) {
    DND: MATCH DATES MODE
    ============================ */
 
+
+/* ============================
+   MOBILE DRAG FIXES (Pointer Events)
+   - HTML5 drag/drop is unreliable on touch devices.
+   - For touch, we use pointerdown/move/up with a floating clone + placeholder.
+   ============================ */
+
+function isTouchDevice() {
+  return ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
+}
+
+function setupMatchDatesMobilePointer(root) {
+  const pool = root.querySelector("#eventsPool");
+  const cards = Array.from(root.querySelectorAll(".dnd-event-card"));
+  const slots = Array.from(root.querySelectorAll(".dnd-slot"));
+
+  function clearHighlights() {
+    slots.forEach((s) => s.classList.remove("highlight-drop"));
+  }
+
+  function slotUnder(x, y) {
+    const el = document.elementFromPoint(x, y);
+    return el ? el.closest(".dnd-slot") : null;
+  }
+
+  function placeEvent(eventId, slot) {
+    if (!eventId || !slot) return;
+    const slotEventEl = slot.querySelector("[data-slot-event]");
+    if (!slotEventEl) return;
+
+    const prev = root.querySelector(`.dnd-slot [data-slot-event][data-event-id="${eventId}"]`);
+    if (prev) {
+      prev.textContent = "";
+      prev.removeAttribute("data-event-id");
+    }
+
+    const card = root.querySelector(`.dnd-event-card[data-event-id="${eventId}"]`);
+    slotEventEl.textContent = card ? card.textContent.trim() : "";
+    slotEventEl.setAttribute("data-event-id", eventId);
+
+    if (card) card.style.display = "none";
+  }
+
+  // expose for desktop drop handler (shared behaviour)
+  root.__matchDatesPlaceEvent = placeEvent;
+
+  // click slot to return (with suppression after drop)
+  root.querySelectorAll(".dnd-slot").forEach((slot) => {
+    slot.style.cursor = "pointer";
+    slot.addEventListener("click", () => {
+      if (root.__suppressSlotClickUntil && Date.now() < root.__suppressSlotClickUntil) return;
+
+      const slotEventEl = slot.querySelector("[data-slot-event]");
+      if (!slotEventEl) return;
+      const eventId = slotEventEl.getAttribute("data-event-id");
+      if (!eventId) return;
+
+      const card = root.querySelector(`.dnd-event-card[data-event-id="${eventId}"]`);
+      if (card) {
+        card.style.display = "";
+        if (pool) pool.appendChild(card);
+      }
+      slotEventEl.textContent = "";
+      slotEventEl.removeAttribute("data-event-id");
+    });
+  });
+
+  let drag = null; // {eventId, clone, baseLeft, baseTop, offsetX, offsetY}
+
+  cards.forEach((card) => {
+    card.style.touchAction = "none";
+
+    card.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse") return;
+      e.preventDefault();
+
+      const rect = card.getBoundingClientRect();
+      const clone = card.cloneNode(true);
+      clone.classList.add("dragging");
+      clone.style.position = "fixed";
+      clone.style.left = rect.left + "px";
+      clone.style.top = rect.top + "px";
+      clone.style.width = rect.width + "px";
+      clone.style.zIndex = "9999";
+      clone.style.pointerEvents = "none";
+      clone.style.margin = "0";
+      document.body.appendChild(clone);
+
+      drag = {
+        eventId: card.getAttribute("data-event-id"),
+        clone,
+        baseLeft: rect.left,
+        baseTop: rect.top,
+        offsetX: e.clientX - rect.left,
+        offsetY: e.clientY - rect.top,
+      };
+
+      card.setPointerCapture(e.pointerId);
+      clearHighlights();
+    });
+
+    card.addEventListener("pointermove", (e) => {
+      if (!drag) return;
+      if (e.pointerType === "mouse") return;
+      e.preventDefault();
+
+      const x = e.clientX - drag.offsetX;
+      const y = e.clientY - drag.offsetY;
+      drag.clone.style.transform = `translate(${x - drag.baseLeft}px, ${y - drag.baseTop}px)`;
+
+      clearHighlights();
+      const slot = slotUnder(e.clientX, e.clientY);
+      if (slot) slot.classList.add("highlight-drop");
+    });
+
+    function finish(e) {
+      if (!drag) return;
+      if (e.pointerType === "mouse") return;
+
+      clearHighlights();
+      const slot = slotUnder(e.clientX, e.clientY);
+      if (slot) {
+        placeEvent(drag.eventId, slot);
+        root.__suppressSlotClickUntil = Date.now() + 350;
+      }
+
+      drag.clone.remove();
+      drag = null;
+    }
+
+    card.addEventListener("pointerup", finish);
+    card.addEventListener("pointercancel", finish);
+  });
+}
+
+function setupOrderOnlyMobilePointer(root) {
+  const listEl = root.querySelector("#orderList");
+  if (!listEl) return;
+
+  let placeholder = null;
+  let active = null; // {item, clone, baseLeft, baseTop, offsetX, offsetY}
+
+  function updateIndices() {
+    listEl.querySelectorAll(".dnd-order-item").forEach((item, idx) => {
+      const idxEl = item.querySelector(".dnd-order-item-index");
+      if (idxEl) idxEl.textContent = `${idx + 1}.`;
+    });
+  }
+
+  function ensurePlaceholder(height) {
+    if (placeholder) return;
+    placeholder = document.createElement("div");
+    placeholder.className = "dnd-order-item";
+    placeholder.style.opacity = "0.25";
+    placeholder.style.height = height + "px";
+    placeholder.style.borderStyle = "dashed";
+    placeholder.style.cursor = "default";
+    placeholder.innerHTML = `<div class="dnd-order-item-index"></div><div>Drop here</div>`;
+  }
+
+  function clearPlaceholder() {
+    if (placeholder && placeholder.parentElement) placeholder.parentElement.removeChild(placeholder);
+    placeholder = null;
+  }
+
+  function itemUnder(x, y) {
+    const el = document.elementFromPoint(x, y);
+    return el ? el.closest(".dnd-order-item") : null;
+  }
+
+  function autoScroll(clientY) {
+    const margin = 70;
+    const speed = 10;
+    const vh = window.innerHeight;
+    if (clientY < margin) window.scrollBy(0, -speed);
+    else if (clientY > vh - margin) window.scrollBy(0, speed);
+  }
+
+  Array.from(listEl.querySelectorAll(".dnd-order-item")).forEach((item) => {
+    item.style.touchAction = "none";
+
+    item.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse") return;
+      e.preventDefault();
+
+      const rect = item.getBoundingClientRect();
+      const clone = item.cloneNode(true);
+      clone.classList.add("dragging");
+      clone.style.position = "fixed";
+      clone.style.left = rect.left + "px";
+      clone.style.top = rect.top + "px";
+      clone.style.width = rect.width + "px";
+      clone.style.zIndex = "9999";
+      clone.style.pointerEvents = "none";
+      clone.style.margin = "0";
+      document.body.appendChild(clone);
+
+      ensurePlaceholder(rect.height);
+      listEl.insertBefore(placeholder, item);
+      item.style.display = "none";
+
+      active = {
+        item,
+        clone,
+        baseLeft: rect.left,
+        baseTop: rect.top,
+        offsetX: e.clientX - rect.left,
+        offsetY: e.clientY - rect.top,
+      };
+
+      item.setPointerCapture(e.pointerId);
+    });
+
+    item.addEventListener("pointermove", (e) => {
+      if (!active || active.item !== item) return;
+      if (e.pointerType === "mouse") return;
+      e.preventDefault();
+
+      autoScroll(e.clientY);
+
+      const x = e.clientX - active.offsetX;
+      const y = e.clientY - active.offsetY;
+      active.clone.style.transform = `translate(${x - active.baseLeft}px, ${y - active.baseTop}px)`;
+
+      const over = itemUnder(e.clientX, e.clientY);
+      if (!over || over === placeholder || over === active.item) return;
+
+      const bbox = over.getBoundingClientRect();
+      const insertBefore = e.clientY < bbox.top + bbox.height / 2;
+      if (insertBefore) listEl.insertBefore(placeholder, over);
+      else listEl.insertBefore(placeholder, over.nextSibling);
+
+      updateIndices();
+    });
+
+    function finish(e) {
+      if (!active || active.item !== item) return;
+      if (e.pointerType === "mouse") return;
+
+      item.style.display = "";
+      listEl.insertBefore(item, placeholder);
+      clearPlaceholder();
+
+      if (active.clone) active.clone.remove();
+      active = null;
+      updateIndices();
+    }
+
+    item.addEventListener("pointerup", finish);
+    item.addEventListener("pointercancel", finish);
+  });
+}
+
 function setupMatchDatesDnD(root, events) {
   const eventCards = root.querySelectorAll(".dnd-event-card");
   const slots = root.querySelectorAll(".dnd-slot");
@@ -622,7 +895,26 @@ function setupMatchDatesDnD(root, events) {
     });
   });
 
+  // Touch fallback
+  if (isTouchDevice()) setupMatchDatesMobilePointer(root);
+
   slots.forEach((slot) => {
+    slot.addEventListener("click", () => {
+      if (root.__suppressSlotClickUntil && Date.now() < root.__suppressSlotClickUntil) return;
+      const slotEventEl = slot.querySelector("[data-slot-event]");
+      if (!slotEventEl) return;
+      const eventId = slotEventEl.getAttribute("data-event-id");
+      if (!eventId) return;
+      const pool = root.querySelector("#eventsPool");
+      const card = root.querySelector(`.dnd-event-card[data-event-id="${eventId}"]`);
+      if (card) {
+        card.style.display = "";
+        if (pool) pool.appendChild(card);
+      }
+      slotEventEl.textContent = "";
+      slotEventEl.removeAttribute("data-event-id");
+    });
+
     slot.addEventListener("dragover", (e) => {
       e.preventDefault();
       slot.classList.add("highlight-drop");
@@ -633,27 +925,32 @@ function setupMatchDatesDnD(root, events) {
     slot.addEventListener("drop", () => {
       slot.classList.remove("highlight-drop");
       if (!draggedCard) return;
-      const slotEventEl = slot.querySelector("[data-slot-event]");
-      if (!slotEventEl) return;
 
-      // If this card was in another slot, clear that slot's display
-      const previousSlot = root.querySelector(
-        `.dnd-slot [data-slot-event][data-event-id="${draggedCard.getAttribute(
-          "data-event-id"
-        )}"]`
-      );
-      if (previousSlot) {
-        previousSlot.textContent = "";
-        previousSlot.removeAttribute("data-event-id");
+      const eventId = draggedCard.getAttribute("data-event-id");
+
+      if (typeof root.__matchDatesPlaceEvent === "function") {
+        root.__matchDatesPlaceEvent(eventId, slot);
+      } else {
+        const slotEventEl = slot.querySelector("[data-slot-event]");
+        if (!slotEventEl) return;
+
+        const prev = root.querySelector(
+          `.dnd-slot [data-slot-event][data-event-id="${eventId}"]`
+        );
+        if (prev) {
+          prev.textContent = "";
+          prev.removeAttribute("data-event-id");
+        }
+
+        slotEventEl.textContent = draggedCard.textContent.trim();
+        slotEventEl.setAttribute("data-event-id", eventId);
+        draggedCard.style.display = "none";
       }
 
-      slotEventEl.textContent = draggedCard.textContent.trim();
-      slotEventEl.setAttribute(
-        "data-event-id",
-        draggedCard.getAttribute("data-event-id")
-      );
+      // prevent immediate click->return after drop
+      root.__suppressSlotClickUntil = Date.now() + 350;
     });
-  });
+});
 
   resetBtn.addEventListener("click", () => {
     root.querySelectorAll("[data-slot-event]").forEach((el) => {
@@ -710,6 +1007,10 @@ function setupMatchDatesDnD(root, events) {
 
 function setupOrderOnlyDnD(root, events) {
   const listEl = root.querySelector("#orderList");
+
+  // Touch fallback
+  if (isTouchDevice()) setupOrderOnlyMobilePointer(root);
+
   const feedbackEl = root.querySelector("#activityFeedback");
   const reshuffleBtn = root.querySelector("#reshuffleOrder");
   const checkBtn = root.querySelector("#checkOrder");
@@ -1163,7 +1464,7 @@ function renderPlacementActivity() {
    INITIALISATION
    ============================ */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   applyStoredTheme();
   if (themeBtnEl) {
     themeBtnEl.addEventListener("click", toggleTheme);
