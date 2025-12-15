@@ -437,12 +437,10 @@ function renderTimelineView() {
         <button class="secondary-button" data-start-mode="order-only">
           Start drag & drop (order only) ›
         </button>
-        <button class="secondary-button" data-start-mode="which-first">
-          Start “Which came first?” ›
-        </button>
-        <button class="secondary-button" data-start-mode="placement">
-          Start placement questions ›
-        </button>
+      
+        <button class="secondary-button" id="nextTimelineInUnit">Next timeline in unit ›</button>
+        <button class="secondary-button" id="randomTimelineInUnit">Random timeline in unit ↻</button>
+
       </div>
     `;
   } else {
@@ -576,7 +574,10 @@ function renderDragDropActivity(mode) {
       <div class="controls-bottom">
         <button class="secondary-button" id="resetMatchDates">Reset</button>
         <button class="primary-button" id="checkMatchDates">Check answers</button>
-        <button class="secondary-button" id="switchOrderMode">Switch to order-only mode</button>
+      
+        <button class="secondary-button" id="nextTimelineInUnit">Next timeline in unit ›</button>
+        <button class="secondary-button" id="randomTimelineInUnit">Random timeline in unit ↻</button>
+
       </div>
       <div class="feedback" id="activityFeedback"></div>
     `;
@@ -615,7 +616,10 @@ function renderDragDropActivity(mode) {
       <div class="controls-bottom">
         <button class="secondary-button" id="reshuffleOrder">Reshuffle</button>
         <button class="primary-button" id="checkOrder">Check order</button>
-        <button class="secondary-button" id="switchMatchMode">Switch to match-dates mode</button>
+      
+        <button class="secondary-button" id="nextTimelineInUnit">Next timeline in unit ›</button>
+        <button class="secondary-button" id="randomTimelineInUnit">Random timeline in unit ↻</button>
+
       </div>
       <div class="feedback" id="activityFeedback"></div>
     `;
@@ -1147,7 +1151,11 @@ function renderWhichFirstActivity() {
     <div class="controls-bottom">
       <button class="primary-button" id="nextWhichFirst">Next question</button>
       <button class="secondary-button" id="switchToPlacement">Switch to placement</button>
-    </div>
+    
+        <button class="secondary-button" id="nextTimelineInUnit">Next timeline in unit ›</button>
+        <button class="secondary-button" id="randomTimelineInUnit">Random timeline in unit ↻</button>
+
+      </div>
     <div class="feedback" id="whichFirstFeedback"></div>
   `;
 
@@ -1296,7 +1304,11 @@ function renderPlacementActivity() {
     <div class="controls-bottom">
       <button class="secondary-button" id="skipPlacement">Skip</button>
       <button class="secondary-button" id="newAnchors">New anchors</button>
-    </div>
+    
+        <button class="secondary-button" id="nextTimelineInUnit">Next timeline in unit ›</button>
+        <button class="secondary-button" id="randomTimelineInUnit">Random timeline in unit ↻</button>
+
+      </div>
 
     <div class="feedback" id="placementFeedback"></div>
   `;
