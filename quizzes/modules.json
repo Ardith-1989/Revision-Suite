@@ -275,6 +275,11 @@
             "id": "late-roman-republic",
             "title": "Late Roman Republic Overview",
             "path": "quizzes/athens/politics/late-roman-republic.json"
+          },
+          {
+            "id": "01-athens-and-attica",
+            "title": "01. Athens and Attica",
+            "path": "quizzes/athens/politics/01-athens-and-attica.json"
           }
         ]
       },
@@ -641,8 +646,8 @@
         "id": "julioclaudians-nero",
         "name": "05. Nero",
         "description": "Structure of the Roman legal system.",
-        "quizzes": [ 
-        {
+        "quizzes": [
+          {
             "id": "late-roman-republic",
             "title": "Late Roman Republic Overview",
             "path": "quizzes/julioclaudians/nero/late-roman-republic.json"
