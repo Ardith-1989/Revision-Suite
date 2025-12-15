@@ -431,12 +431,6 @@ function renderTimelineView() {
         Read through the timeline to get a sense of the order. When you’re ready, try one of the activities.
       </p>
       <div class="controls-bottom">
-        <button class="primary-button" data-start-mode="match-dates">
-          Start drag & drop (match dates) ›
-        </button>
-        <button class="secondary-button" data-start-mode="order-only">
-          Start drag & drop (order only) ›
-        </button>
       
         <button class="secondary-button" id="nextTimelineInUnit">Next timeline in unit ›</button>
         <button class="secondary-button" id="randomTimelineInUnit">Random timeline in unit ↻</button>
@@ -582,6 +576,8 @@ function renderDragDropActivity(mode) {
       <div class="feedback" id="activityFeedback"></div>
     `;
 
+  applyTimelineNavButtonState(contentEl);
+
     setupMatchDatesDnD(container, eventsSubset);
   } else {
     // order-only: events only, shuffled
@@ -623,6 +619,8 @@ function renderDragDropActivity(mode) {
       </div>
       <div class="feedback" id="activityFeedback"></div>
     `;
+
+  applyTimelineNavButtonState(contentEl);
 
     setupOrderOnlyDnD(container, eventsSubset);
   }
@@ -1506,3 +1504,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   renderModuleList();
 });
+
+applyTimelineNavButtonState(document);
