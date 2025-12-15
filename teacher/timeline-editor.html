@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Timeline Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="timeline-editor.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Timeline Editor</h1>
+      <p class="sub">Create/edit timelines (downloads JSON — you commit to the repo)</p>
+    </div>
+    <div class="top-actions">
+      <a class="btn ghost" href="../index.html">Back to Portal</a>
+      <button id="downloadIndexBtn" class="btn">Download timelines-data.json</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h2>Pick location</h2>
+      <div class="grid">
+        <label>Module
+          <select id="moduleSelect"></select>
+        </label>
+        <label>Unit
+          <select id="unitSelect"></select>
+        </label>
+        <label>Timeline
+          <select id="timelineSelect"></select>
+        </label>
+      </div>
+
+      <div class="row">
+        <label class="grow">Unit folder (only needed when creating a NEW timeline)
+          <input id="unitFolderInput" placeholder="e.g. caesar-pompey (folder name under /timelines/timelines/<module-id>/...)" />
+        </label>
+      </div>
+
+      <div class="row">
+        <button id="newTimelineBtn" class="btn primary">+ New timeline</button>
+        <button id="loadTimelineBtn" class="btn">Load selected timeline</button>
+      </div>
+
+      <p class="hint">
+        Recommended structure:<br>
+        <code>/timelines/timelines-data.json</code><br>
+        <code>/timelines/timelines/&lt;module-id&gt;/&lt;unit-folder&gt;/&lt;timeline-id&gt;.json</code>
+      </p>
+    </section>
+
+    <section class="card" id="editorCard" style="display:none;">
+      <div class="row between">
+        <h2 id="editorHeading">Timeline editor</h2>
+        <div class="row">
+          <button id="validateBtn" class="btn">Validate</button>
+          <button id="downloadTimelineBtn" class="btn primary">Download timeline JSON</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <label>Title
+          <input id="titleInput" />
+        </label>
+        <label>Timeline id (file name)
+          <input id="idInput" disabled />
+        </label>
+        <label style="grid-column:1/-1;">Description (optional)
+          <textarea id="descInput" rows="3"></textarea>
+        </label>
+      </div>
+
+      <div class="row">
+        <button id="addEventBtn" class="btn">+ Add event</button>
+        <button id="sortBtn" class="btn">Sort by year</button>
+      </div>
+
+      <div class="tableWrap">
+        <table class="qTable">
+          <thead>
+            <tr>
+              <th style="width:32px;">#</th>
+              <th>Event</th>
+              <th style="width:120px;">Year (sort)</th>
+              <th style="width:140px;">Display date</th>
+              <th style="width:220px;">Note</th>
+              <th style="width:90px;">Remove</th>
+            </tr>
+          </thead>
+          <tbody id="eventsBody"></tbody>
+        </table>
+      </div>
+
+      <p class="hint">
+        Events must include a numeric <code>year</code> for sorting (use negative numbers for BCE).
+      </p>
+    </section>
+  </main>
+
+  <script src="timeline-editor.js"></script>
+</body>
+</html>
