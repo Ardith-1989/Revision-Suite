@@ -1,1 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MCQ Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="mcq.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>MCQ Editor</h1>
+      <p class="sub">Create and edit MCQ quizzes (download + replace JSON files)</p>
+    </div>
+    <div class="top-actions">
+      <a class="btn ghost" href="../index.html">Back to Portal</a>
+      <button id="downloadModulesBtn" class="btn">Download modules.json</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h2>Pick location</h2>
+
+      <div class="grid">
+        <label>
+          Module
+          <select id="moduleSelect"></select>
+        </label>
+
+        <label>
+          Unit
+          <select id="unitSelect"></select>
+        </label>
+
+        <label>
+          Quiz
+          <select id="quizSelect"></select>
+        </label>
+      </div>
+
+      <div class="row">
+        <label class="grow">
+          Quiz folder (auto-detected; only needed for “New quiz”)
+          <input id="quizFolderInput" placeholder="e.g. persia" />
+        </label>
+      </div>
+
+      <div class="row">
+        <button id="newQuizBtn" class="btn primary">+ New quiz</button>
+        <button id="loadQuizBtn" class="btn">Load selected quiz</button>
+      </div>
+
+      <p class="hint">
+        Note: Unit folders inside <code>quizzes/quizzes/&lt;module&gt;/&lt;unitFolder&gt;</code>
+        sometimes differ from the unit ID. This field is how the editor knows where to create the file.
+      </p>
+    </section>
+
+    <section class="card" id="editorCard" style="display:none;">
+      <div class="row between">
+        <h2 id="editorHeading">Quiz editor</h2>
+        <div class="row">
+          <button id="validateBtn" class="btn">Validate</button>
+          <button id="downloadQuizBtn" class="btn primary">Download quiz JSON</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <label>
+          Quiz title
+          <input id="quizTitleInput" />
+        </label>
+
+        <label>
+          Quiz id (file name)
+          <input id="quizIdInput" disabled />
+        </label>
+      </div>
+
+      <div class="row">
+        <button id="addQuestionBtn" class="btn">+ Add question</button>
+      </div>
+
+      <div class="tableWrap">
+        <table class="qTable" id="questionsTable">
+          <thead>
+            <tr>
+              <th style="width:32px;">#</th>
+              <th>Question</th>
+              <th style="width:160px;">Correct</th>
+              <th style="width:90px;">Remove</th>
+            </tr>
+          </thead>
+          <tbody id="questionsBody"></tbody>
+        </table>
+      </div>
+
+      <p class="hint">
+        Format written is: <code>{ id, title, questions: [{ question, options: [A,B,C,D], correctIndex }] }</code>.
+        If your existing quiz JSON uses a different schema, tell me and I’ll adapt the loader/saver to match it.
+      </p>
+    </section>
+  </main>
+
+  <script src="mcq.js"></script>
+</body>
+</html>
 
