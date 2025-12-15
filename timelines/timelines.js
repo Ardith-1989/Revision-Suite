@@ -39,74 +39,48 @@ const contentEl = document.getElementById("timelineContent");
 const themeBtnEl = document.getElementById("toggleThemeBtn");
 
 /* ============================
-   SIMPLE IN-MEMORY DATA MODEL
-   (Replace with JSON fetch later)
-   ============================ */
+   DATA MODEL (index + per-timeline JSON)
+   ============================
 
-const TIMELINE_DATA = [
-  {
-    id: "late-republic",
-    name: "Late Roman Republic",
-    units: [
-      {
-        id: "caesar-pompey",
-        name: "Caesar vs Pompey",
-        timelines: [
-          {
-            id: "caesar-pompey-timeline-1",
-            title: "From Alliance to Civil War",
-            description:
-              "Key events from the First Triumvirate to the outbreak of civil war.",
-            events: [
-              {
-                id: "consulship-59",
-                label: "Caesar's first consulship with Bibulus",
-                year: -59,
-                displayDate: "59 BCE",
-                note: "Caesar uses radical measures, clashing with the Senate."
-              },
-              {
-                id: "first-triumvirate",
-                label: "Informal 'First Triumvirate' agreement",
-                year: -60,
-                displayDate: "60 BCE",
-                note: "Political alliance between Caesar, Pompey, and Crassus."
-              },
-              {
-                id: "death-julia",
-                label: "Death of Julia",
-                year: -54,
-                displayDate: "54 BCE",
-                note: "Removes the family tie between Caesar and Pompey."
-              },
-              {
-                id: "sole-consul-52",
-                label: "Pompey appointed sole consul",
-                year: -52,
-                displayDate: "52 BCE",
-                note: "Violence in Rome after Clodius' death leads to Pompey's sole consulship."
-              },
-              {
-                id: "rubicon-49",
-                label: "Caesar crosses the Rubicon",
-                year: -49,
-                displayDate: "49 BCE",
-                note: "Triggers civil war between Caesar and Pompey."
-              },
-              {
-                id: "pharsalus-48",
-                label: "Battle of Pharsalus",
-                year: -48,
-                displayDate: "48 BCE",
-                note: "Decisive victory for Caesar over Pompey."
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-];
+   This app now loads:
+   1) timelines-data.json (modules -> units -> timelines metadata)
+   2) individual timeline JSON files (events live in those files)
+
+   Folder structure (recommended):
+   /timelines/timelines-data.json
+   /timelines/timelines/<module-id>/<unit-folder>/<timeline-id>.json
+
+   In timelines-data.json, each timeline entry stores a path RELATIVE to /timelines/index.html,
+   e.g. "timelines/late-republic/caesar-pompey/from-alliance-to-civil-war.json"
+*/
+
+const TIMELINES_INDEX_PATH = "timelines-data.json";
+
+// Loaded from timelines-data.json
+let TIMELINE_DATA = [];
+
+// Metadata for the currently opened timeline (from the index)
+let currentTimelineMeta = null;
+
+// Timeline content loaded from an individual JSON file
+// Expected shape: { id, title, description, events:[ {id,label,year,displayDate,note} ] }
+
+async function loadTimelinesIndex() {
+  const res = await fetch(TIMELINES_INDEX_PATH, { cache: "no-store" });
+  if (!res.ok) throw new Error("Could not load timelines index: " + TIMELINES_INDEX_PATH);
+  const data = await res.json();
+  if (!Array.isArray(data)) throw new Error("timelines-data.json must be an array");
+  TIMELINE_DATA = data;
+}
+
+async function loadTimelineByMeta(meta) {
+  if (!meta?.path) throw new Error("Timeline metadata missing path");
+  const res = await fetch(meta.path, { cache: "no-store" });
+  if (!res.ok) throw new Error("Could not load timeline JSON: " + meta.path);
+  const data = await res.json();
+  if (!data || !Array.isArray(data.events)) throw new Error("Timeline JSON missing events[]: " + meta.path);
+  return data;
+}
 
 /* ============================
    APP STATE
@@ -140,9 +114,9 @@ function setBreadcrumbs(level) {
     );
   }
 
-  if (currentTimeline && level === "activity") {
+  if (currentTimelineMeta && level === "activity") {
     bits.push("›");
-    bits.push(`<span>${currentTimeline.title}</span>`);
+    bits.push(`<span>${currentTimeline.title || currentTimelineMeta.title}</span>`);
   }
 
   breadcrumbsEl.innerHTML = bits.join(" ");
@@ -166,8 +140,10 @@ function setBreadcrumbs(level) {
           if (mod && unit) {
             currentModule = mod;
             currentUnit = unit;
-            currentTimeline = unit.timelines[0] || null;
-            renderTimelineView();
+            currentTimelineMeta = null;
+            currentTimeline = null;
+            currentMode = "study";
+            renderTimelineList();
           }
         }
       })
@@ -303,36 +279,87 @@ function renderUnitList(moduleId) {
     </p>
   `;
 
-  // Click anywhere on card → default to Study first timeline
+  // Click card or buttons -> open timeline list for that unit
   contentEl.querySelectorAll(".list-item").forEach((card) => {
     card.addEventListener("click", (e) => {
       const unitId = card.getAttribute("data-unit-id");
       if (e.target.closest("button")) return;
       const unit = mod.units.find((u) => u.id === unitId);
-      if (!unit || !unit.timelines || !unit.timelines.length) return;
+      if (!unit) return;
       currentUnit = unit;
-      currentTimeline = unit.timelines[0];
-      currentMode = "study";
-      renderTimelineView();
+      renderTimelineList();
     });
   });
 
-  // Button-specific actions
   contentEl.querySelectorAll("button[data-unit-id]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const unitId = btn.getAttribute("data-unit-id");
-      const action = btn.getAttribute("data-action");
       const unit = mod.units.find((u) => u.id === unitId);
-      if (!unit || !unit.timelines || !unit.timelines.length) return;
+      if (!unit) return;
       currentUnit = unit;
-      currentTimeline = unit.timelines[0];
-      if (action === "study") {
+      renderTimelineList();
+    });
+  });
+
+}
+
+/* ============================
+   RENDER: TIMELINE LIST (within unit)
+   ============================ */
+
+function renderTimelineList() {
+  if (!currentModule || !currentUnit) return;
+
+  currentTimelineMeta = null;
+  currentTimeline = null;
+  currentMode = "study";
+
+  cardTitleEl.textContent = currentUnit.name;
+  cardSubtitleEl.textContent = "Choose a timeline to study or test.";
+  const timelines = currentUnit.timelines || [];
+  pillRightEl.textContent = `${timelines.length} timeline${timelines.length !== 1 ? "s" : ""}`;
+
+  setBreadcrumbs("timeline");
+
+  if (!timelines.length) {
+    contentEl.innerHTML = `<p class="helper-text">No timelines for this unit yet.</p>`;
+    return;
+  }
+
+  contentEl.innerHTML = `
+    <div class="list">
+      ${timelines.map(t => `
+        <div class="list-item" data-timeline-id="${t.id}">
+          <div class="list-main">
+            <div class="list-title">${t.title}</div>
+            <div class="list-meta"><span>${t.description || ""}</span></div>
+          </div>
+          <button class="tag-button" data-timeline-id="${t.id}">Open ›</button>
+        </div>
+      `).join("")}
+    </div>
+    <p class="helper-text">Open a timeline, then choose Study or an activity.</p>
+  `;
+
+  contentEl.querySelectorAll("[data-timeline-id]").forEach((el) => {
+    el.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const id = el.getAttribute("data-timeline-id");
+      const meta = timelines.find(t => t.id === id);
+      if (!meta) return;
+
+      pillRightEl.textContent = "Loading…";
+      try {
+        currentTimelineMeta = meta;
+        currentTimeline = await loadTimelineByMeta(meta);
         currentMode = "study";
         renderTimelineView();
-      } else {
-        currentMode = "match-dates";
-        renderTimelineView();
+      } catch (err) {
+        currentTimelineMeta = meta;
+        currentTimeline = null;
+        contentEl.innerHTML = `<p class="helper-text">Could not load timeline: ${String(err.message || err)}</p>`;
+        pillRightEl.textContent = "Error";
       }
     });
   });
@@ -346,12 +373,12 @@ function renderUnitList(moduleId) {
 function renderTimelineView() {
   if (!currentModule || !currentUnit || !currentTimeline) return;
 
-  cardTitleEl.textContent = currentTimeline.title;
-  cardSubtitleEl.textContent = currentTimeline.description || "";
+  cardTitleEl.textContent = currentTimeline.title || currentTimelineMeta?.title || "Timeline";
+  cardSubtitleEl.textContent = currentTimeline.description || currentTimelineMeta?.description || "";
   pillRightEl.textContent = `${currentTimeline.events.length} event${
     currentTimeline.events.length !== 1 ? "s" : ""
   }`;
-  setBreadcrumbs("timeline");
+  setBreadcrumbs("activity");
 
   const sortedEvents = sortEventsByDate(currentTimeline.events);
 
@@ -404,18 +431,10 @@ function renderTimelineView() {
         Read through the timeline to get a sense of the order. When you’re ready, try one of the activities.
       </p>
       <div class="controls-bottom">
-        <button class="primary-button" data-start-mode="match-dates">
-          Start drag & drop (match dates) ›
-        </button>
-        <button class="secondary-button" data-start-mode="order-only">
-          Start drag & drop (order only) ›
-        </button>
-        <button class="secondary-button" data-start-mode="which-first">
-          Start “Which came first?” ›
-        </button>
-        <button class="secondary-button" data-start-mode="placement">
-          Start placement questions ›
-        </button>
+      
+        <button class="secondary-button" id="nextTimelineInUnit">Next timeline in unit ›</button>
+        <button class="secondary-button" id="randomTimelineInUnit">Random timeline in unit ↻</button>
+
       </div>
     `;
   } else {
@@ -549,10 +568,15 @@ function renderDragDropActivity(mode) {
       <div class="controls-bottom">
         <button class="secondary-button" id="resetMatchDates">Reset</button>
         <button class="primary-button" id="checkMatchDates">Check answers</button>
-        <button class="secondary-button" id="switchOrderMode">Switch to order-only mode</button>
+      
+        <button class="secondary-button" id="nextTimelineInUnit">Next timeline in unit ›</button>
+        <button class="secondary-button" id="randomTimelineInUnit">Random timeline in unit ↻</button>
+
       </div>
       <div class="feedback" id="activityFeedback"></div>
     `;
+
+  applyTimelineNavButtonState(contentEl);
 
     setupMatchDatesDnD(container, eventsSubset);
   } else {
@@ -588,10 +612,15 @@ function renderDragDropActivity(mode) {
       <div class="controls-bottom">
         <button class="secondary-button" id="reshuffleOrder">Reshuffle</button>
         <button class="primary-button" id="checkOrder">Check order</button>
-        <button class="secondary-button" id="switchMatchMode">Switch to match-dates mode</button>
+      
+        <button class="secondary-button" id="nextTimelineInUnit">Next timeline in unit ›</button>
+        <button class="secondary-button" id="randomTimelineInUnit">Random timeline in unit ↻</button>
+
       </div>
       <div class="feedback" id="activityFeedback"></div>
     `;
+
+  applyTimelineNavButtonState(contentEl);
 
     setupOrderOnlyDnD(container, eventsSubset);
   }
@@ -600,6 +629,275 @@ function renderDragDropActivity(mode) {
 /* ============================
    DND: MATCH DATES MODE
    ============================ */
+
+
+/* ============================
+   MOBILE DRAG FIXES (Pointer Events)
+   - HTML5 drag/drop is unreliable on touch devices.
+   - For touch, we use pointerdown/move/up with a floating clone + placeholder.
+   ============================ */
+
+function isTouchLikePointer(e) {
+  return e && e.pointerType && e.pointerType !== "mouse";
+}
+
+function setupMatchDatesMobilePointer(root) {
+  const pool = root.querySelector("#eventsPool");
+  const cards = Array.from(root.querySelectorAll(".dnd-event-card"));
+  const slots = Array.from(root.querySelectorAll(".dnd-slot"));
+
+  // Prevent a synthetic click immediately after dropping (mobile browsers often fire a click after pointerup)
+  // Stored on root so HTML5 (desktop) drops can suppress the immediate click as well
+  root.__suppressSlotClickUntil = root.__suppressSlotClickUntil || 0;
+
+  function clearHighlights() {
+    slots.forEach((s) => s.classList.remove("highlight-drop"));
+  }
+
+  function slotUnder(x, y) {
+    const el = document.elementFromPoint(x, y);
+    return el ? el.closest(".dnd-slot") : null;
+  }
+
+  function placeEvent(eventId, slot) {
+    if (!eventId || !slot) return;
+    const slotEventEl = slot.querySelector("[data-slot-event]");
+    if (!slotEventEl) return;
+
+    // clear any previous slot holding this event
+    const prev = root.querySelector(
+      `.dnd-slot [data-slot-event][data-event-id="${eventId}"]`
+    );
+    if (prev) {
+      prev.textContent = "";
+      prev.removeAttribute("data-event-id");
+    }
+
+    const card = root.querySelector(
+      `.dnd-event-card[data-event-id="${eventId}"]`
+    );
+    slotEventEl.textContent = card ? card.textContent.trim() : slotEventEl.textContent;
+    slotEventEl.setAttribute("data-event-id", eventId);
+
+    // hide in pool
+    if (card) card.style.display = "none";
+  }
+
+  // tap a slot (anywhere) -> if it contains an event, return it to the pool
+  root.querySelectorAll(".dnd-slot").forEach((slot) => {
+    slot.style.cursor = "pointer";
+    slot.addEventListener("click", () => {
+      if (Date.now() < (root.__suppressSlotClickUntil || 0)) return;
+      if (drag) return; // don't treat drag-end as a tap
+      const slotEventEl = slot.querySelector("[data-slot-event]");
+      if (!slotEventEl) return;
+
+      const eventId = slotEventEl.getAttribute("data-event-id");
+      if (!eventId) return;
+
+      const card = root.querySelector(
+        `.dnd-event-card[data-event-id="${eventId}"]`
+      );
+      if (card) {
+        card.style.display = "";
+        if (pool) pool.appendChild(card);
+      }
+
+      slotEventEl.textContent = "";
+      slotEventEl.removeAttribute("data-event-id");
+    });
+  });
+
+  let drag = null; // {eventId, clone, baseLeft, baseTop, offsetX, offsetY}
+
+  cards.forEach((card) => {
+    card.style.touchAction = "none";
+
+    card.addEventListener("pointerdown", (e) => {
+      if (!isTouchLikePointer(e)) return;
+      e.preventDefault();
+
+      const rect = card.getBoundingClientRect();
+      const clone = card.cloneNode(true);
+      clone.classList.add("dragging");
+      clone.style.position = "fixed";
+      clone.style.left = rect.left + "px";
+      clone.style.top = rect.top + "px";
+      clone.style.width = rect.width + "px";
+      clone.style.zIndex = "9999";
+      clone.style.pointerEvents = "none";
+      clone.style.margin = "0";
+      document.body.appendChild(clone);
+
+      drag = {
+        eventId: card.getAttribute("data-event-id"),
+        clone,
+        baseLeft: rect.left,
+        baseTop: rect.top,
+        offsetX: e.clientX - rect.left,
+        offsetY: e.clientY - rect.top,
+      };
+
+      card.setPointerCapture(e.pointerId);
+      clearHighlights();
+    });
+
+    card.addEventListener("pointermove", (e) => {
+      if (!drag) return;
+      if (!isTouchLikePointer(e)) return;
+      e.preventDefault();
+
+      const x = e.clientX - drag.offsetX;
+      const y = e.clientY - drag.offsetY;
+      drag.clone.style.transform = `translate(${x - drag.baseLeft}px, ${y - drag.baseTop}px)`;
+
+      clearHighlights();
+      const slot = slotUnder(e.clientX, e.clientY);
+      if (slot) slot.classList.add("highlight-drop");
+    });
+
+    function finish(e) {
+      if (!drag) return;
+      if (!isTouchLikePointer(e)) return;
+
+      clearHighlights();
+      const slot = slotUnder(e.clientX, e.clientY);
+      if (slot) {
+        placeEvent(drag.eventId, slot);
+        root.__suppressSlotClickUntil = Date.now() + 350;
+      }
+
+      drag.clone.remove();
+      drag = null;
+    }
+
+    card.addEventListener("pointerup", finish);
+    card.addEventListener("pointercancel", finish);
+  });
+
+  // expose to HTML5 drop logic
+  root.__matchDatesPlaceEvent = placeEvent;
+}
+
+function setupOrderOnlyMobilePointer(root) {
+  const listEl = root.querySelector("#orderList");
+  if (!listEl) return;
+
+  let placeholder = null;
+  let active = null; // {item, clone, baseLeft, baseTop, offsetX, offsetY}
+
+  function updateIndices() {
+    listEl.querySelectorAll(".dnd-order-item").forEach((item, idx) => {
+      const idxEl = item.querySelector(".dnd-order-item-index");
+      if (idxEl) idxEl.textContent = `${idx + 1}.`;
+    });
+  }
+
+  function ensurePlaceholder(height) {
+    if (placeholder) return;
+    placeholder = document.createElement("div");
+    placeholder.className = "dnd-order-item";
+    placeholder.style.opacity = "0.25";
+    placeholder.style.height = height + "px";
+    placeholder.style.borderStyle = "dashed";
+    placeholder.style.cursor = "default";
+    placeholder.innerHTML = `<div class="dnd-order-item-index"></div><div>Drop here</div>`;
+  }
+
+  function clearPlaceholder() {
+    if (placeholder && placeholder.parentElement) placeholder.parentElement.removeChild(placeholder);
+    placeholder = null;
+  }
+
+  function itemUnder(x, y) {
+    const el = document.elementFromPoint(x, y);
+    return el ? el.closest(".dnd-order-item") : null;
+  }
+
+  function autoScroll(clientY) {
+    const margin = 70;
+    const speed = 10;
+    const vh = window.innerHeight;
+    if (clientY < margin) window.scrollBy(0, -speed);
+    else if (clientY > vh - margin) window.scrollBy(0, speed);
+  }
+
+  Array.from(listEl.querySelectorAll(".dnd-order-item")).forEach((item) => {
+    item.style.touchAction = "none";
+
+    item.addEventListener("pointerdown", (e) => {
+      if (!isTouchLikePointer(e)) return;
+      e.preventDefault();
+
+      const rect = item.getBoundingClientRect();
+      const clone = item.cloneNode(true);
+      clone.classList.add("dragging");
+      clone.style.position = "fixed";
+      clone.style.left = rect.left + "px";
+      clone.style.top = rect.top + "px";
+      clone.style.width = rect.width + "px";
+      clone.style.zIndex = "9999";
+      clone.style.pointerEvents = "none";
+      clone.style.margin = "0";
+      document.body.appendChild(clone);
+
+      ensurePlaceholder(rect.height);
+      listEl.insertBefore(placeholder, item);
+      item.style.display = "none";
+
+      active = {
+        item,
+        clone,
+        baseLeft: rect.left,
+        baseTop: rect.top,
+        offsetX: e.clientX - rect.left,
+        offsetY: e.clientY - rect.top,
+      };
+
+      item.setPointerCapture(e.pointerId);
+    });
+
+    item.addEventListener("pointermove", (e) => {
+      if (!active || active.item !== item) return;
+      if (!isTouchLikePointer(e)) return;
+      e.preventDefault();
+
+      autoScroll(e.clientY);
+
+      const x = e.clientX - active.offsetX;
+      const y = e.clientY - active.offsetY;
+      active.clone.style.transform = `translate(${x - active.baseLeft}px, ${y - active.baseTop}px)`;
+
+      const over = itemUnder(e.clientX, e.clientY);
+      if (!over || over === placeholder || over === active.item) return;
+
+      const bbox = over.getBoundingClientRect();
+      const insertBefore = e.clientY < bbox.top + bbox.height / 2;
+
+      if (insertBefore) listEl.insertBefore(placeholder, over);
+      else listEl.insertBefore(placeholder, over.nextSibling);
+
+      updateIndices();
+    });
+
+    function finish(e) {
+      if (!active || active.item !== item) return;
+      if (!isTouchLikePointer(e)) return;
+
+      item.style.display = "";
+      listEl.insertBefore(item, placeholder);
+      clearPlaceholder();
+
+      if (active.clone) active.clone.remove();
+      active = null;
+      updateIndices();
+    }
+
+    item.addEventListener("pointerup", finish);
+    item.addEventListener("pointercancel", finish);
+  });
+}
+
 
 function setupMatchDatesDnD(root, events) {
   const eventCards = root.querySelectorAll(".dnd-event-card");
@@ -622,6 +920,9 @@ function setupMatchDatesDnD(root, events) {
     });
   });
 
+  // Mobile pointer DnD (touch)
+  setupMatchDatesMobilePointer(root);
+
   slots.forEach((slot) => {
     slot.addEventListener("dragover", (e) => {
       e.preventDefault();
@@ -633,14 +934,22 @@ function setupMatchDatesDnD(root, events) {
     slot.addEventListener("drop", () => {
       slot.classList.remove("highlight-drop");
       if (!draggedCard) return;
+
+      const eventId = draggedCard.getAttribute("data-event-id");
+
+      // If mobile helper exists, use it (handles hiding + clearing previous slot)
+      if (typeof root.__matchDatesPlaceEvent === "function") {
+        root.__matchDatesPlaceEvent(eventId, slot);
+        root.__suppressSlotClickUntil = Date.now() + 200;
+        return;
+      }
+
       const slotEventEl = slot.querySelector("[data-slot-event]");
       if (!slotEventEl) return;
 
-      // If this card was in another slot, clear that slot's display
+      // Clear previous slot holding this event
       const previousSlot = root.querySelector(
-        `.dnd-slot [data-slot-event][data-event-id="${draggedCard.getAttribute(
-          "data-event-id"
-        )}"]`
+        `.dnd-slot [data-slot-event][data-event-id="${eventId}"]`
       );
       if (previousSlot) {
         previousSlot.textContent = "";
@@ -648,23 +957,26 @@ function setupMatchDatesDnD(root, events) {
       }
 
       slotEventEl.textContent = draggedCard.textContent.trim();
-      slotEventEl.setAttribute(
-        "data-event-id",
-        draggedCard.getAttribute("data-event-id")
-      );
+      slotEventEl.setAttribute("data-event-id", eventId);
 
-
-      // Hide card once placed (so it does not remain in the bank)
+      // Hide card once placed (so it doesn't remain in the bank)
       draggedCard.style.display = "none";
-      // Prevent immediate click-after-drop from returning it straight away
-      root.__suppressSlotClickUntil = Date.now() + 350;
+
+      root.__suppressSlotClickUntil = Date.now() + 200;
+      root.__suppressSlotClickUntil = Date.now() + 200;
     });
   });
 
   resetBtn.addEventListener("click", () => {
+    const pool = root.querySelector("#eventsPool");
     root.querySelectorAll("[data-slot-event]").forEach((el) => {
       el.textContent = "";
       el.removeAttribute("data-event-id");
+    });
+    // Return cards to pool
+    root.querySelectorAll(".dnd-event-card").forEach((card) => {
+      card.style.display = "";
+      if (pool) pool.appendChild(card);
     });
     feedbackEl.textContent = "";
     feedbackEl.className = "feedback";
@@ -721,6 +1033,12 @@ function setupOrderOnlyDnD(root, events) {
 
   let draggedItem = null;
 
+  const isTouch = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
+  if (isTouch) {
+    // Touch devices: use pointer-based reorder (more reliable than HTML5 drag/drop)
+    setupOrderOnlyMobilePointer(root);
+  }
+
   function attachDndHandlers() {
     listEl.querySelectorAll(".dnd-order-item").forEach((item) => {
       item.addEventListener("dragstart", () => {
@@ -773,6 +1091,7 @@ function setupOrderOnlyDnD(root, events) {
     );
     updateIndices();
     attachDndHandlers();
+    setupOrderOnlyMobilePointer(root);
   });
 
   checkBtn.addEventListener("click", () => {
@@ -832,7 +1151,11 @@ function renderWhichFirstActivity() {
     <div class="controls-bottom">
       <button class="primary-button" id="nextWhichFirst">Next question</button>
       <button class="secondary-button" id="switchToPlacement">Switch to placement</button>
-    </div>
+    
+        <button class="secondary-button" id="nextTimelineInUnit">Next timeline in unit ›</button>
+        <button class="secondary-button" id="randomTimelineInUnit">Random timeline in unit ↻</button>
+
+      </div>
     <div class="feedback" id="whichFirstFeedback"></div>
   `;
 
@@ -981,7 +1304,11 @@ function renderPlacementActivity() {
     <div class="controls-bottom">
       <button class="secondary-button" id="skipPlacement">Skip</button>
       <button class="secondary-button" id="newAnchors">New anchors</button>
-    </div>
+    
+        <button class="secondary-button" id="nextTimelineInUnit">Next timeline in unit ›</button>
+        <button class="secondary-button" id="randomTimelineInUnit">Random timeline in unit ↻</button>
+
+      </div>
 
     <div class="feedback" id="placementFeedback"></div>
   `;
@@ -1165,10 +1492,19 @@ function renderPlacementActivity() {
    INITIALISATION
    ============================ */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   applyStoredTheme();
-  if (themeBtnEl) {
-    themeBtnEl.addEventListener("click", toggleTheme);
+  if (themeBtnEl) themeBtnEl.addEventListener("click", toggleTheme);
+
+  try {
+    await loadTimelinesIndex();
+  } catch (err) {
+    // If index fails, show empty state
+    TIMELINE_DATA = [];
+    console.warn(err);
   }
+
   renderModuleList();
 });
+
+applyTimelineNavButtonState(document);
