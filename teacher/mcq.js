@@ -270,12 +270,6 @@ async function loadSelectedQuiz() {
 
   setEditorVisible(true);
   editorHeading.textContent = "Editing: " + selectedQuizMeta.title;
-
-  quizIdInput.value = selectedQuizMeta.id || "";
-  quizTitleInput.value = selectedQuizMeta.title || "";
-  quizDescInput.value = workingQuiz.description || "";
-
-
   try {
     const raw = await fetchQuizJSONFromMeta(selectedQuizMeta);
     workingQuiz = normaliseQuiz(raw, selectedQuizMeta.id, selectedQuizMeta.title);
@@ -285,9 +279,14 @@ async function loadSelectedQuiz() {
     alert(String(e.message || e));
   }
 
-  // Sync title changes into workingQuiz
-  quizTitleInput.addEventListener("input", () => { workingQuiz.title = quizTitleInput.value; });
+  // Populate form fields from the loaded quiz (safe – workingQuiz definitely exists here)
+  quizIdInput.value = workingQuiz.id || (selectedQuizMeta?.id || "");
+  quizTitleInput.value = workingQuiz.title || (selectedQuizMeta?.title || "");
+  quizDescInput.value = workingQuiz.description || "";
 
+  // Keep workingQuiz in sync with form fields (avoid stacking listeners)
+  quizTitleInput.oninput = () => { if (workingQuiz) workingQuiz.title = quizTitleInput.value; };
+  quizDescInput.oninput = () => { if (workingQuiz) workingQuiz.description = quizDescInput.value; };
   renderQuestions();
 }
 
@@ -336,6 +335,10 @@ async function createNewQuizFlow() {
   quizIdInput.value = quizId;
   quizTitleInput.value = title;
 
+
+  // Keep workingQuiz in sync with form fields
+  quizTitleInput.oninput = () => { if (workingQuiz) workingQuiz.title = quizTitleInput.value; };
+  quizDescInput.oninput = () => { if (workingQuiz) workingQuiz.description = quizDescInput.value; };
   renderQuestions();
 
   alert(
