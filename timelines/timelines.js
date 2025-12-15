@@ -302,6 +302,8 @@ function renderUnitList(moduleId) {
     });
   });
 
+}
+
 /* ============================
    RENDER: TIMELINE LIST (within unit)
    ============================ */
@@ -318,7 +320,7 @@ function renderTimelineList() {
   const timelines = currentUnit.timelines || [];
   pillRightEl.textContent = `${timelines.length} timeline${timelines.length !== 1 ? "s" : ""}`;
 
-  setBreadcrumbs("activity");
+  setBreadcrumbs("timeline");
 
   if (!timelines.length) {
     contentEl.innerHTML = `<p class="helper-text">No timelines for this unit yet.</p>`;
@@ -376,7 +378,7 @@ function renderTimelineView() {
   pillRightEl.textContent = `${currentTimeline.events.length} event${
     currentTimeline.events.length !== 1 ? "s" : ""
   }`;
-  setBreadcrumbs("timeline");
+  setBreadcrumbs("activity");
 
   const sortedEvents = sortEventsByDate(currentTimeline.events);
 
