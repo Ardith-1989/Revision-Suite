@@ -644,6 +644,10 @@ function setupMatchDatesMobilePointer(root) {
   const cards = Array.from(root.querySelectorAll(".dnd-event-card"));
   const slots = Array.from(root.querySelectorAll(".dnd-slot"));
 
+  // Prevent a synthetic click immediately after dropping (mobile browsers often fire a click after pointerup)
+  // Stored on root so HTML5 (desktop) drops can suppress the immediate click as well
+  root.__suppressSlotClickUntil = root.__suppressSlotClickUntil || 0;
+
   function clearHighlights() {
     slots.forEach((s) => s.classList.remove("highlight-drop"));
   }
@@ -681,6 +685,8 @@ function setupMatchDatesMobilePointer(root) {
   root.querySelectorAll(".dnd-slot").forEach((slot) => {
     slot.style.cursor = "pointer";
     slot.addEventListener("click", () => {
+      if (Date.now() < (root.__suppressSlotClickUntil || 0)) return;
+      if (drag) return; // don't treat drag-end as a tap
       const slotEventEl = slot.querySelector("[data-slot-event]");
       if (!slotEventEl) return;
 
@@ -754,7 +760,10 @@ function setupMatchDatesMobilePointer(root) {
 
       clearHighlights();
       const slot = slotUnder(e.clientX, e.clientY);
-      if (slot) placeEvent(drag.eventId, slot);
+      if (slot) {
+        placeEvent(drag.eventId, slot);
+        root.__suppressSlotClickUntil = Date.now() + 350;
+      }
 
       drag.clone.remove();
       drag = null;
@@ -923,15 +932,22 @@ function setupMatchDatesDnD(root, events) {
     slot.addEventListener("drop", () => {
       slot.classList.remove("highlight-drop");
       if (!draggedCard) return;
+
       const eventId = draggedCard.getAttribute("data-event-id");
 
+      // If mobile helper exists, use it (handles hiding + clearing previous slot)
+      if (typeof root.__matchDatesPlaceEvent === "function") {
+        root.__matchDatesPlaceEvent(eventId, slot);
+        root.__suppressSlotClickUntil = Date.now() + 200;
+        return;
+      }
+
+      const slotEventEl = slot.querySelector("[data-slot-event]");
       if (!slotEventEl) return;
 
-      // If this card was in another slot, clear that slot's display
+      // Clear previous slot holding this event
       const previousSlot = root.querySelector(
-        `.dnd-slot [data-slot-event][data-event-id="${draggedCard.getAttribute(
-          "data-event-id"
-        )}"]`
+        `.dnd-slot [data-slot-event][data-event-id="${eventId}"]`
       );
       if (previousSlot) {
         previousSlot.textContent = "";
@@ -940,8 +956,10 @@ function setupMatchDatesDnD(root, events) {
 
       slotEventEl.textContent = draggedCard.textContent.trim();
       slotEventEl.setAttribute("data-event-id", eventId);
-      // Hide card once placed
+
+      // Hide card once placed (so it doesn't remain in the bank)
       draggedCard.style.display = "none";
+      root.__suppressSlotClickUntil = Date.now() + 200;
     });
   });
 
