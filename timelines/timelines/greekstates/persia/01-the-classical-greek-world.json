@@ -1,57 +1,49 @@
 {
   "id": "01-the-classical-greek-world",
   "title": "01. The Classical Greek World",
-  "description": "Core features of the Classical Greek world: colonisation, the polis, and shared Greek identity.",
-  "questions": [
+  "description": "",
+  "events": [
     {
-      "question": "When did the primary period of Greek colonisation take place?",
-      "options": [
-        "10th-8th c. BC",
-        "8th-6th c. BC",
-        "5th-4th c. BC",
-        "7th-5th c. BC"
-      ],
-      "correctIndex": 1
+      "id": "event-1",
+      "label": "Ionian Revolt Begins",
+      "year": -499,
+      "displayDate": "499 BCE",
+      "note": ""
     },
     {
-      "question": "What is the common translation of polis?",
-      "options": [
-        "City-state",
-        "Empire",
-        "Kingdom-state",
-        "Kingdom"
-      ],
-      "correctIndex": 0
+      "id": "event-3",
+      "label": "Ionian Revolt ends",
+      "year": -493,
+      "displayDate": "493 BCE",
+      "note": ""
     },
     {
-      "question": "What are the things that are united in a polis?",
-      "options": [
-        "City, nobility, and military",
-        "Economy, trade, and government",
-        "Religion, art, and philosophy",
-        "City, villages, and countryside, the people, and way of life"
-      ],
-      "correctIndex": 3
+      "id": "event-2",
+      "label": "Mardonius' Expedition",
+      "year": -492,
+      "displayDate": "492 BCE",
+      "note": ""
     },
     {
-      "question": "What things united the Greeks as a people?",
-      "options": [
-        "Military, Politics, Language",
-        "Language, Literature/History, Religion",
-        "Philosophy, Art, Economy",
-        "Trade, Empire, Philosophy"
-      ],
-      "correctIndex": 1
+      "id": "event-4",
+      "label": "Darius Demands Earth and Water",
+      "year": -491,
+      "displayDate": "c. 491 BCE",
+      "note": ""
     },
     {
-      "question": "What was the empire to the east of Greece?",
-      "options": [
-        "The Roman Empire",
-        "The Ottoman Empire",
-        "The Persian Empire",
-        "The Egyptian Empire"
-      ],
-      "correctIndex": 2
+      "id": "event-5",
+      "label": "First Persian Invasion",
+      "year": -490,
+      "displayDate": "490 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-6",
+      "label": "Second Persian Invasion Begins",
+      "year": -480,
+      "displayDate": "480 BCE",
+      "note": ""
     }
   ]
 }
