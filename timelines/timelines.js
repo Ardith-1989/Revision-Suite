@@ -301,21 +301,6 @@ function renderUnitList(moduleId) {
       renderTimelineList();
     });
   });
-      const unitId = btn.getAttribute("data-unit-id");
-      const action = btn.getAttribute("data-action");
-      const unit = mod.units.find((u) => u.id === unitId);
-      if (!unit || !unit.timelines || !unit.timelines.length) return;
-      currentUnit = unit;
-      currentTimeline = unit.timelines[0];
-      if (action === "study") {
-        currentMode = "study";
-        renderTimelineView();
-      } else {
-        currentMode = "match-dates";
-        renderTimelineView();
-      }
-    });
-  });
 }
 
 
