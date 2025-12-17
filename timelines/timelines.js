@@ -735,7 +735,7 @@ function enablePointerDnDMatchDates(root) {
           slotEventEl.setAttribute("data-event-id", card.getAttribute("data-event-id"));
 
           // Hide card once placed
-          card.style.display = \"none\";
+          card.style.display = "none";
           root.__suppressSlotClickUntil = Date.now() + 350;
         }
       }
@@ -889,7 +889,7 @@ function setupMatchDatesDnD(root, events) {
         draggedCard.getAttribute("data-event-id")
       );
 
-      draggedCard.style.display = \"none\";
+      draggedCard.style.display = "none";
       root.__suppressSlotClickUntil = Date.now() + 350;
     });
   });
