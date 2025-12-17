@@ -15,6 +15,23 @@ function applyStoredTheme() {
   }
 }
 
+
+const TIMELINES_INDEX_PATH = "timelines-data.json";
+
+async function loadTimelinesIndex() {
+  try {
+    const res = await fetch(TIMELINES_INDEX_PATH, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status} when loading ${TIMELINES_INDEX_PATH}`);
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error("timelines-data.json must be a JSON array (modules list).");
+    TIMELINE_DATA = data;
+    return true;
+  } catch (err) {
+    console.warn("Failed to load timelines-data.json; using embedded TIMELINE_DATA fallback.", err);
+    return false;
+  }
+}
+
 function toggleTheme() {
   const body = document.body;
   const isLight = body.classList.contains("theme-light");
@@ -43,7 +60,7 @@ const themeBtnEl = document.getElementById("toggleThemeBtn");
    (Replace with JSON fetch later)
    ============================ */
 
-const TIMELINE_DATA = [
+let TIMELINE_DATA = [
   {
     id: "late-republic",
     name: "Late Roman Republic",
@@ -1435,14 +1452,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (themeBtnEl) {
     themeBtnEl.addEventListener("click", toggleTheme);
   }
-
-  // Load module/unit index from timelines-data.json
-  try {
-    await loadTimelinesIndex();
-  } catch (err) {
-    console.warn("Failed to load timelines-data.json:", err);
-    // Keep TIMELINE_DATA as-is (may be empty); render will show an empty state.
-  }
-
+  await loadTimelinesIndex();
   renderModuleList();
 });
