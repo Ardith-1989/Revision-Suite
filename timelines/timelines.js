@@ -43,7 +43,7 @@ const themeBtnEl = document.getElementById("toggleThemeBtn");
    (Replace with JSON fetch later)
    ============================ */
 
-let TIMELINE_DATA = [
+const TIMELINE_DATA = [
   {
     id: "late-republic",
     name: "Late Roman Republic",
@@ -107,26 +107,6 @@ let TIMELINE_DATA = [
     ]
   }
 ];
-
-// If present, load module/unit/timeline index from timelines-data.json (GitHub Pages friendly).
-// Falls back to the hardwired TIMELINE_DATA above if the fetch fails.
-const TIMELINES_INDEX_PATH = "timelines-data.json";
-
-async function tryLoadTimelinesIndex() {
-  try {
-    const res = await fetch(TIMELINES_INDEX_PATH, { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json();
-    if (Array.isArray(data) && data.length) {
-      // Convert JSON shape (quoted keys) to the in-app shape if needed.
-      // We accept either {id,name,units:[{id,name,timelines:[...]}]} or the hardwired object form.
-      TIMELINE_DATA = data;
-    }
-  } catch (e) {
-    // keep fallback hardwired data
-    console.warn("Timelines index load failed; using fallback TIMELINE_DATA.", e);
-  }
-}
 
 /* ============================
    APP STATE
@@ -628,8 +608,8 @@ function renderDragDropActivity(mode) {
    - For touch, we use pointerdown/move/up with a floating clone + placeholder.
    ============================ */
 
-function isTouchDevice() {
-  return ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
+function isTouchLikePointer(e) {
+  return e && e.pointerType && e.pointerType !== "mouse";
 }
 
 function setupMatchDatesMobilePointer(root) {
@@ -651,6 +631,7 @@ function setupMatchDatesMobilePointer(root) {
     const slotEventEl = slot.querySelector("[data-slot-event]");
     if (!slotEventEl) return;
 
+    // clear any previous slot holding this event
     const prev = root.querySelector(`.dnd-slot [data-slot-event][data-event-id="${eventId}"]`);
     if (prev) {
       prev.textContent = "";
@@ -658,23 +639,20 @@ function setupMatchDatesMobilePointer(root) {
     }
 
     const card = root.querySelector(`.dnd-event-card[data-event-id="${eventId}"]`);
-    slotEventEl.textContent = card ? card.textContent.trim() : "";
+    slotEventEl.textContent = card ? card.textContent.trim() : slotEventEl.textContent;
     slotEventEl.setAttribute("data-event-id", eventId);
 
+    // hide in pool
     if (card) card.style.display = "none";
   }
 
-  // expose for desktop drop handler (shared behaviour)
-  root.__matchDatesPlaceEvent = placeEvent;
-
-  // click slot to return (with suppression after drop)
+  // tap a slot (anywhere) -> if it contains an event, return that event card to the pool
   root.querySelectorAll(".dnd-slot").forEach((slot) => {
     slot.style.cursor = "pointer";
     slot.addEventListener("click", () => {
-      if (root.__suppressSlotClickUntil && Date.now() < root.__suppressSlotClickUntil) return;
-
       const slotEventEl = slot.querySelector("[data-slot-event]");
       if (!slotEventEl) return;
+
       const eventId = slotEventEl.getAttribute("data-event-id");
       if (!eventId) return;
 
@@ -683,6 +661,7 @@ function setupMatchDatesMobilePointer(root) {
         card.style.display = "";
         if (pool) pool.appendChild(card);
       }
+
       slotEventEl.textContent = "";
       slotEventEl.removeAttribute("data-event-id");
     });
@@ -694,7 +673,7 @@ function setupMatchDatesMobilePointer(root) {
     card.style.touchAction = "none";
 
     card.addEventListener("pointerdown", (e) => {
-      if (e.pointerType === "mouse") return;
+      if (!isTouchLikePointer(e)) return;
       e.preventDefault();
 
       const rect = card.getBoundingClientRect();
@@ -724,7 +703,7 @@ function setupMatchDatesMobilePointer(root) {
 
     card.addEventListener("pointermove", (e) => {
       if (!drag) return;
-      if (e.pointerType === "mouse") return;
+      if (!isTouchLikePointer(e)) return;
       e.preventDefault();
 
       const x = e.clientX - drag.offsetX;
@@ -738,14 +717,11 @@ function setupMatchDatesMobilePointer(root) {
 
     function finish(e) {
       if (!drag) return;
-      if (e.pointerType === "mouse") return;
+      if (!isTouchLikePointer(e)) return;
 
       clearHighlights();
       const slot = slotUnder(e.clientX, e.clientY);
-      if (slot) {
-        placeEvent(drag.eventId, slot);
-        root.__suppressSlotClickUntil = Date.now() + 350;
-      }
+      if (slot) placeEvent(drag.eventId, slot);
 
       drag.clone.remove();
       drag = null;
@@ -754,6 +730,9 @@ function setupMatchDatesMobilePointer(root) {
     card.addEventListener("pointerup", finish);
     card.addEventListener("pointercancel", finish);
   });
+
+  // expose to HTML5 drop logic
+  root.__matchDatesPlaceEvent = placeEvent;
 }
 
 function setupOrderOnlyMobilePointer(root) {
@@ -803,7 +782,7 @@ function setupOrderOnlyMobilePointer(root) {
     item.style.touchAction = "none";
 
     item.addEventListener("pointerdown", (e) => {
-      if (e.pointerType === "mouse") return;
+      if (!isTouchLikePointer(e)) return;
       e.preventDefault();
 
       const rect = item.getBoundingClientRect();
@@ -836,7 +815,7 @@ function setupOrderOnlyMobilePointer(root) {
 
     item.addEventListener("pointermove", (e) => {
       if (!active || active.item !== item) return;
-      if (e.pointerType === "mouse") return;
+      if (!isTouchLikePointer(e)) return;
       e.preventDefault();
 
       autoScroll(e.clientY);
@@ -850,6 +829,7 @@ function setupOrderOnlyMobilePointer(root) {
 
       const bbox = over.getBoundingClientRect();
       const insertBefore = e.clientY < bbox.top + bbox.height / 2;
+
       if (insertBefore) listEl.insertBefore(placeholder, over);
       else listEl.insertBefore(placeholder, over.nextSibling);
 
@@ -858,7 +838,7 @@ function setupOrderOnlyMobilePointer(root) {
 
     function finish(e) {
       if (!active || active.item !== item) return;
-      if (e.pointerType === "mouse") return;
+      if (!isTouchLikePointer(e)) return;
 
       item.style.display = "";
       listEl.insertBefore(item, placeholder);
@@ -873,6 +853,7 @@ function setupOrderOnlyMobilePointer(root) {
     item.addEventListener("pointercancel", finish);
   });
 }
+
 
 function setupMatchDatesDnD(root, events) {
   const eventCards = root.querySelectorAll(".dnd-event-card");
@@ -895,26 +876,7 @@ function setupMatchDatesDnD(root, events) {
     });
   });
 
-  // Touch fallback
-  if (isTouchDevice()) setupMatchDatesMobilePointer(root);
-
   slots.forEach((slot) => {
-    slot.addEventListener("click", () => {
-      if (root.__suppressSlotClickUntil && Date.now() < root.__suppressSlotClickUntil) return;
-      const slotEventEl = slot.querySelector("[data-slot-event]");
-      if (!slotEventEl) return;
-      const eventId = slotEventEl.getAttribute("data-event-id");
-      if (!eventId) return;
-      const pool = root.querySelector("#eventsPool");
-      const card = root.querySelector(`.dnd-event-card[data-event-id="${eventId}"]`);
-      if (card) {
-        card.style.display = "";
-        if (pool) pool.appendChild(card);
-      }
-      slotEventEl.textContent = "";
-      slotEventEl.removeAttribute("data-event-id");
-    });
-
     slot.addEventListener("dragover", (e) => {
       e.preventDefault();
       slot.classList.add("highlight-drop");
@@ -925,37 +887,42 @@ function setupMatchDatesDnD(root, events) {
     slot.addEventListener("drop", () => {
       slot.classList.remove("highlight-drop");
       if (!draggedCard) return;
-
       const eventId = draggedCard.getAttribute("data-event-id");
-
       if (typeof root.__matchDatesPlaceEvent === "function") {
         root.__matchDatesPlaceEvent(eventId, slot);
-      } else {
-        const slotEventEl = slot.querySelector("[data-slot-event]");
-        if (!slotEventEl) return;
+        return;
+      }
+      const slotEventEl = slot.querySelector("[data-slot-event]");
+      if (!slotEventEl) return;
 
-        const prev = root.querySelector(
-          `.dnd-slot [data-slot-event][data-event-id="${eventId}"]`
-        );
-        if (prev) {
-          prev.textContent = "";
-          prev.removeAttribute("data-event-id");
-        }
-
-        slotEventEl.textContent = draggedCard.textContent.trim();
-        slotEventEl.setAttribute("data-event-id", eventId);
-        draggedCard.style.display = "none";
+      // If this card was in another slot, clear that slot's display
+      const previousSlot = root.querySelector(
+        `.dnd-slot [data-slot-event][data-event-id="${draggedCard.getAttribute(
+          "data-event-id"
+        )}"]`
+      );
+      if (previousSlot) {
+        previousSlot.textContent = "";
+        previousSlot.removeAttribute("data-event-id");
       }
 
-      // prevent immediate click->return after drop
-      root.__suppressSlotClickUntil = Date.now() + 350;
+      slotEventEl.textContent = draggedCard.textContent.trim();
+      slotEventEl.setAttribute("data-event-id", eventId);
+      // Hide card once placed
+      draggedCard.style.display = "none";
     });
-});
+  });
 
   resetBtn.addEventListener("click", () => {
+    const pool = root.querySelector("#eventsPool");
     root.querySelectorAll("[data-slot-event]").forEach((el) => {
       el.textContent = "";
       el.removeAttribute("data-event-id");
+    });
+    // Return cards to pool
+    root.querySelectorAll(".dnd-event-card").forEach((card) => {
+      card.style.display = "";
+      if (pool) pool.appendChild(card);
     });
     feedbackEl.textContent = "";
     feedbackEl.className = "feedback";
@@ -993,12 +960,10 @@ function setupMatchDatesDnD(root, events) {
       "feedback " + (percent === 100 ? "correct" : "incorrect");
   });
 
-  if (switchBtn) {
-    switchBtn.addEventListener("click", () => {
-      currentMode = "order-only";
-      renderTimelineView();
-    });
-  }
+  switchBtn.addEventListener("click", () => {
+    currentMode = "order-only";
+    renderTimelineView();
+  });
 }
 
 /* ============================
@@ -1007,16 +972,19 @@ function setupMatchDatesDnD(root, events) {
 
 function setupOrderOnlyDnD(root, events) {
   const listEl = root.querySelector("#orderList");
-
-  // Touch fallback
-  if (isTouchDevice()) setupOrderOnlyMobilePointer(root);
-
   const feedbackEl = root.querySelector("#activityFeedback");
   const reshuffleBtn = root.querySelector("#reshuffleOrder");
   const checkBtn = root.querySelector("#checkOrder");
   const switchBtn = root.querySelector("#switchMatchMode");
 
   let draggedItem = null;
+
+  const isTouch = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
+  if (isTouch) {
+    // Use pointer-based reorder on touch devices (more reliable than HTML5 drag/drop)
+    setupOrderOnlyMobilePointer(root);
+  }
+
 
   function attachDndHandlers() {
     listEl.querySelectorAll(".dnd-order-item").forEach((item) => {
@@ -1098,12 +1066,10 @@ function setupOrderOnlyDnD(root, events) {
       "feedback " + (percent === 100 ? "correct" : "incorrect");
   });
 
-  if (switchBtn) {
-    switchBtn.addEventListener("click", () => {
-      currentMode = "match-dates";
-      renderTimelineView();
-    });
-  }
+  switchBtn.addEventListener("click", () => {
+    currentMode = "match-dates";
+    renderTimelineView();
+  });
 }
 
 /* ============================
@@ -1469,5 +1435,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (themeBtnEl) {
     themeBtnEl.addEventListener("click", toggleTheme);
   }
+
+  // Load module/unit index from timelines-data.json
+  try {
+    await loadTimelinesIndex();
+  } catch (err) {
+    console.warn("Failed to load timelines-data.json:", err);
+    // Keep TIMELINE_DATA as-is (may be empty); render will show an empty state.
+  }
+
   renderModuleList();
 });
