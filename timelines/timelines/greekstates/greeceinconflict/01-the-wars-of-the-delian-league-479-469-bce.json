@@ -1,0 +1,49 @@
+{
+  "id": "01-the-wars-of-the-delian-league-479-469-bce",
+  "title": "01. The Wars of the Delian League, 479-469 BCE",
+  "description": "",
+  "events": [
+    {
+      "id": "event-1",
+      "label": "Founding of the Delian League",
+      "year": -478,
+      "displayDate": "478 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-2",
+      "label": "Siege of Eion",
+      "year": -476,
+      "displayDate": "476-5 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-3",
+      "label": "Conquest of Scyrus",
+      "year": -474,
+      "displayDate": "474-3 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-4",
+      "label": "Coercion of Carystus",
+      "year": -472,
+      "displayDate": "472 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-5",
+      "label": "Revolt of Naxos",
+      "year": -470,
+      "displayDate": "470 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-6",
+      "label": "Battle of Eurymedon",
+      "year": -468,
+      "displayDate": "c. 468 BCE",
+      "note": ""
+    }
+  ]
+}
