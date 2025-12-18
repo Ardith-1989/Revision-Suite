@@ -1,0 +1,49 @@
+{
+  "id": "02-the-ionian-revolt",
+  "title": "02. The Ionian Revolt",
+  "description": "",
+  "events": [
+    {
+      "id": "event-1",
+      "label": "Aristagoras attempts to Invade Naxos",
+      "year": -499,
+      "displayDate": "499 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-2",
+      "label": "Aristagoras seeks aid for revolt",
+      "year": -499,
+      "displayDate": "499-8 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-3",
+      "label": "Fleet burns Sardis and suffers defeat at Ephesus",
+      "year": -498,
+      "displayDate": "498 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-4",
+      "label": "Further revolts, arrival of Histaeus",
+      "year": -498,
+      "displayDate": "498-6 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-5",
+      "label": "Battle of Lade, Burning of Miletus",
+      "year": -494,
+      "displayDate": "494 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-6",
+      "label": "Defeat of the Revolt",
+      "year": -493,
+      "displayDate": "493 BCE",
+      "note": ""
+    }
+  ]
+}
