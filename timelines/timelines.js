@@ -733,6 +733,9 @@ function enablePointerDnDMatchDates(root) {
 
           slotEventEl.textContent = card.textContent.trim();
           slotEventEl.setAttribute("data-event-id", card.getAttribute("data-event-id"));
+          // Hide the card in the bank once placed
+          card.style.display = "none";
+          root.__suppressSlotClickUntil = Date.now() + 350;
         }
       }
 
@@ -891,6 +894,8 @@ function setupMatchDatesDnD(root, events) {
 
   let draggedCard = null;
 
+  root.__suppressSlotClickUntil = root.__suppressSlotClickUntil || 0;
+
   eventCards.forEach((card) => {
     card.addEventListener("dragstart", () => {
       draggedCard = card;
@@ -936,6 +941,34 @@ function setupMatchDatesDnD(root, events) {
         "data-event-id",
         draggedCard.getAttribute("data-event-id")
       );
+
+      // Hide the card in the bank once placed
+      draggedCard.style.display = "none";
+      root.__suppressSlotClickUntil = Date.now() + 350;
+    });
+  });
+
+
+  // Click/tap a slot to return its placed event back to the events bank
+  slots.forEach((slot) => {
+    slot.addEventListener("click", (e) => {
+      if (Date.now() < (root.__suppressSlotClickUntil || 0)) return;
+
+      const slotEventEl = slot.querySelector("[data-slot-event]");
+      if (!slotEventEl) return;
+
+      const eventId = slotEventEl.getAttribute("data-event-id");
+      if (!eventId) return;
+
+      const card = root.querySelector(`.dnd-event-card[data-event-id="${eventId}"]`);
+      const pool = root.querySelector("#eventsPool");
+      if (card) {
+        card.style.display = "";
+        if (pool) pool.appendChild(card);
+      }
+
+      slotEventEl.textContent = "";
+      slotEventEl.removeAttribute("data-event-id");
     });
   });
 
@@ -944,6 +977,13 @@ function setupMatchDatesDnD(root, events) {
       el.textContent = "";
       el.removeAttribute("data-event-id");
     });
+    // Return all event cards to the bank
+    const pool = root.querySelector("#eventsPool");
+    root.querySelectorAll(".dnd-event-card").forEach((card) => {
+      card.style.display = "";
+      if (pool) pool.appendChild(card);
+    });
+
     feedbackEl.textContent = "";
     feedbackEl.className = "feedback";
     root
