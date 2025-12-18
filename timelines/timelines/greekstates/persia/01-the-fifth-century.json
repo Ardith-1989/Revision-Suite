@@ -1,0 +1,112 @@
+{
+  "id": "01-the-fifth-century",
+  "title": "01. The Fifth Century",
+  "description": "",
+  "events": [
+    {
+      "id": "event-1",
+      "label": "Mardonius' Expedition",
+      "year": -492,
+      "displayDate": "492 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-2",
+      "label": "The Battle of Marathon",
+      "year": -490,
+      "displayDate": "490 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-3",
+      "label": "Second Persian Invasion Begins",
+      "year": -480,
+      "displayDate": "480 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-4",
+      "label": "Second Persian Invasion Ends",
+      "year": -479,
+      "displayDate": "479 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-5",
+      "label": "Formation of the Delian League",
+      "year": -478,
+      "displayDate": "478 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-6",
+      "label": "The Battle of Eurymedon",
+      "year": -468,
+      "displayDate": "468 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-7",
+      "label": "The First Peloponnesian War",
+      "year": -460,
+      "displayDate": "460 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-8",
+      "label": "The 30 Year Peace",
+      "year": -446,
+      "displayDate": "446 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-9",
+      "label": "Second Peloponnesian War Begins",
+      "year": -431,
+      "displayDate": "431 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-10",
+      "label": "Pylos and Sphacteria",
+      "year": -425,
+      "displayDate": "425 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-11",
+      "label": "Peace of Nicias",
+      "year": -421,
+      "displayDate": "421 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-12",
+      "label": "The Sicilian Expedition",
+      "year": -415,
+      "displayDate": "415 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-13",
+      "label": "Treaty of Miletus",
+      "year": -412,
+      "displayDate": "412 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-14",
+      "label": "Battle of Aegospotami",
+      "year": -405,
+      "displayDate": "405 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-15",
+      "label": "Second Peloponnesian War Ends",
+      "year": -404,
+      "displayDate": "404 BCE",
+      "note": ""
+    }
+  ]
+}
