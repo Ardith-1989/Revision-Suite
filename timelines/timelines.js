@@ -258,14 +258,6 @@ function renderUnitList(moduleId) {
           }</span>
               </div>
             </div>
-            <div style="display:flex; gap:6px;">
-              <button class="tag-button" data-unit-id="${u.id}" data-action="study">
-                Study
-              </button>
-              <button class="tag-button" data-unit-id="${u.id}" data-action="test">
-                Test ›
-              </button>
-            </div>
           </div>
         `;
         })
