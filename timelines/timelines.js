@@ -438,20 +438,6 @@ function renderTimelineView() {
       <p class="helper-text">
         Read through the timeline to get a sense of the order. When you’re ready, try one of the activities.
       </p>
-      <div class="controls-bottom">
-        <button class="primary-button" data-start-mode="match-dates">
-          Start drag & drop (match dates) ›
-        </button>
-        <button class="secondary-button" data-start-mode="order-only">
-          Start drag & drop (order only) ›
-        </button>
-        <button class="secondary-button" data-start-mode="which-first">
-          Start “Which came first?” ›
-        </button>
-        <button class="secondary-button" data-start-mode="placement">
-          Start placement questions ›
-        </button>
-      </div>
     `;
   } else {
     // Placeholder; actual activity is rendered separately
