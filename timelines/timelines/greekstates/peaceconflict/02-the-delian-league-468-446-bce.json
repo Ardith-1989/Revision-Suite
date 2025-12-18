@@ -1,0 +1,77 @@
+{
+  "id": "02-the-delian-league-468-446-bce",
+  "title": "02. The Delian League, 468-446 BCE",
+  "description": "",
+  "events": [
+    {
+      "id": "event-1",
+      "label": "Revolt of Thasos",
+      "year": -465,
+      "displayDate": "465 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-2",
+      "label": "Helot Revolt",
+      "year": -464,
+      "displayDate": "464 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-3",
+      "label": "Delian League Campaign in Egypt Begins",
+      "year": -461,
+      "displayDate": "461 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-4",
+      "label": "Delian League Defeated in Egypt",
+      "year": -454,
+      "displayDate": "454 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-5",
+      "label": "Delian Treasury moved to Athens",
+      "year": -454,
+      "displayDate": "454 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-6",
+      "label": "Five-Year Peace",
+      "year": -451,
+      "displayDate": "451 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-7",
+      "label": "Cimon's Campaign in Cyprus",
+      "year": -451,
+      "displayDate": "451-0 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-8",
+      "label": "Peace of Callias",
+      "year": -449,
+      "displayDate": "449 BCE (or 468/5)?",
+      "note": ""
+    },
+    {
+      "id": "event-9",
+      "label": "Cleinias Decree",
+      "year": -447,
+      "displayDate": "447 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-10",
+      "label": "Chalkis Decree",
+      "year": -446,
+      "displayDate": "446 BCE",
+      "note": ""
+    }
+  ]
+}
