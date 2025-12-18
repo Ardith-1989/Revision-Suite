@@ -324,7 +324,6 @@ function renderTimelineList() {
             <div class="list-title">${t.title}</div>
             <div class="list-meta"><span>${t.description || ""}</span></div>
           </div>
-          <button class="tag-button" data-timeline-id="${t.id}">Open ›</button>
         </div>
       `).join("")}
     </div>
