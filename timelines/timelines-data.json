@@ -7,11 +7,11 @@
       {
         "id": "greekstates-persia",
         "name": "01. The Challenge of the Persian Empire, 492-479",
-        "description": "Caesar, Pompey and the late Republic.",
+        "description": "The First and Second Persian Invasions of Greece.",
         "timelines": [
           {
             "id": "01-the-classical-greek-world",
-            "title": "02. The Ionian Revolt",
+            "title": "01. The Classical Greek World",
             "description": "",
             "path": "timelines/greekstates/persia/01-the-classical-greek-world.json"
           },
