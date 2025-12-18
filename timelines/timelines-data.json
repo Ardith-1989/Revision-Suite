@@ -21,6 +21,30 @@
             "description": "",
             "path": "timelines/greekstates/persia/02-the-ionian-revolt.json"
           }
+		  {
+            "id": "03-themistocles-career",
+            "title": "03. Themistocles' Career",
+            "description": "",
+            "path": "timelines/greekstates/persia/03-themistocles-career.json"
+          },
+		  {
+            "id": "04-the-persian-invasions",
+            "title": "04. The Persian Invasions",
+            "description": "",
+            "path": "timelines/greekstates/persia/04-the-persian-invasions.json"
+          },
+		  {
+            "id": "05-the-second-persian-invasion",
+            "title": "05. The Second Persian Invasion",
+            "description": "",
+            "path": "timelines/greekstates/persia/05-the-second-persian-invasion.json"
+          },
+		  {
+            "id": "06-the-challenge-of-the-persian-empire-492-479-bce",
+            "title": "06. The Challenge of the Persian Empire, 492-479 BCE",
+            "description": "",
+            "path": "timelines/greekstates/persia/06-the-challenge-of-the-persian-empire-492-479-bce.json"
+          }
         ]
       },
       {
