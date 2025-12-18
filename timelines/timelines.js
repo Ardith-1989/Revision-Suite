@@ -195,9 +195,6 @@ function renderModuleList() {
               )} timeline(s)</span>
             </div>
           </div>
-          <button class="tag-button" data-module-id="${mod.id}">
-            View timelines ›
-          </button>
         </div>
       `
       ).join("")}
