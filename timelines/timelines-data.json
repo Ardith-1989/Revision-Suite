@@ -11,15 +11,15 @@
         "timelines": [
           {
             "id": "01-the-classical-greek-world",
-            "title": "01. The Fifth Century",
+            "title": "02. The Ionian Revolt",
             "description": "",
             "path": "timelines/greekstates/persia/01-the-classical-greek-world.json"
           },
           {
-            "id": "01-the-fifth-century",
-            "title": "01. The Fifth Century",
+            "id": "02-the-ionian-revolt",
+            "title": "02. The Ionian Revolt",
             "description": "",
-            "path": "timelines/greekstates/persia/01-the-fifth-century.json"
+            "path": "timelines/greekstates/persia/02-the-ionian-revolt.json"
           }
         ]
       },
