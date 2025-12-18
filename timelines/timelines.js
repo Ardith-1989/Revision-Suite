@@ -733,10 +733,6 @@ function enablePointerDnDMatchDates(root) {
 
           slotEventEl.textContent = card.textContent.trim();
           slotEventEl.setAttribute("data-event-id", card.getAttribute("data-event-id"));
-
-          // Hide card once placed
-          card.style.display = "none";
-          root.__suppressSlotClickUntil = Date.now() + 350;
         }
       }
 
@@ -753,7 +749,8 @@ function enablePointerDnDOrderOnly(root) {
   const listEl = root.querySelector("#orderList");
   if (!listEl) return;
 
-  let active = null; // {el, startX, startY}
+  const isTouch = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
+  if (!isTouch) return; // desktop uses HTML5 drag/drop
 
   function updateIndices() {
     listEl.querySelectorAll(".dnd-order-item").forEach((item, idx) => {
@@ -762,71 +759,125 @@ function enablePointerDnDOrderOnly(root) {
     });
   }
 
-  function setDraggingStyles(el, dragging) {
-    if (dragging) {
-      el.classList.add("dragging");
-      el.style.position = "relative";
-      el.style.zIndex = "50";
-      el.style.pointerEvents = "none";
-    } else {
-      el.classList.remove("dragging");
-      el.style.transform = "";
-      el.style.position = "";
-      el.style.zIndex = "";
-      el.style.pointerEvents = "";
-    }
+  function itemUnder(x, y) {
+    const el = document.elementFromPoint(x, y);
+    return el ? el.closest(".dnd-order-item") : null;
   }
 
-  function itemUnderPointer(clientX, clientY) {
-    const el = document.elementFromPoint(clientX, clientY);
-    const item = el ? el.closest(".dnd-order-item") : null;
-    // Ignore the active element itself (since pointerEvents is none while dragging)
-    return item;
+  function autoScroll(clientY) {
+    const margin = 70;
+    const speed = 12;
+    const vh = window.innerHeight;
+    if (clientY < margin) window.scrollBy(0, -speed);
+    else if (clientY > vh - margin) window.scrollBy(0, speed);
   }
 
-  Array.from(listEl.querySelectorAll(".dnd-order-item")).forEach((item) => {
+  // Bind once per item
+  listEl.querySelectorAll(".dnd-order-item").forEach((item) => {
+    if (item.__pointerBound) return;
+    item.__pointerBound = true;
+
     item.style.touchAction = "none";
 
-    item.addEventListener("pointerdown", (e) => {
+    let placeholder = null;
+    let clone = null;
+    let activePointerId = null;
+    let startRect = null;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    function ensurePlaceholder(height) {
+      if (placeholder) return;
+      placeholder = document.createElement("div");
+      placeholder.className = "dnd-order-item";
+      placeholder.style.opacity = "0.25";
+      placeholder.style.height = height + "px";
+      placeholder.style.borderStyle = "dashed";
+      placeholder.style.cursor = "default";
+      placeholder.innerHTML = `<div class="dnd-order-item-index"></div><div>Drop here</div>`;
+    }
+
+    function beginDrag(e) {
       if (e.pointerType === "mouse") return;
       e.preventDefault();
-      active = { el: item, startX: e.clientX, startY: e.clientY };
-      item.setPointerCapture(e.pointerId);
-      setDraggingStyles(item, true);
-    });
 
-    item.addEventListener("pointermove", (e) => {
-      if (!active || active.el !== item) return;
-      if (e.pointerType === "mouse") return;
-      e.preventDefault();
+      activePointerId = e.pointerId;
+      startRect = item.getBoundingClientRect();
+      offsetX = e.clientX - startRect.left;
+      offsetY = e.clientY - startRect.top;
 
-      const dx = e.clientX - active.startX;
-      const dy = e.clientY - active.startY;
-      item.style.transform = `translate(${dx}px, ${dy}px)`;
+      // Floating clone (prevents layout thrash on mobile)
+      clone = item.cloneNode(true);
+      clone.classList.add("dragging");
+      clone.style.position = "fixed";
+      clone.style.left = startRect.left + "px";
+      clone.style.top = startRect.top + "px";
+      clone.style.width = startRect.width + "px";
+      clone.style.zIndex = "9999";
+      clone.style.pointerEvents = "none";
+      clone.style.margin = "0";
+      document.body.appendChild(clone);
 
-      const over = itemUnderPointer(e.clientX, e.clientY);
-      if (over && over !== item) {
-        const bbox = over.getBoundingClientRect();
-        const insertBefore = e.clientY < bbox.top + bbox.height / 2;
-        if (insertBefore) {
-          listEl.insertBefore(item, over);
-        } else {
-          listEl.insertBefore(item, over.nextSibling);
-        }
-        updateIndices();
-      }
-    });
+      ensurePlaceholder(startRect.height);
+      listEl.insertBefore(placeholder, item);
+      item.style.display = "none";
 
-    function finish(e) {
-      if (!active || active.el !== item) return;
-      if (e.pointerType === "mouse") return;
-      setDraggingStyles(item, false);
-      active = null;
+      item.setPointerCapture(activePointerId);
       updateIndices();
     }
 
-    item.addEventListener("pointerup", finish);
-    item.addEventListener("pointercancel", finish);
+    function moveDrag(e) {
+      if (activePointerId === null || e.pointerId !== activePointerId) return;
+      if (e.pointerType === "mouse") return;
+      e.preventDefault();
+
+      autoScroll(e.clientY);
+
+      const x = e.clientX - offsetX;
+      const y = e.clientY - offsetY;
+
+      if (clone && startRect) {
+        clone.style.transform = `translate(${x - startRect.left}px, ${y - startRect.top}px)`;
+      }
+
+      const over = itemUnder(e.clientX, e.clientY);
+      if (!over || over === placeholder || over === item) return;
+
+      const bbox = over.getBoundingClientRect();
+      const insertBefore = e.clientY < bbox.top + bbox.height / 2;
+
+      if (insertBefore) listEl.insertBefore(placeholder, over);
+      else listEl.insertBefore(placeholder, over.nextSibling);
+
+      updateIndices();
+    }
+
+    function endDrag(e) {
+      if (activePointerId === null || e.pointerId !== activePointerId) return;
+      if (e.pointerType === "mouse") return;
+
+      item.style.display = "";
+      if (placeholder && placeholder.parentElement === listEl) {
+        listEl.insertBefore(item, placeholder);
+        placeholder.remove();
+      }
+      placeholder = null;
+
+      if (clone) clone.remove();
+      clone = null;
+
+      activePointerId = null;
+      startRect = null;
+
+      item.classList.remove("dragging");
+      item.style.transform = "";
+      updateIndices();
+    }
+
+    item.addEventListener("pointerdown", beginDrag, { passive: false });
+    item.addEventListener("pointermove", moveDrag, { passive: false });
+    item.addEventListener("pointerup", endDrag);
+    item.addEventListener("pointercancel", endDrag);
   });
 }
 
@@ -840,9 +891,6 @@ function setupMatchDatesDnD(root, events) {
 
   let draggedCard = null;
 
-
-  // Prevent synthetic click immediately after a drop/drag on some browsers
-  root.__suppressSlotClickUntil = 0;
   eventCards.forEach((card) => {
     card.addEventListener("dragstart", () => {
       draggedCard = card;
@@ -888,33 +936,6 @@ function setupMatchDatesDnD(root, events) {
         "data-event-id",
         draggedCard.getAttribute("data-event-id")
       );
-
-      draggedCard.style.display = "none";
-      root.__suppressSlotClickUntil = Date.now() + 350;
-    });
-  });
-
-
-  // Click/tap a slot to return its placed event back to the events bank
-  slots.forEach((slot) => {
-    slot.addEventListener("click", () => {
-      if (Date.now() < (root.__suppressSlotClickUntil || 0)) return;
-
-      const slotEventEl = slot.querySelector("[data-slot-event]");
-      if (!slotEventEl) return;
-
-      const eventId = slotEventEl.getAttribute("data-event-id");
-      if (!eventId) return;
-
-      const card = root.querySelector(`.dnd-event-card[data-event-id="${eventId}"]`);
-      const pool = root.querySelector("#eventsPool");
-      if (card) {
-        card.style.display = "";
-        if (pool) pool.appendChild(card);
-      }
-
-      slotEventEl.textContent = "";
-      slotEventEl.removeAttribute("data-event-id");
     });
   });
 
@@ -923,13 +944,7 @@ function setupMatchDatesDnD(root, events) {
       el.textContent = "";
       el.removeAttribute("data-event-id");
     });
-        // Return all event cards to the bank
-    const pool = root.querySelector("#eventsPool");
-    root.querySelectorAll(".dnd-event-card").forEach((card) => {
-      card.style.display = "";
-      if (pool) pool.appendChild(card);
-    });
-feedbackEl.textContent = "";
+    feedbackEl.textContent = "";
     feedbackEl.className = "feedback";
     root
       .querySelectorAll(".dnd-slot")
