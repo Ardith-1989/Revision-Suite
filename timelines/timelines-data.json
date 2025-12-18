@@ -10,10 +10,10 @@
         "description": "The First and Second Persian Invasions of Greece.",
         "timelines": [
           {
-            "id": "01-the-classical-greek-world",
-            "title": "01. The Classical Greek World",
+            "id": "01-the-fifth-century",
+            "title": "01. The Fifth Century",
             "description": "",
-            "path": "timelines/greekstates/persia/01-the-classical-greek-world.json"
+            "path": "timelines/greekstates/persia/01-the-fifth-century.json"
           },
           {
             "id": "02-the-ionian-revolt",
