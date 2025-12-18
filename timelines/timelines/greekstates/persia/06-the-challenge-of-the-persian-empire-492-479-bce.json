@@ -1,0 +1,112 @@
+{
+  "id": "06-the-challenge-of-the-persian-empire-492-479-bce",
+  "title": "06. The Challenge of the Persian Empire, 492-479 BCE",
+  "description": "",
+  "events": [
+    {
+      "id": "event-1",
+      "label": "The Ionian Revolt",
+      "year": -499,
+      "displayDate": "499-3 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-2",
+      "label": "Themistocles' Archonship",
+      "year": -493,
+      "displayDate": "493 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-3",
+      "label": "Mardonius' Expedition",
+      "year": -492,
+      "displayDate": "492 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-4",
+      "label": "Persian Approaches to Greek States",
+      "year": -491,
+      "displayDate": "c. 491 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-5",
+      "label": "The First Persian Invasion",
+      "year": -490,
+      "displayDate": "490 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-6",
+      "label": "Death of Darius I",
+      "year": -486,
+      "displayDate": "486 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-7",
+      "label": "Egyptian Revolt against Persia",
+      "year": -486,
+      "displayDate": "c. 486-4 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-8",
+      "label": "Laurium Mines Debate",
+      "year": -483,
+      "displayDate": "483/2 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-9",
+      "label": "Congress at the Isthmus",
+      "year": -481,
+      "displayDate": "481 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-10",
+      "label": "Battles of Thermopylae and Artemisium",
+      "year": -480,
+      "displayDate": "480 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-11",
+      "label": "Persian Sack of Athens",
+      "year": -480,
+      "displayDate": "480 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-12",
+      "label": "Battle of Salamis",
+      "year": -480,
+      "displayDate": "480 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-13",
+      "label": "Persian Approaches to Athens",
+      "year": -480,
+      "displayDate": "480-79 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-14",
+      "label": "Battles of Plataea and Mycale",
+      "year": -479,
+      "displayDate": "479 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-15",
+      "label": "Recapture of Sestos",
+      "year": -479,
+      "displayDate": "479 BCE",
+      "note": ""
+    }
+  ]
+}

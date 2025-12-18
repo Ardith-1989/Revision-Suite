@@ -1,0 +1,35 @@
+{
+  "id": "03-themistocles-career",
+  "title": "03. Themistocles' Early Career",
+  "description": "",
+  "events": [
+    {
+      "id": "event-1",
+      "label": "Birth of Themistocles",
+      "year": -524,
+      "displayDate": "c. 524 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-2",
+      "label": "Themistocles' Archonship",
+      "year": -493,
+      "displayDate": "493 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-3",
+      "label": "Laurium Debate",
+      "year": -483,
+      "displayDate": "483/482 BCE",
+      "note": ""
+    },
+    {
+      "id": "event-4",
+      "label": "Themistocles' Exile",
+      "year": -472,
+      "displayDate": "472/471 BCE",
+      "note": ""
+    }
+  ]
+}
