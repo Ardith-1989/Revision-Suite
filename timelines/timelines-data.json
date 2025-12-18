@@ -56,19 +56,19 @@
             "id": "01-the-wars-of-the-delian-league-479-469-bce",
             "title": "01. The Wars of the Delian League, 479-469 BCE",
             "description": "",
-            "path": "timelines/greekstates/peaceconflict/01-the-wars-of-the-delian-league-479-469-bce.json"
+            "path": "timelines/greekstates/greeceinconflict/01-the-wars-of-the-delian-league-479-469-bce.json"
           },
 		  {
             "id": "02-the-delian-league-468-446-bce",
             "title": "02. The Delian League, 468-446 BCE",
             "description": "",
-            "path": "timelines/greekstates/peaceconflict/02-the-delian-league-468-446-bce.json"
+            "path": "timelines/greekstates/greeceinconflict/02-the-delian-league-468-446-bce.json"
           },
 		  {
             "id": "03-the-first-peloponnesian-war-461-446-bce",
             "title": "03. The First Peloponneisan War, c. 461-446 BCE",
             "description": "",
-            "path": "timelines/greekstates/peaceconflict/03-the-first-peloponnesian-war-461-446-bce.json"
+            "path": "timelines/greekstates/greeceinconflict/03-the-first-peloponnesian-war-461-446-bce.json"
           }
 		]
       },
