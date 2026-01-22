@@ -272,11 +272,6 @@
         "description": "Caesar, Pompey and the late Republic.",
         "quizzes": [
           {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/athens/politics/late-roman-republic.json"
-          },
-          {
             "id": "01-athens-and-attica",
             "title": "01. Athens and Attica",
             "path": "quizzes/athens/politics/01-athens-and-attica.json"
@@ -287,49 +282,25 @@
         "id": "athens-newthinking",
         "name": "02. New Thinking and Philosophy",
         "description": "Structure of the Roman legal system.",
-        "quizzes": [
-          {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/athens/newthinking/late-roman-republic.json"
-          }
-        ]
+        "quizzes": []
       },
       {
         "id": "athens-art",
         "name": "03. Art and Architecture",
         "description": "Structure of the Roman legal system.",
-        "quizzes": [
-          {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/athens/art/late-roman-republic.json"
-          }
-        ]
+        "quizzes": []
       },
       {
         "id": "athens-drama",
         "name": "04. Drama and Dramatic Festivals",
         "description": "Structure of the Roman legal system.",
-        "quizzes": [
-          {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/athens/drama/late-roman-republic.json"
-          }
-        ]
+        "quizzes": []
       },
       {
         "id": "athens-religion",
         "name": "05. Religion and Religious Festivals",
         "description": "Structure of the Roman legal system.",
-        "quizzes": [
-          {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/athens/religion/late-roman-republic.json"
-          }
-        ]
+        "quizzes": []
       }
     ]
   },
