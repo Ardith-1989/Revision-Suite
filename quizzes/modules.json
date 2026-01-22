@@ -275,6 +275,66 @@
             "id": "01-athens-and-attica",
             "title": "01. Athens and Attica",
             "path": "quizzes/athens/politics/01-athens-and-attica.json"
+          },
+          {
+            "id": "02-development-of-democracy",
+            "title": "02. Development of Democracy",
+            "path": "quizzes/athens/politics/02-development-of-democracy.json"
+          },
+          {
+            "id": "03-athenian-democracy",
+            "title": "03. Athenian Democracy",
+            "path": "quizzes/athens/politics/03-athenian-democracy.json"
+          },
+          {
+            "id": "04-criticisms-of-democracy",
+            "title": "04. Criticisms of Democracy",
+            "path": "quizzes/athens/politics/04-criticisms-of-democracy.json"
+          },
+          {
+            "id": "05-athenian-law-courts",
+            "title": "05. Athenian Law Courts",
+            "path": "quizzes/athens/politics/05-athenian-law-courts.json"
+          },
+          {
+            "id": "06-athens-and-her-empire",
+            "title": "06. Athens and her Empire",
+            "path": "quizzes/athens/politics/06-athens-and-her-empire.json"
+          },
+          {
+            "id": "07-rhetoric-in-athens",
+            "title": "07. Rhetoric in Athens",
+            "path": "quizzes/athens/politics/07-rhetoric-in-athens.json"
+          },
+          {
+            "id": "08-pericles-funeral-oration",
+            "title": "08. Pericles’ Funeral Oration",
+            "path": "quizzes/athens/politics/08-pericles-funeral-oration.json"
+          },
+          {
+            "id": "09-leadership-in-athens",
+            "title": "09. Leadership in Athens",
+            "path": "quizzes/athens/politics/09-leadership-in-athens.json"
+          },
+          {
+            "id": "10-citizens",
+            "title": "10. Citizens",
+            "path": "quizzes/athens/politics/10-citizens.json"
+          },
+          {
+            "id": "11-metics",
+            "title": "11. Metics",
+            "path": "quizzes/athens/politics/11-metics.json"
+          },
+          {
+            "id": "12-slaves",
+            "title": "12. Slaves",
+            "path": "quizzes/athens/politics/12-slaves.json"
+          },
+          {
+            "id": "13-women",
+            "title": "13. Women",
+            "path": "quizzes/athens/politics/13-women.json"
           }
         ]
       },
@@ -282,25 +342,144 @@
         "id": "athens-newthinking",
         "name": "02. New Thinking and Philosophy",
         "description": "Structure of the Roman legal system.",
-        "quizzes": []
+        "quizzes": [
+          {
+            "id": "14-the-sophists",
+            "title": "14. The Sophists",
+            "path": "quizzes/athens/newthinking/14-the-sophists.json"
+          },
+          {
+            "id": "15-the-sophists-and-rhetoric",
+            "title": "15. The Sophists and Rhetoric",
+            "path": "quizzes/athens/newthinking/15-the-sophists-and-rhetoric.json"
+          },
+          {
+            "id": "16-the-sophists-and-athenian-society",
+            "title": "16. The Sophists and Athenian Society",
+            "path": "quizzes/athens/newthinking/16-the-sophists-and-athenian-society.json"
+          },
+          {
+            "id": "17-socrates",
+            "title": "17. Socrates",
+            "path": "quizzes/athens/newthinking/17-socrates.json"
+          },
+          {
+            "id": "18-socrates-methods-and-effects",
+            "title": "18. Socrates’ Methods and Effects",
+            "path": "quizzes/athens/newthinking/18-socrates-methods-and-effects.json"
+          },
+          {
+            "id": "19-socrates-and-democracy",
+            "title": "19. Socrates and Democracy",
+            "path": "quizzes/athens/newthinking/19-socrates-and-democracy.json"
+          },
+          {
+            "id": "20-socrates-trial-and-execution",
+            "title": "20. Socrates’ Trial and Execution",
+            "path": "quizzes/athens/newthinking/20-socrates-trial-and-execution.json"
+          }
+        ]
       },
       {
         "id": "athens-art",
         "name": "03. Art and Architecture",
         "description": "Structure of the Roman legal system.",
-        "quizzes": []
+        "quizzes": [
+          {
+            "id": "21-athenian-building-programme",
+            "title": "21. The Athenian Building Programme",
+            "path": "quizzes/athens/art/21-athenian-building-programme.json"
+          },
+          {
+            "id": "22-the-acropolis-of-athens",
+            "title": "22. The Acropolis of Athens",
+            "path": "quizzes/athens/art/22-the-acropolis-of-athens.json"
+          },
+          {
+            "id": "23-the-parthenon",
+            "title": "23. The Parthenon",
+            "path": "quizzes/athens/art/23-the-parthenon.json"
+          },
+          {
+            "id": "24-the-athenian-agora",
+            "title": "24. The Athenian Agora",
+            "path": "quizzes/athens/art/24-the-athenian-agora.json"
+          },
+          {
+            "id": "25-the-theatre-of-dionysus-and-odeon-of-pericles",
+            "title": "25. The Theatre of Dionysus and the Odeon of Pericles",
+            "path": "quizzes/athens/art/25-the-theatre-of-dionysus-and-odeon-of-pericles.json"
+          },
+          {
+            "id": "26-attica",
+            "title": "26. Attica",
+            "path": "quizzes/athens/art/26-attica.json"
+          }
+        ]
       },
       {
         "id": "athens-drama",
         "name": "04. Drama and Dramatic Festivals",
         "description": "Structure of the Roman legal system.",
-        "quizzes": []
+        "quizzes": [
+          {
+            "id": "27-the-city-dionysia",
+            "title": "27. The City Dionysia",
+            "path": "quizzes/athens/drama/27-the-city-dionysia.json"
+          },
+          {
+            "id": "28-the-lenaia",
+            "title": "28. The Lenaia",
+            "path": "quizzes/athens/drama/28-the-lenaia.json"
+          },
+          {
+            "id": "29-tragedy",
+            "title": "29. Tragedy",
+            "path": "quizzes/athens/drama/29-tragedy.json"
+          },
+          {
+            "id": "30-comedy",
+            "title": "30. Comedy",
+            "path": "quizzes/athens/drama/30-comedy.json"
+          }
+        ]
       },
       {
         "id": "athens-religion",
         "name": "05. Religion and Religious Festivals",
         "description": "Structure of the Roman legal system.",
-        "quizzes": []
+        "quizzes": [
+          {
+            "id": "31-athenian-religion",
+            "title": "31. Athenian Religion",
+            "path": "quizzes/athens/religion/31-athenian-religion.json"
+          },
+          {
+            "id": "32-attitudes-towards-religion",
+            "title": "32. Attitudes towards Religion",
+            "path": "quizzes/athens/religion/32-attitudes-towards-religion.json"
+          },
+          {
+            "id": "33-challenges-towards-religion",
+            "title": "33. Challenges towards Religion",
+            "path": "quizzes/athens/religion/33-challenges-towards-religion.json"
+          },
+          {
+            "id": "34-athenian-religious-festivals",
+            "title": "34. Athenian Religious Festivals",
+            "path": "quizzes/athens/religion/34-athenian-religious-festivals.json"
+          },
+          {
+            "id": "35-the-great-panathenaea",
+            "title": "35. The Great Panathenaea",
+            "path": "quizzes/athens/religion/35-the-great-panathenaea.json"
+          },
+          {
+            "id": "36-athena-and-poseidon",
+            "title": "36. Athena and Poseidon",
+            "path": "quizzes/athens/religion/36-athena-and-poseidon.json"
+          }
+        ]
       }
     ]
   },
