@@ -257,6 +257,18 @@ async function fetchQuizStatsFromSupabase(quizMeta) {
    ============================ */
 const quizStatsCache = {};
 
+// Cache keys must be user-scoped so guest stats never "poison" logged-in stats (and vice versa).
+function getStatsCacheKey(quizMeta) {
+  const quizId = getQuizIdFromMeta(quizMeta);
+  const userPart = currentUser ? currentUser.id : "guest";
+  return `${userPart}:${quizId}`;
+}
+
+function clearStatsCache() {
+  for (const k in quizStatsCache) delete quizStatsCache[k];
+}
+
+
 async function saveAttempt(quizMeta, score, total) {
   let result;
   if (supabaseClient && currentUser) {
@@ -264,13 +276,13 @@ async function saveAttempt(quizMeta, score, total) {
   } else {
     result = updateGuestQuizResults(quizMeta, score, total);
   }
-  const key = getQuizIdFromMeta(quizMeta);
+  const key = getStatsCacheKey(quizMeta);
   quizStatsCache[key] = result;
   return result;
 }
 
 async function getQuizStats(quizMeta) {
-  const key = getQuizIdFromMeta(quizMeta);
+  const key = getStatsCacheKey(quizMeta);
   if (quizStatsCache[key]) return quizStatsCache[key];
 
   let stats;
@@ -483,11 +495,16 @@ async function initAuth() {
   currentUser = data.user ?? null;
   refreshAuthPanel();
 
+  // When auth state changes we must invalidate cached stats and re-render the current view
+  // so mastery badges reflect the correct user immediately.
   supabaseClient.auth.onAuthStateChange((_event, session) => {
     currentUser = session?.user ?? null;
+    clearStatsCache();
     refreshAuthPanel();
+    rerenderCurrentView();
   });
 }
+
 
 /* ============================
    MASTERY CALCULATIONS
@@ -610,6 +627,28 @@ let lastView = {
   moduleId: null,
   unitId: null,
 };
+
+
+// Re-render whatever list view the user is currently on (used after auth changes)
+// so mastery tags and attempt counts refresh immediately.
+function rerenderCurrentView() {
+  // If modules haven't loaded yet, there's nothing to render.
+  if (!modules || modules.length === 0) return;
+
+  const { view, moduleId, unitId } = lastView || { view: "modules" };
+
+  if (view === "quizzes" && unitId) {
+    renderQuizList(unitId);
+    return;
+  }
+
+  if (view === "units" && moduleId) {
+    renderUnitList(moduleId);
+    return;
+  }
+
+  renderModuleList();
+}
 
 /* ============================
    DOM REFERENCES
@@ -1497,7 +1536,10 @@ if (hideFeedbackToggleEl) {
 /* ============================
    INITIALISATION
    ============================ */
-initAuth();
-loadModules();
+async function initApp() {
+  await initAuth();
+  await loadModules();
+}
+initApp();
 
 
