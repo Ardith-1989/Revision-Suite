@@ -150,50 +150,50 @@
         "name": "04. The Archidamian War, 431-421",
         "description": "Structure of the Roman legal system.",
         "quizzes": [
-                    {
+          {
             "id": "25-strategies-in-the-archidamian-war",
             "title": "25. Strategies in the Archidamian War",
             "path": "quizzes/greekstates/archidamianwar/25-strategies-in-the-archidamian-war.json"
           },
           {
-            "id": "26-the-invasions-of-attica-and-the-plague",
-            "title": "26. The Invasions of Attica, and the Plague",
-            "path": "quizzes/greekstates/archidamianwar/26-the-invasions-of-attica-and-the-plague.json"
+            "id": "26-the-invasions-of-attica-and-the-plague-431-429-bce",
+            "title": "26. The Invasions of Attica and the Plague, 431–429 BCE",
+            "path": "quizzes/greekstates/archidamianwar/26-the-invasions-of-attica-and-the-plague-431-429-bce.json"
           },
           {
-            "id": "27-the-revolt-of-lesbos",
-            "title": "27. The Revolt of Lesbos",
-            "path": "quizzes/greekstates/archidamianwar/27-the-revolt-of-lesbos.json"
+            "id": "27-the-revolt-of-lesbos-428-bce",
+            "title": "27. The Revolt of Lesbos, 428 BCE",
+            "path": "quizzes/greekstates/archidamianwar/27-the-revolt-of-lesbos-428-bce.json"
           },
           {
-            "id": "28-plataea-and-corcyra",
-            "title": "28. Plataea and Corcyra",
-            "path": "quizzes/greekstates/archidamianwar/28-plataea-and-corcyra.json"
+            "id": "28-plataea-and-corcyra-427-bce",
+            "title": "28. Plataea and Corcyra, 427 BCE",
+            "path": "quizzes/greekstates/archidamianwar/28-plataea-and-corcyra-427-bce.json"
           },
           {
-            "id": "29-tribute-reassessments",
-            "title": "29. Tribute Reassessments",
-            "path": "quizzes/greekstates/archidamianwar/29-tribute-reassessments.json"
+            "id": "29-tribute-reassessments-426-425-bce",
+            "title": "29. Tribute Reassessments, c. 426–425 BCE",
+            "path": "quizzes/greekstates/archidamianwar/29-tribute-reassessments-426-425-bce.json"
           },
           {
-            "id": "30-pylos-and-sphacteria",
-            "title": "30. Pylos and Sphacteria",
-            "path": "quizzes/greekstates/archidamianwar/30-pylos-and-sphacteria.json"
+            "id": "30-pylos-and-sphacteria-425-bce",
+            "title": "30. Pylos and Sphacteria, 425 BCE",
+            "path": "quizzes/greekstates/archidamianwar/30-pylos-and-sphacteria-425-bce.json"
           },
           {
-            "id": "31-brasidas-in-thrace",
-            "title": "31. Brasidas in Thrace",
-            "path": "quizzes/greekstates/archidamianwar/31-brasidas-in-thrace.json"
+            "id": "31-brasidas-in-thrace-424-bce",
+            "title": "31. Brasidas in Thrace, 424 BCE",
+            "path": "quizzes/greekstates/archidamianwar/31-brasidas-in-thrace-424-bce.json"
           },
           {
-            "id": "32-attitudes-in-athens-and-sparta",
-            "title": "32. Attitudes in Athens and Sparta",
-            "path": "quizzes/greekstates/archidamianwar/32-attitudes-in-athens-and-sparta.json"
+            "id": "32-attitudes-in-athens-and-sparta-424-421-bce",
+            "title": "32. Attitudes in Athens and Sparta, 424–421 BCE",
+            "path": "quizzes/greekstates/archidamianwar/32-attitudes-in-athens-and-sparta-424-421-bce.json"
           },
           {
-            "id": "33-the-peace-of-nicias",
-            "title": "33. The Peace of Nicias",
-            "path": "quizzes/greekstates/archidamianwar/33-the-peace-of-nicias.json"
+            "id": "33-the-peace-of-nicias-421-bce",
+            "title": "33. The Peace of Nicias, 421 BCE",
+            "path": "quizzes/greekstates/archidamianwar/33-the-peace-of-nicias-421-bce.json"
           }
         ]
       },
