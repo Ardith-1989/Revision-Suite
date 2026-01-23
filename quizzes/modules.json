@@ -12,7 +12,7 @@
           {
             "id": "01-the-classical-greek-world",
             "title": "01. The Classical Greek World",
-            "path": "quizzes/greekstates/persia/01-the-classical-greek-world.json"
+            "path": "quizzes/greekstates/persia/01-the-classical-greek-world-rev.json"
           },
           {
             "id": "02-the-ionian-revolt",
@@ -20,9 +20,9 @@
             "path": "quizzes/greekstates/persia/02-the-ionian-revolt.json"
           },
           {
-            "id": "03-mardonius-invasion",
-            "title": "03. Mardonius’ Invasion",
-            "path": "quizzes/greekstates/persia/03-mardonius-invasion.json"
+            "id": "03-mardonius-campaign",
+            "title": "03. Mardonius’ Campaign",
+            "path": "quizzes/greekstates/persia/03-mardonius-campaign.json"
           },
           {
             "id": "04-the-first-persian-invasion",
@@ -45,9 +45,9 @@
             "path": "quizzes/greekstates/persia/07-the-hellenic-league.json"
           },
           {
-            "id": "08-battles-of-thermopylae-and-artemisium",
+            "id": "08-thermopylae-and-artemisium",
             "title": "08. The Battles of Thermopylae and Artemisium",
-            "path": "quizzes/greekstates/persia/08-battles-of-thermopylae-and-artemisium.json"
+            "path": "quizzes/greekstates/persia/08-thermopylae-and-artemisium.json"
           },
           {
             "id": "09-the-battle-of-salamis",
@@ -72,39 +72,39 @@
         "description": "Structure of the Roman legal system.",
         "quizzes": [
           {
-            "id": "12-12-the-formation--of-the-delian-league",
-            "title": "12. The Formation  of the Delian League",
-            "path": "quizzes/greekstates/greeceinconflict/12-12-the-formation--of-the-delian-league.json"
+            "id": "12-the-formation-of-the-delian-league",
+            "title": "12. The Formation of the Delian League",
+            "path": "quizzes/greekstates/greeceinconflict/12-the-formation-of-the-delian-league.json"
           },
           {
-            "id": "13-13-wars-of-the-delian-league",
-            "title": "13. Wars of the Delian League",
-            "path": "quizzes/greekstates/greeceinconflict/13-13-wars-of-the-delian-league.json"
+            "id": "13-the-wars-of-the-delian-league",
+            "title": "13. The Wars of the Delian League",
+            "path": "quizzes/greekstates/greeceinconflict/13-the-wars-of-the-delian-league.json"
           },
           {
-            "id": "14-14-athenian-spartan-relations-478-465",
-            "title": "14. Athenian-Spartan Relations, 478-465",
-            "path": "quizzes/greekstates/greeceinconflict/14-14-athenian-spartan-relations-478-465.json"
+            "id": "14-athenian-spartan-relations-478-465-bce",
+            "title": "14. Athenian–Spartan Relations, 478–465 BCE",
+            "path": "quizzes/greekstates/greeceinconflict/14-athenian-spartan-relations-478-465-bce.json"
           },
           {
-            "id": "15-15-the-helot-revolt",
-            "title": "15. The Helot Revolt",
-            "path": "quizzes/greekstates/greeceinconflict/15-15-the-helot-revolt.json"
+            "id": "15-the-helot-revolt-464-bce",
+            "title": "15. The Helot Revolt, 464 BCE",
+            "path": "quizzes/greekstates/greeceinconflict/15-the-helot-revolt-464-bce.json"
           },
           {
-            "id": "16-16-the-first-peloponnesian-war",
-            "title": "16. The First Peloponnesian War",
-            "path": "quizzes/greekstates/greeceinconflict/16-16-the-first-peloponnesian-war.json"
+            "id": "16-the-first-peloponnesian-war-461-446-bce",
+            "title": "16. The First Peloponnesian War, 461–446 BCE",
+            "path": "quizzes/greekstates/greeceinconflict/16-the-first-peloponnesian-war-461-446-bce.json"
           },
           {
-            "id": "17-17-the-dealian-league-461-446",
-            "title": "17. The Dealian League, 461-446",
-            "path": "quizzes/greekstates/greeceinconflict/17-17-the-dealian-league-461-446.json"
+            "id": "17-the-delian-league-461-446-bce",
+            "title": "17. The Delian League, 461–446 BCE",
+            "path": "quizzes/greekstates/greeceinconflict/17-the-delian-league-461-446-bce.json"
           },
           {
-            "id": "18-18-the-spartan-invasion-of-attica-446",
-            "title": "18. The Spartan Invasion of Attica 446",
-            "path": "quizzes/greekstates/greeceinconflict/18-18-the-spartan-invasion-of-attica-446.json"
+            "id": "18-the-spartan-invasion-of-attica-446-bce",
+            "title": "18. The Spartan Invasion of Attica, 446 BCE",
+            "path": "quizzes/greekstates/greeceinconflict/18-the-spartan-invasion-of-attica-446-bce.json"
           }
         ]
       },
@@ -114,34 +114,34 @@
         "description": "Structure of the Roman legal system.",
         "quizzes": [
           {
-            "id": "19-the-thirty-year-peace",
-            "title": "19. The Thirty Year Peace",
-            "path": "quizzes/greekstates/peaceconflict/19-the-thirty-year-peace.json"
+            "id": "19-the-thirty-year-peace-446-bce",
+            "title": "19. The Thirty Year Peace, 446 BCE",
+            "path": "quizzes/greekstates/peaceconflict/19-the-thirty-year-peace-446-bce.json"
           },
           {
-            "id": "20-revolt-of-samos",
-            "title": "20. Revolt of Samos",
-            "path": "quizzes/greekstates/peaceconflict/20-revolt-of-samos.json"
+            "id": "20-the-revolt-of-samos-440-439-bce",
+            "title": "20. The Revolt of Samos, c. 440–439 BCE",
+            "path": "quizzes/greekstates/peaceconflict/20-the-revolt-of-samos-440-439-bce.json"
           },
           {
-            "id": "21-the-epidamnus-affair",
-            "title": "21. The Epidamnus Affair",
-            "path": "quizzes/greekstates/peaceconflict/21-the-epidamnus-affair.json"
+            "id": "21-the-epidamnus-affair-436-433-bce",
+            "title": "21. The Epidamnus Affair, c. 436–433 BCE",
+            "path": "quizzes/greekstates/peaceconflict/21-the-epidamnus-affair-436-433-bce.json"
           },
           {
-            "id": "22-potidaea",
-            "title": "22. Potidaea",
-            "path": "quizzes/greekstates/peaceconflict/22-potidaea.json"
+            "id": "22-potidaea-433-432-bce",
+            "title": "22. Potidaea, c. 433–432 BCE",
+            "path": "quizzes/greekstates/peaceconflict/22-potidaea-433-432-bce.json"
           },
           {
-            "id": "23-the-megarian-decree",
-            "title": "23. The Megarian Decree",
-            "path": "quizzes/greekstates/peaceconflict/23-the-megarian-decree.json"
+            "id": "23-the-megarian-decree-432-bce",
+            "title": "23. The Megarian Decree, c. 432 BCE",
+            "path": "quizzes/greekstates/peaceconflict/23-the-megarian-decree-432-bce.json"
           },
           {
-            "id": "24-the-assembly-at-sparta",
-            "title": "24. The Assembly at Sparta",
-            "path": "quizzes/greekstates/peaceconflict/24-the-assembly-at-sparta.json"
+            "id": "24-the-assemblies-at-sparta-432-bce",
+            "title": "24. The Assemblies at Sparta, c. 432 BCE",
+            "path": "quizzes/greekstates/peaceconflict/24-the-assemblies-at-sparta-432-bce.json"
           }
         ]
       },
@@ -149,53 +149,7 @@
         "id": "greekstates-archidamianwar",
         "name": "04. The Archidamian War, 431-421",
         "description": "Structure of the Roman legal system.",
-        "quizzes": [
-          {
-            "id": "25-strategies-in-the-archidamian-war",
-            "title": "25. Strategies in the Archidamian War",
-            "path": "quizzes/greekstates/archiamianwar/25-strategies-in-the-archidamian-war.json"
-          },
-          {
-            "id": "26-the-invasions-of-attica-and-the-plague",
-            "title": "26. The Invasions of Attica, and the Plague",
-            "path": "quizzes/greekstates/archiamianwar/26-the-invasions-of-attica-and-the-plague.json"
-          },
-          {
-            "id": "27-the-revolt-of-lesbos",
-            "title": "27. The Revolt of Lesbos",
-            "path": "quizzes/greekstates/archiamianwar/27-the-revolt-of-lesbos.json"
-          },
-          {
-            "id": "28-plataea-and-corcyra",
-            "title": "28. Plataea and Corcyra",
-            "path": "quizzes/greekstates/archiamianwar/28-plataea-and-corcyra.json"
-          },
-          {
-            "id": "29-tribute-reassessments",
-            "title": "29. Tribute Reassessments",
-            "path": "quizzes/greekstates/archiamianwar/29-tribute-reassessments.json"
-          },
-          {
-            "id": "30-pylos-and-sphacteria",
-            "title": "30. Pylos and Sphacteria",
-            "path": "quizzes/greekstates/archiamianwar/30-pylos-and-sphacteria.json"
-          },
-          {
-            "id": "31-brasidas-in-thrace",
-            "title": "31. Brasidas in Thrace",
-            "path": "quizzes/greekstates/archiamianwar/31-brasidas-in-thrace.json"
-          },
-          {
-            "id": "32-attitudes-in-athens-and-sparta",
-            "title": "32. Attitudes in Athens and Sparta",
-            "path": "quizzes/greekstates/archiamianwar/32-attitudes-in-athens-and-sparta.json"
-          },
-          {
-            "id": "33-the-peace-of-nicias",
-            "title": "33. The Peace of Nicias",
-            "path": "quizzes/greekstates/archiamianwar/33-the-peace-of-nicias.json"
-          }
-        ]
+        "quizzes": []
       },
       {
         "id": "greekstates-endofthewar",
@@ -203,58 +157,58 @@
         "description": "Structure of the Roman legal system.",
         "quizzes": [
           {
-            "id": "34-changing-alliances",
-            "title": "34. Changing Alliances",
-            "path": "quizzes/greekstates/endofthewar/34-changing-alliances.json"
+            "id": "34-changing-alliances-420-417-bce",
+            "title": "34. Changing Alliances, 420–417 BCE",
+            "path": "quizzes/greekstates/endofthewar/34-changing-alliances-420-417-bce.json"
           },
           {
-            "id": "35-athens-and-melos",
-            "title": "35. Athens and Melos",
-            "path": "quizzes/greekstates/endofthewar/35-athens-and-melos.json"
+            "id": "35-athens-and-melos-416-bce",
+            "title": "35. Athens and Melos, 416 BCE",
+            "path": "quizzes/greekstates/endofthewar/35-athens-and-melos-416-bce.json"
           },
           {
-            "id": "36-the-sicilian-expedition",
-            "title": "36. The Sicilian Expedition",
-            "path": "quizzes/greekstates/endofthewar/36-the-sicilian-expedition.json"
+            "id": "36-the-sicilian-expedition-415-413-bce",
+            "title": "36. The Sicilian Expedition, 415–413 BCE",
+            "path": "quizzes/greekstates/endofthewar/36-the-sicilian-expedition-415-413-bce.json"
           },
           {
-            "id": "37-the-occupation-of-decelea",
-            "title": "37. The Occupation of Decelea",
-            "path": "quizzes/greekstates/endofthewar/37-the-occupation-of-decelea.json"
+            "id": "37-the-occupation-of-decelea-413-bce",
+            "title": "37. The Occupation of Decelea, c. 413 BCE",
+            "path": "quizzes/greekstates/endofthewar/37-the-occupation-of-decelea-413-bce.json"
           },
           {
-            "id": "38-impact-of-the-sicilian-expedition",
-            "title": "38. Impact of the Sicilian Expedition",
-            "path": "quizzes/greekstates/endofthewar/38-impact-of-the-sicilian-expedition.json"
+            "id": "38-the-impact-of-the-sicilian-expedition",
+            "title": "38. The Impact of the Sicilian Expedition",
+            "path": "quizzes/greekstates/endofthewar/38-the-impact-of-the-sicilian-expedition.json"
           },
           {
-            "id": "39-the-treaty-of-miletus",
-            "title": "39. The Treaty of Miletus",
-            "path": "quizzes/greekstates/endofthewar/39-the-treaty-of-miletus.json"
+            "id": "39-the-treaty-of-miletus-412-bce",
+            "title": "39. The Treaty of Miletus, c. 412 BCE",
+            "path": "quizzes/greekstates/endofthewar/39-the-treaty-of-miletus-412-bce.json"
           },
           {
-            "id": "40-the-oligarchic-coup",
-            "title": "40. The Oligarchic Coup",
-            "path": "quizzes/greekstates/endofthewar/40-the-oligarchic-coup.json"
+            "id": "40-the-oligarchic-coup-411-bce",
+            "title": "40. The Oligarchic Coup, 411 BCE",
+            "path": "quizzes/greekstates/endofthewar/40-the-oligarchic-coup-411-bce.json"
           },
           {
-            "id": "41-the-war-in-the-aegean",
-            "title": "41. The War in the Aegean",
-            "path": "quizzes/greekstates/endofthewar/41-the-war-in-the-aegean.json"
+            "id": "41-the-war-in-the-aegean-411-407-bce",
+            "title": "41. The War in the Aegean, 411–407 BCE",
+            "path": "quizzes/greekstates/endofthewar/41-the-war-in-the-aegean-411-407-bce.json"
           },
           {
-            "id": "42-the-battle-of-arginusae",
-            "title": "42. The Battle of Arginusae",
-            "path": "quizzes/greekstates/endofthewar/42-the-battle-of-arginusae.json"
+            "id": "42-the-battle-of-arginusae-406-bce",
+            "title": "42. The Battle of Arginusae, 406 BCE",
+            "path": "quizzes/greekstates/endofthewar/42-the-battle-of-arginusae-406-bce.json"
           },
           {
-            "id": "43-the-end-of-the-war",
-            "title": "43. The End of the War",
-            "path": "quizzes/greekstates/endofthewar/43-the-end-of-the-war.json"
+            "id": "43-the-defeat-of-athens-405-404-bce",
+            "title": "43. The Defeat of Athens, 405–404 BCE",
+            "path": "quizzes/greekstates/endofthewar/43-the-defeat-of-athens-405-404-bce.json"
           },
           {
             "id": "44-the-reasons-for-athens-defeat",
-            "title": "44. The Reasons for Athens' Defeat",
+            "title": "44. The Reasons for Athens’ Defeat",
             "path": "quizzes/greekstates/endofthewar/44-the-reasons-for-athens-defeat.json"
           }
         ]
