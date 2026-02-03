@@ -826,11 +826,6 @@
             "path": "quizzes/republic/socialeconomic/38-senators-equestrians-and-plebians.json"
           },
           {
-            "id": "38-senators-equestrians-and-plebs",
-            "title": "38. Senators, Equestrians, and Plebs",
-            "path": "quizzes/republic/socialeconomic/38-senators-equestrians-and-plebs.json"
-          },
-          {
             "id": "39-land-reform",
             "title": "39. Land Reform",
             "path": "quizzes/republic/socialeconomic/39-land-reform.json"
@@ -938,11 +933,6 @@
             "id": "17-the-res-gestae",
             "title": "17. The Res Gestae",
             "path": "quizzes/julioclaudians/augustus/17-the-res-gestae.json"
-          },
-          {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/julioclaudians/augustus/late-roman-republic.json"
           }
         ]
       },
@@ -1010,11 +1000,6 @@
             "id": "29-tiberius-and-religion",
             "title": "29. Tiberius and Religion",
             "path": "quizzes/julioclaudians/tiberius/29-tiberius-and-religion.json"
-          },
-          {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/julioclaudians/tiberius/late-roman-republic.json"
           }
         ]
       },
@@ -1082,11 +1067,6 @@
             "id": "29-tiberius-and-religion",
             "title": "29. Tiberius and Religion",
             "path": "quizzes/julioclaudians/tiberius/29-tiberius-and-religion.json"
-          },
-          {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/julioclaudians/tiberius/late-roman-republic.json"
           }
         ]
       },
@@ -1134,11 +1114,6 @@
             "id": "44-claudius-death",
             "title": "44. Claudius’ Death",
             "path": "quizzes/julioclaudians/claudius/44-claudius-death.json"
-          },
-          {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/julioclaudians/claudius/late-roman-republic.json"
           }
         ]
       },
@@ -1206,11 +1181,6 @@
             "id": "56-nero-in-the-sources",
             "title": "56. Nero in the Sources",
             "path": "quizzes/julioclaudians/nero/56-nero-in-the-sources.json"
-          },
-          {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/julioclaudians/nero/late-roman-republic.json"
           }
         ]
       }
