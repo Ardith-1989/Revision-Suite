@@ -1,232 +1,257 @@
 {
   "id": "22-the-first-triumvirate",
   "title": "22. The First Triumvirate",
-  "description": "22. The First Triumvirate",
+  "description": "An examination of the informal alliance between Caesar, Pompey, and Crassus and its significance for the breakdown of Republican politics.",
   "questions": [
     {
-      "question": "The First Triumvirate Quiz",
-      "options": [],
-      "correctIndex": null
+      "question": "What was the First Triumvirate?",
+      "options": [
+        "A formal legal body",
+        "An informal political alliance",
+        "A senatorial committee",
+        "A military council"
+      ],
+      "correctIndex": 1
     },
     {
-      "question": "How much had Pompey's reorganisation of the east increased Roman tax revenue?",
+      "question": "Which three men formed the First Triumvirate?",
       "options": [
-        "60%",
-        "80%",
+        "Pompey, Crassus, Cato",
+        "Caesar, Bibulus, Crassus",
+        "Caesar, Pompey, Crassus",
+        "Caesar, Cicero, Pompey"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "question": "Why did Pompey need political support after returning from the East?",
+      "options": [
+        "His commands were illegal",
+        "He lacked popular support",
+        "He was prosecuted",
+        "He needed Senate ratification"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "By approximately how much did Pompey increase Roman tax revenue in the East?",
+      "options": [
+        "70%",
+        "90%",
         "50%",
-        "70%"
+        "30%"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     },
     {
-      "question": "How much money did Pompey add to the Treasury?",
+      "question": "How much money did Pompey add to the Roman treasury?",
       "options": [
-        "400 million sestertii",
-        "480 million sestertii",
-        "450 million sestertii",
-        "500 million sestertii"
+        "700 million sesterces",
+        "300 million sesterces",
+        "180 million sesterces",
+        "480 million sesterces"
       ],
-      "correctIndex": null
+      "correctIndex": 3
     },
     {
-      "question": "In what year did Pompey send Piso to Rome to stand for election to represent his interests?",
+      "question": "What promise had Pompey made to his veterans?",
       "options": [
-        "62",
-        "60",
-        "61",
-        "59"
+        "Citizenship",
+        "Tax exemption",
+        "Money bonuses",
+        "Land"
       ],
-      "correctIndex": null
+      "correctIndex": 3
     },
     {
-      "question": "Who was the consul for 60 that was not friendly to Pompey's interests?",
+      "question": "Who blocked Pompey’s request to delay the elections of 61 BCE?",
       "options": [
-        "P. Cornelius Sulla",
-        "M. Licinius Crassus",
-        "Q. Caecilius Metellus Celer",
-        "L. Aurelius Cotta"
-      ],
-      "correctIndex": null
-    },
-    {
-      "question": "Who did Pompey send to become elected consul for 60?",
-      "options": [
-        "Caesar",
+        "Cato",
+        "Metellus",
         "Cicero",
-        "Crassus",
+        "Bibulus"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "question": "Which candidate did Pompey support unsuccessfully in 61 BCE?",
+      "options": [
+        "Bibulus",
+        "Piso",
+        "Caesar",
         "Afranius"
       ],
-      "correctIndex": null
+      "correctIndex": 1
     },
     {
-      "question": "How did Pompey ensure Afranius was elected?",
+      "question": "Why did Pompey oppose Metellus Celer?",
       "options": [
-        "Public speeches",
-        "Military force",
-        "Political manipulation",
-        "Bribery"
+        "Military disagreement",
+        "Political rivalry",
+        "Metellus opposed land reform",
+        "Personal family dispute"
       ],
-      "correctIndex": null
+      "correctIndex": 3
     },
     {
-      "question": "Who opposed Pompey's interests when Afranius started to propose them?",
+      "question": "Who did Pompey successfully support for the consulship of 60 BCE?",
       "options": [
-        "Cato and Metellus",
-        "Sulla and Pompey",
-        "Crassus and Caesar",
-        "Cicero and Cato"
+        "Piso",
+        "Afranius",
+        "Crassus",
+        "Bibulus"
       ],
-      "correctIndex": null
+      "correctIndex": 1
     },
     {
-      "question": "Who was the Tribune that presented a land bill to the people on behalf of Pompey?",
+      "question": "Which tribune proposed Pompey’s land bill to the people?",
       "options": [
-        "Livius Drusus",
-        "Marcus Antonius",
-        "Tiberius Gracchus",
-        "Flavius"
+        "Gabinius",
+        "Manilius",
+        "Flavius",
+        "Clodius"
       ],
-      "correctIndex": null
+      "correctIndex": 2
     },
     {
-      "question": "What did Flavius do when Metellus spoke against this bill?",
+      "question": "How did Metellus respond to the land bill?",
       "options": [
-        "Took him to jail",
-        "Engaged in public debate",
-        "Dismissed him",
-        "Ignored him"
+        "Opposed it and was jailed",
+        "Ignored it",
+        "Supported it",
+        "Left Rome"
       ],
-      "correctIndex": null
+      "correctIndex": 0
+    },
+    {
+      "question": "What lesson did Pompey learn from the Afranius episode?",
+      "options": [
+        "The Senate supported him",
+        "He needed more soldiers",
+        "He lacked real political power",
+        "Tribunes were ineffective"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "question": "Which group did Crassus represent politically?",
+      "options": [
+        "The Senate",
+        "The army",
+        "The publicani",
+        "The plebs"
+      ],
+      "correctIndex": 2
     },
     {
       "question": "Who were the publicani?",
       "options": [
-        "Senators",
-        "Military generals",
-        "Tax collectors",
-        "Gladiators"
+        "Tax-collecting equites",
+        "Military officers",
+        "Provincial governors",
+        "Senators"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     },
     {
-      "question": "Why did the publicani want to be released from 1/3 of the cost of their contracts?",
+      "question": "What did the publicani request in 60 BCE?",
       "options": [
-        "The contracts were unfairly written",
-        "They wanted more control over their collections",
-        "They were underpaid for their work",
-        "They had overbid, and were collecting less than expected, so would make less profit"
+        "New contracts",
+        "Legal immunity",
+        "Release from one-third of contracts",
+        "Higher taxes"
       ],
-      "correctIndex": null
+      "correctIndex": 2
     },
     {
-      "question": "Who surprisingly, alongside Crassus, spoke in favor of the publicani?",
+      "question": "Who opposed the publicani in the Senate?",
       "options": [
         "Cicero",
-        "Pompey",
-        "Caesar",
-        "Metellus"
-      ],
-      "correctIndex": null
-    },
-    {
-      "question": "Why did Cicero favor making the publicani happy?",
-      "options": [
-        "To gain popularity among the people",
-        "To maintain Roman unity",
-        "Concordia ordinum - harmony of the orders",
-        "To avoid conflict with the Senate"
-      ],
-      "correctIndex": null
-    },
-    {
-      "question": "Who spoke against the interests of the publicani?",
-      "options": [
         "Cato",
-        "Pompey",
         "Caesar",
-        "Cicero"
+        "Pompey"
       ],
-      "correctIndex": null
+      "correctIndex": 1
     },
     {
-      "question": "Where had Caesar been pro-praetorian governor in 61?",
+      "question": "Why did Cicero support the publicani publicly?",
       "options": [
-        "Spain",
-        "Sicily",
+        "Concordia ordinum",
+        "Electoral gain",
+        "Fear of Crassus",
+        "Personal profit"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "question": "What was Caesar seeking after returning from Spain in 61 BCE?",
+      "options": [
+        "A triumph and consulship",
+        "A governorship",
+        "A praetorship",
+        "A dictatorship"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "question": "Why was Caesar unable to stand for consul in absentia?",
+      "options": [
+        "Cato’s filibuster",
+        "Military duties",
+        "Popular opposition",
+        "Legal restrictions"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "question": "What personal factor influenced Cato’s opposition to Caesar?",
+      "options": [
+        "Economic disagreements",
+        "Military concerns",
+        "Political rivalry only",
+        "Family rivalry and Caesar’s affair with Servilia"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "How did the optimates respond to Caesar’s election?",
+      "options": [
+        "Called for new elections",
+        "Supported it",
+        "Ignored it",
+        "Used bribery to elect Bibulus"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "What command was initially offered to Caesar after the election?",
+      "options": [
+        "Woods and pastures of Italy",
+        "Africa",
         "Gaul",
-        "Africa"
+        "Spain"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     },
     {
-      "question": "What did Caesar want on his return to Rome?",
+      "question": "How did Caesar overcome hostility between Pompey and Crassus?",
       "options": [
-        "To fight in the civil wars",
-        "To stand for consul in absentia and have a triumph",
-        "To establish a new colony",
-        "To become a dictator"
-      ],
-      "correctIndex": null
-    },
-    {
-      "question": "What did Caesar request so he could have both?",
-      "options": [
-        "A pardon from the Senate",
-        "To stand in absentia",
-        "The restoration of the corn dole",
-        "Military support from Crassus"
-      ],
-      "correctIndex": null
-    },
-    {
-      "question": "How did Cato ensure this proposal was left undecided?",
-      "options": [
-        "He used his veto powers",
-        "He bribed senators",
-        "He filibustered it",
-        "He created a military blockade"
-      ],
-      "correctIndex": null
-    },
-    {
-      "question": "Why might Cato have opposed Caesar in his candidature for personal reasons?",
-      "options": [
-        "He insulted him in public speeches",
-        "He disagreed with Caesar's policies",
-        "His son-in-law was up for election, and had always previously been outshone by Caesar",
-        "Caesar was married to his daughter"
-      ],
-      "correctIndex": null
-    },
-    {
-      "question": "What was the First Triumvirate?",
-      "options": [
-        "A religious ceremony involving three Roman leaders",
-        "A military alliance between Pompey, Crassus, and Cicero",
-        "A formal agreement between the Senate, Pompey, and Crassus",
-        "An informal alliance to help all three get what they wanted"
-      ],
-      "correctIndex": null
-    },
-    {
-      "question": "How did the Optimates ensure that Bibulus was elected alongside Caesar?",
-      "options": [
-        "Force",
         "Bribery",
-        "Popular support",
-        "Political manipulation"
+        "Reconciliation and negotiation",
+        "Military force",
+        "Threats"
       ],
-      "correctIndex": null
+      "correctIndex": 1
     },
     {
-      "question": "What proconsular command did the Senate allot to Caesar in the first instance?",
+      "question": "What is the main significance of the First Triumvirate?",
       "options": [
-        "The woods and pastures of Italy",
-        "Gaul",
-        "The Mediterranean Sea",
-        "The military frontier in Africa"
+        "It bypassed Republican institutions",
+        "It strengthened senatorial authority",
+        "It formalised dictatorship",
+        "It ended civil war"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     }
   ]
 }

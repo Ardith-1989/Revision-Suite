@@ -1,197 +1,257 @@
 {
   "id": "19-the-catilinarian-conspiracy",
   "title": "19. The Catilinarian Conspiracy",
-  "description": "19. The Catilinarian Conspiracy",
+  "description": "A detailed examination of Catiline’s conspiracy of 63 BCE, Cicero’s response, and the political and legal consequences in Rome.",
   "questions": [
     {
-      "question": "In what year did Catiline run for consul, in spite of rumours of rumours about assassinations and plots swirling?",
+      "question": "In which year did the Catilinarian Conspiracy take place?",
       "options": [
-        "65",
-        "63, for the consulship of 62",
-        "60",
-        "70"
+        "65 BCE",
+        "62 BCE",
+        "64 BCE",
+        "63 BCE"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "Despite rumours of violence, what office did Catiline stand for in 63 BCE?",
+      "options": [
+        "Tribunate",
+        "Praetorship",
+        "Dictatorship",
+        "Consulship"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "Why was Catiline difficult to prosecute before the conspiracy broke?",
+      "options": [
+        "Tribunician veto",
+        "Strong political connections",
+        "Lack of evidence",
+        "Popular support"
       ],
       "correctIndex": 1
     },
     {
-      "question": "What was Catiline's threat, issued on Cicero challenging him about the rumours?",
+      "question": "Which famous statement is known as ‘Catiline’s threat’?",
       "options": [
-        "Two bodies: one wasted with a head (Senate) the other strong but with no head (People) he intends to lead the second body",
-        "To destroy all political enemies",
-        "To burn Rome",
-        "A sword for each of his enemies"
+        "The metaphor of two bodies",
+        "A prophecy of Rome’s fall",
+        "A denunciation of Cicero",
+        "A call to arms"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     },
     {
-      "question": "Of which group did Catiline present himself as a leader?",
+      "question": "According to Plutarch, whom did Catiline claim to represent?",
       "options": [
-        "The plebs",
-        "The miseri",
-        "The optimates",
-        "The patricians"
+        "The miseri of Rome",
+        "The equites",
+        "The Senate",
+        "Italian allies"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     },
     {
-      "question": "What did Cicero do when overseeing the elections for the consuls of 62?",
+      "question": "How did Cicero emphasise the danger during the consular elections?",
       "options": [
-        "Used bribery to control votes",
-        "Wore a breastplate and had a bodyguard around him.",
-        "Stood before the Senate with a sword",
-        "Called for a military presence in the forum"
+        "Arresting Catiline",
+        "Closing the Forum",
+        "Wearing a breastplate and using bodyguards",
+        "Declaring martial law"
       ],
-      "correctIndex": null
+      "correctIndex": 2
     },
     {
-      "question": "Was Catiline successful in his bid for the consulship?",
+      "question": "What was the outcome of the consular elections of 63 BCE for Catiline?",
       "options": [
-        "He was elected consul for life",
-        "No",
-        "He was appointed consul but later removed",
-        "Yes"
+        "He failed again",
+        "He was arrested",
+        "He was elected",
+        "He withdrew"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     },
     {
-      "question": "Upon hearing the results of the election, what did Catiline send Manlius away to do?",
+      "question": "Who did Catiline allegedly send north to organise troops?",
       "options": [
-        "Raise troops",
-        "Recruit mercenaries",
-        "Escape to Spain",
-        "Conspire with the Senate"
+        "Lentulus",
+        "Manlius",
+        "Autronius",
+        "Cethegus"
       ],
-      "correctIndex": null
+      "correctIndex": 1
     },
     {
-      "question": "What was Cicero warned of by letters he subsequently received 18/19 October?",
+      "question": "Where was Manlius reported to be gathering troops?",
       "options": [
-        "Massacres of key figures?",
-        "Catiline's escape plan",
-        "The movement of troops",
-        "An attack on his house"
+        "Capua",
+        "Faesulae",
+        "Rome",
+        "Arretium"
       ],
-      "correctIndex": null
+      "correctIndex": 1
     },
     {
-      "question": "In light of this, and reports of a gathering army, what did the senate do?",
+      "question": "What decree did Cicero have passed after receiving warning letters?",
       "options": [
-        "Pass the SCU",
-        "Offer a pardon to the rebels",
-        "Send a peace delegation to Catiline",
-        "Declare martial law"
+        "Senatus consultum ultimum",
+        "Lex Hortensia",
+        "Lex Julia",
+        "Lex Agraria"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     },
     {
-      "question": "When he received reports of Manlius gathering troops at Faesulae what did Cicero do?",
+      "question": "On which dates did Cicero receive letters warning of massacres?",
       "options": [
-        "Flee Rome",
-        "Raise his own army",
-        "Ignore the reports",
-        "Send commanders to respond"
+        "18–19 October",
+        "15–16 October",
+        "2–3 December",
+        "27–28 October"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     },
     {
-      "question": "How was Cicero warned of a plot to assassinate him?",
+      "question": "What key accusation was missing from the early letters?",
       "options": [
-        "By an anonymous informant",
-        "Through a letter from the Senate",
-        "By one of the conspirators' mistresses",
-        "From a dream he had"
+        "Connection to Catiline",
+        "Plans to attack Rome",
+        "Evidence of violence",
+        "Names of conspirators"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     },
     {
-      "question": "What did Cicero do in response to this failed assassination?",
+      "question": "What happened on 6 November?",
       "options": [
-        "Sent a message to Caesar",
-        "Ordered the arrest of all conspirators",
-        "Made speeches in the Senate",
-        "Fled to the countryside"
+        "The Senate met",
+        "A plot to assassinate Cicero was formed",
+        "The army marched",
+        "Catiline fled Rome"
       ],
-      "correctIndex": null
+      "correctIndex": 1
     },
     {
-      "question": "What was Catiline's response to these speeches?",
+      "question": "How was Cicero warned about the assassination attempt?",
       "options": [
-        "He admitted his guilt",
-        "He went into hiding",
-        "He fled Rome to Join Manlius",
-        "He attempted to assassinate Cicero"
+        "By a soldier",
+        "By a senator",
+        "By Manlius",
+        "By a mistress of a conspirator"
       ],
-      "correctIndex": null
+      "correctIndex": 3
     },
     {
-      "question": "What groups does Cicero say were among Catiline's army?",
+      "question": "What did Cicero do after the assassination attempt failed?",
       "options": [
-        "Rich senators, nobles, mercenaries",
-        "Banqueters, gamblers, adulterers, filth, murderous",
-        "The ruling class, generals, exiles",
-        "Loyal soldiers, plebeians, gladiators"
+        "Fled Rome",
+        "Arrested Catiline",
+        "Declared dictatorship",
+        "Delivered speeches in the Senate"
       ],
-      "correctIndex": null
+      "correctIndex": 3
     },
     {
-      "question": "What does Catiline's letter to Catulus tell us of his motivations?",
+      "question": "Where did Catiline go after leaving Rome?",
       "options": [
-        "It was due to being robbed of what he deserved that he rose up, selfishness of others.",
-        "He wanted to create a just and fair government",
-        "He wanted power for the plebs",
-        "He was influenced by foreign powers"
+        "Etruria to join Manlius",
+        "Gaul",
+        "Spain",
+        "Africa"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     },
     {
-      "question": "What did the conspirators then try to do which resulted in some of them being unmasked?",
+      "question": "How were some conspirators in Rome exposed?",
       "options": [
-        "Flee to Gaul",
-        "Recruit a Gallic tribe to their cause",
-        "Plan an assassination attempt on Cicero",
-        "Betray their fellow conspirators"
+        "By informers",
+        "When trying to recruit a Gallic tribe",
+        "By intercepted letters",
+        "Through torture"
       ],
-      "correctIndex": null
+      "correctIndex": 1
     },
     {
-      "question": "In the debate on the conspirators' arrest, who proposed they should not be executed?",
+      "question": "When were the Roman conspirators arrested?",
+      "options": [
+        "2–3 December",
+        "6 November",
+        "27 October",
+        "5 December"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "question": "Who proposed the death penalty for the conspirators?",
       "options": [
         "Caesar",
         "Cato",
-        "Pompey",
-        "Metellus"
+        "Silanus",
+        "Cicero"
       ],
-      "correctIndex": null
+      "correctIndex": 2
     },
     {
-      "question": "Whose speech, in favour of execution, swayed the senate to ultimately vote for death?",
+      "question": "What argument did Caesar make in the Senate debate?",
       "options": [
-        "Cicero",
-        "Pompey",
+        "Exile was too lenient",
+        "Cicero lacked authority",
+        "Execution would break Roman law",
+        "The conspirators deserved death"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "question": "Whose speech ultimately secured the executions?",
+      "options": [
         "Caesar",
+        "Cicero",
+        "Silanus",
         "Cato"
       ],
-      "correctIndex": null
+      "correctIndex": 3
     },
     {
-      "question": "What happened to Catiline and his army after the execution of the conspirators in Rome?",
+      "question": "Which source emphasises Cato and Caesar’s roles over Cicero’s?",
       "options": [
-        "They retreated into Spain",
-        "Support fell away, and they were defeated early next year",
-        "They were reinforced by foreign soldiers",
-        "They successfully captured Rome"
+        "Plutarch",
+        "Livy",
+        "Sallust",
+        "Cicero"
       ],
-      "correctIndex": null
+      "correctIndex": 2
     },
     {
-      "question": "What title was Cicero awarded for his role in defeating the conspiracy?",
+      "question": "What happened to support for Catiline after the executions?",
       "options": [
-        "Princeps Senatus",
+        "It collapsed",
+        "It shifted to Rome",
+        "It remained strong",
+        "It increased"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "question": "How did the conspiracy finally end?",
+      "options": [
+        "Catiline was defeated in battle",
+        "The Senate pardoned him",
+        "Catiline surrendered",
+        "Negotiations succeeded"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "question": "What title was Cicero awarded after the conspiracy?",
+      "options": [
+        "Pater patriae",
         "Imperator",
-        "Pater Patriae",
-        "Consul"
+        "Consul for life",
+        "Princeps senatus"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     }
   ]
 }

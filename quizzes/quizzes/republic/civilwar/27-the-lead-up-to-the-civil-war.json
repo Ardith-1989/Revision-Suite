@@ -1,257 +1,257 @@
 {
   "id": "27-the-lead-up-to-the-civil-war",
   "title": "27. The Lead up to the Civil War",
-  "description": "27. The Lead up to the Civil War",
+  "description": "An examination of the political crisis between Caesar and Pompey from 51–49 BCE and how disputes over command and prosecution led to civil war.",
   "questions": [
     {
-      "question": "What were Caesar's aims in 51 BC?",
+      "question": "What was Pompey’s main aim in 51 BCE?",
       "options": [
-        "To assume a permanent dictatorship",
-        "To retire from public life altogether",
-        "To run for consul in absentia, and then head straight to a province to avoid",
-        "To seek the censorship in Rome"
+        "Support Caesar",
+        "Seek dictatorship",
+        "Keep balance and prevent Caesar eclipsing him",
+        "Join Optimates fully"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "question": "Which rule from Pompey’s sole consulship angered Caesar?",
+      "options": [
+        "Tribune veto",
+        "Five-year gap rule",
+        "Grain command",
+        "Corn law"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "question": "What did Caesar want regarding his command?",
+      "options": [
+        "Immediate return",
+        "Retirement",
+        "Extension to stand in absentia",
+        "Dictatorship"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "question": "Why did Caesar want immunity from prosecution?",
+      "options": [
+        "Illegal acts",
+        "Debt",
+        "Unpopularity",
+        "Violence"
       ],
       "correctIndex": 0
     },
     {
-      "question": "Why did the optimates want Caesar to return to Rome?",
+      "question": "Who wanted Caesar recalled early?",
       "options": [
-        "To celebrate a triumph",
-        "To appoint him as governor of Asia",
-        "To negotiate a treaty with Pompey",
-        "To prosecute him"
+        "Plebs",
+        "Veterans",
+        "Equites",
+        "Optimates"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "Who wanted to prosecute Caesar for actions against Germans?",
+      "options": [
+        "Bibulus & Curio",
+        "Pompey & Cicero",
+        "Marcellus & Curio",
+        "Cato & Ahenobarbus"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "Why was there objection to Caesar remaining in Gaul?",
+      "options": [
+        "Illegal authority",
+        "No enemies left",
+        "No funds",
+        "Popular pressure"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "question": "How was Caesar’s popularity shown?",
+      "options": [
+        "Censorship",
+        "Dictatorship",
+        "Consulships",
+        "Three supplicationes"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "How did Caesar use his wealth?",
+      "options": [
+        "Luxury",
+        "Army only",
+        "Provinces",
+        "Largesse"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "What law in 52 BCE aided Caesar?",
+      "options": [
+        "Retirement",
+        "In absentia candidacy",
+        "Army disbandment",
+        "Return law"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "question": "Which consul agitated against Caesar in 51 BCE?",
+      "options": [
+        "Curio",
+        "Pompey",
+        "Marcellus",
+        "Cicero"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "question": "Pompey suggested discussion after which date?",
+      "options": [
+        "1 April",
+        "1 February",
+        "1 March",
+        "1 January"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "question": "What did Marcellus do to the Transpadane Gauls?",
+      "options": [
+        "Imprison",
+        "Tax",
+        "Expel",
+        "Flog"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "Which tribune allied with Caesar in 50 BCE?",
+      "options": [
+        "Curio",
+        "Cassius",
+        "Antony",
+        "Clodius"
       ],
       "correctIndex": 0
     },
     {
-      "question": "Why were the optimates questioning Caesar's very presence in Gaul?",
+      "question": "How did Curio secure Caesar’s support?",
       "options": [
-        "Because Caesar said there were no enemies left there",
-        "Because winter quarters were forbidden by law",
-        "Because Caesar lacked funds to pay his troops",
-        "Because Gaul had been reassigned to Pompey"
+        "Marriage",
+        "Army",
+        "Debt payment",
+        "Promises"
       ],
-      "correctIndex": 0
+      "correctIndex": 2
     },
     {
-      "question": "Why had Caesar's popularity in Rome increased?",
+      "question": "What ambiguity surrounded Caesar’s command?",
       "options": [
-        "He ended the grain dole",
-        "He reduced veterans' pensions",
-        "He exiled his political opponents",
-        "He won victories, was given supplicationes, and had distributed largesse"
+        "Legal basis",
+        "Length of extension",
+        "Legions",
+        "Territory"
       ],
-      "correctIndex": 0
+      "correctIndex": 1
     },
     {
-      "question": "What law had Caesar passed using ten tribunes previously?",
+      "question": "What compromise did Curio suggest?",
       "options": [
-        "A law abolishing the tribunate",
-        "A law granting citizenship to all Gauls",
-        "A law to allow him to stand for the consulship in absentia",
-        "A law making him dictator for ten years"
+        "Elections",
+        "Both step down",
+        "Caesar step down",
+        "Pompey step down"
       ],
-      "correctIndex": 0
+      "correctIndex": 1
     },
     {
-      "question": "Who agitated for the removal of Caesar from his command in 51?",
+      "question": "How did Caesar lose two legions?",
       "options": [
-        "P. Clodius Pulcher",
-        "L. Domitius Ahenobarbus",
-        "M. Claudius Marcellus",
-        "M. Aemilius Lepidus"
+        "Battle",
+        "Mutiny",
+        "Desertion",
+        "Eastern decree"
       ],
-      "correctIndex": 0
+      "correctIndex": 3
     },
     {
-      "question": "Who did the consul for 51 flog to humiliate Caesar?",
+      "question": "What occurred on 1 December 50 BCE?",
       "options": [
-        "Caesar’s quaestors",
-        "Pompeian veterans",
-        "Roman knights from Spain",
-        "Some Transpadane Gauls"
+        "Rubicon crossed",
+        "War declared",
+        "Vote to strip Caesar",
+        "Pompey resigned"
       ],
-      "correctIndex": 0
+      "correctIndex": 2
     },
     {
-      "question": "What was Pompey's response when he was asked what he would do if Caesar",
+      "question": "What did Marcellus give Pompey?",
       "options": [
-        "\"Let the gods decide in the Senate\"",
-        "\"what if my son wants to beat me with a stick\"",
-        "\"He will obey the laws like any citizen\"",
-        "\"I will immediately march on Gaul\""
+        "Decree",
+        "Crown",
+        "Army",
+        "Sword"
       ],
-      "correctIndex": 0
+      "correctIndex": 3
     },
     {
-      "question": "After what date did Pompey and the Optimates agree to discuss Caesar's",
+      "question": "Who continued Curio’s work in 49 BCE?",
       "options": [
-        "1st January 50",
-        "1st March 50",
-        "15th March 50",
-        "1st April 50"
+        "Bibulus & Marcellus",
+        "Cato & Ahenobarbus",
+        "Cicero & Pompey",
+        "Antony & Cassius"
       ],
-      "correctIndex": 0
+      "correctIndex": 3
     },
     {
-      "question": "Which tribune did Caesar ally with, paying off his debts in exchange for the",
+      "question": "What did Caesar request in his letter?",
       "options": [
-        "P. Sulpicius Rufus",
-        "G. Cassius Longinus",
-        "T. Annius Milo",
-        "Q. Scribonius Curio"
+        "War",
+        "Dictatorship",
+        "Triumph",
+        "Both lay down commands"
       ],
-      "correctIndex": 0
+      "correctIndex": 3
     },
     {
-      "question": "What was the compromise that Pompey would not agree to?",
+      "question": "What reduced offer did Caesar make?",
       "options": [
-        "Him and Caesar giving up their commands",
-        "Allowing Caesar to keep one legion in Gaul",
-        "Letting the people vote on both commands",
-        "Granting Caesar a triumph then prosecution"
+        "Tribunate",
+        "One legion in Illyricum",
+        "Two legions",
+        "Rome retirement"
       ],
-      "correctIndex": 0
+      "correctIndex": 1
     },
     {
-      "question": "What date did Pompey suggest Caesar give up his command?",
+      "question": "Who supported Caesar’s compromise?",
       "options": [
-        "31st December",
-        "13th November",
-        "1st September",
-        "1st June"
+        "Plutarch",
+        "Cicero & Pompey",
+        "Sallust",
+        "Caesar"
       ],
-      "correctIndex": 0
+      "correctIndex": 1
     },
     {
-      "question": "What did Pompey do when he and Caesar were asked to send a legion east",
+      "question": "What caused the civil war?",
       "options": [
-        "He ordered Caesar to recruit new legions in Gaul",
-        "Pompey asked Caesar to return a legion he had lent him, so Caesar lost two",
-        "He refused outright to send any legion",
-        "He sent three legions to outmatch Caesar"
+        "Economy",
+        "Command and prosecution dispute",
+        "Personal rivalry",
+        "Foreign threat"
       ],
-      "correctIndex": 0
-    },
-    {
-      "question": "When the Caesar's tribune suggested Caesar and Pompey give up command",
-      "options": [
-        "250",
-        "401",
-        "370",
-        "97"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "question": "When this happened, what was the Consul's reaction?",
-      "options": [
-        "Dismissed the senate, spread rumours Caesar would march on Rome.",
-        "Called immediate elections for dictator",
-        "Declared a ten-day festival",
-        "Arrested Pompey"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "question": "Who were the agents in 49 acting on Caesar's behalf?",
-      "options": [
-        "Mark Antony and Q. Cassius",
-        "Curio and Milo",
-        "Octavian and Agrippa",
-        "Cicero and Brutus"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "question": "What did Caesar suggest he be allowed to do in between his command and",
-      "options": [
-        "Stand for praetor instead of consul",
-        "Retire to Cisalpine Gaul with two legions. (Eventually scaled down to one legion in",
-        "Accept governorship of Asia Minor",
-        "Take a triumph then retire to Spain"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "question": "What threat does Appian say Caesar made in the case he didn't get his way?",
-      "options": [
-        "He would go to war",
-        "He would sue Pompey in court",
-        "He would go into exile",
-        "He would resign all offices"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "question": "What had the Consul, Lentulus, said he intended to do?",
-      "options": [
-        "Broker peace between the factions",
-        "Support Caesar’s candidacy",
-        "Recall Pompey from Spain",
-        "Override any attempts to reconcile with Caesar"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "question": "Who suggested Caesar lay down his command or be declared an enemy of the",
-      "options": [
-        "M. Porcius Cato",
-        "Servilius Isauricus",
-        "Q. Caecilius Metellus Scipio Nasica",
-        "L. Domitius Ahenobarbus"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "question": "Who led the refusal of Cicero's attempts at reconciliation?",
-      "options": [
-        "Curio and Antonius",
-        "Pompey and Bibulus",
-        "Cato and Ahenobarbus",
-        "Marcellus and Lepidus"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "question": "What did the Tribunes do when an SCU was passed against Caesar?",
-      "options": [
-        "Declared neutrality",
-        "Fled to Caesar",
-        "Sought asylum in the temples",
-        "Arrested Pompey"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "question": "Why did the SCU enable Pompey to act against Caesar?",
-      "options": [
-        "He held the censorship",
-        "He controlled the treasury",
-        "He had imperium in Spain",
-        "He commanded the urban cohorts"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "question": "What river did Caesar cross in January 49, committing himself to war?",
-      "options": [
-        "The Po",
-        "The Tiber",
-        "The Rubicon",
-        "The Arno"
-      ],
-      "correctIndex": 0
-    },
-    {
-      "question": "Why did this commit him to war?",
-      "options": [
-        "It attacked a Roman ally",
-        "It triggered a slave revolt",
-        "It violated a treaty with Pompey",
-        "It was the limit to his imperium"
-      ],
-      "correctIndex": 0
+      "correctIndex": 1
     }
   ]
 }

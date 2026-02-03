@@ -1,117 +1,257 @@
 {
   "id": "03-the-legal-system",
   "title": "03. The Legal System",
-  "description": "03. The Legal System",
+  "description": "An overview of criminal prosecution, courts, advocates, and inequality within the Roman legal system, illustrated through the trial of Sextus Roscius.",
   "questions": [
     {
-      "question": "Who was responsible for bringing a charge against a criminal in Rome?",
+      "question": "How was Roman law primarily initiated in criminal cases?",
       "options": [
-        "The Consuls",
-        "Private individuals",
-        "The Senate",
-        "The Magistrates"
+        "By the assemblies",
+        "By the Senate",
+        "By magistrates",
+        "As a private prosecution"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "Who was responsible for bringing a criminal case to court?",
+      "options": [
+        "The victim",
+        "The state",
+        "The praetor",
+        "The jury"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "question": "Why were poorer Romans often disadvantaged in the legal system?",
+      "options": [
+        "They lacked legal rights",
+        "They struggled to obtain representation",
+        "They could not testify",
+        "They were excluded from courts"
       ],
       "correctIndex": 1
     },
     {
-      "question": "What were quaestiones perpetuae?",
+      "question": "How might wealthy Romans assist clients in legal cases?",
       "options": [
-        "Standing courts",
-        "Public trials",
-        "Temporary commissions",
-        "Senatorial investigations"
+        "By acting as judges",
+        "By providing patronage and advocates",
+        "By writing laws",
+        "By bribing juries"
       ],
-      "correctIndex": null
+      "correctIndex": 1
     },
     {
-      "question": "How many quaestiones perpetuae were there?",
+      "question": "Where were Roman trials usually conducted?",
       "options": [
-        "10",
-        "12",
-        "5",
-        "7"
+        "Before the assemblies",
+        "Before the emperor",
+        "Before a magistrate",
+        "Before the Senate"
       ],
-      "correctIndex": null
+      "correctIndex": 2
     },
     {
-      "question": "Who reorganised the courts and established the quaestiones perpetuae?",
+      "question": "What role did advocates play in Roman trials?",
       "options": [
-        "Caesar",
+        "They selected juries",
+        "They delivered speeches on behalf of parties",
+        "They decided verdicts",
+        "They enforced sentences"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "question": "What characterised advocates’ speeches?",
+      "options": [
+        "Purely emotional appeals",
+        "Strictly factual arguments",
+        "Written testimony only",
+        "Legal arguments combined with rhetoric"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "What reform did Sulla introduce to the Roman courts?",
+      "options": [
+        "Introduced popular courts",
+        "Created permanent standing courts",
+        "Abolished juries",
+        "Removed praetors from trials"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "question": "What were the quaestiones perpetuae?",
+      "options": [
+        "Provincial courts",
+        "Standing courts for specific crimes",
+        "Military tribunals",
+        "Temporary courts"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "question": "How many quaestiones perpetuae did Sulla establish?",
+      "options": [
+        "Ten",
+        "Six",
+        "Five",
+        "Seven"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "Who presided over each quaestio perpetua?",
+      "options": [
+        "Consul",
+        "Tribune",
+        "Praetor",
+        "Censor"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "question": "In what year did the trial of Sextus Roscius take place?",
+      "options": [
+        "70 BCE",
+        "82 BCE",
+        "80 BCE",
+        "88 BCE"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "question": "Who defended Sextus Roscius?",
+      "options": [
         "Cato",
+        "Crassus",
         "Pompey",
+        "Cicero"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "question": "Of what crime was Sextus Roscius accused?",
+      "options": [
+        "Murder of his father",
+        "Theft",
+        "Treason",
+        "Bribery"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "question": "Who did Cicero accuse of orchestrating the crime?",
+      "options": [
+        "Chrysogonus",
+        "Verres",
+        "Catiline",
         "Sulla"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     },
     {
-      "question": "What were the seven crimes dealt with by the quaestiones perpetuae?",
+      "question": "What was Chrysogonus’ relationship to Sulla?",
       "options": [
-        "Murder and Poisoning, Violence, Treason, Electoral Bribery, Embezzlement, Fraud,",
-        "Murder, Theft, Arson, Fraud, Assault, Perjury, Treason",
-        "Theft, Corruption, Sedition, Libel, Bribery, Tax Evasion, Violence",
-        "Arson, Robbery, Fraud, Sedition, Treason, Kidnapping, Murder"
+        "General",
+        "Freedman",
+        "Political rival",
+        "Son-in-law"
       ],
-      "correctIndex": null
+      "correctIndex": 1
     },
     {
-      "question": "In what year was the trial of Sextus Roscius?",
+      "question": "What happened to Roscius’ father’s property after his death?",
       "options": [
-        "78",
-        "79",
-        "81",
-        "80"
+        "Added to proscription lists and auctioned",
+        "Inherited normally",
+        "Destroyed",
+        "Confiscated by Senate"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     },
     {
-      "question": "What was Roscius accused of?",
+      "question": "What was the verdict in the Roscius trial?",
       "options": [
-        "Conspiring with Sulla’s enemies",
-        "Treason",
-        "Murdering his father",
-        "Theft from the state"
+        "Acquittal",
+        "Conviction",
+        "Exile",
+        "Execution"
       ],
-      "correctIndex": null
+      "correctIndex": 0
     },
     {
-      "question": "Who did Cicero argue had committed the murder?",
+      "question": "What impact did the trial have on Cicero’s career?",
       "options": [
-        "A group of hired assassins",
-        "Roscius' relatives, with the aid of Chrysogonus",
-        "Roscius himself",
-        "The local magistrates"
+        "It ended it",
+        "It led to exile",
+        "It brought him fame",
+        "It damaged his reputation"
       ],
-      "correctIndex": null
+      "correctIndex": 2
     },
     {
-      "question": "Why did Cicero say these people committed this crime?",
+      "question": "Why was Cicero’s defence risky?",
       "options": [
-        "To gain political advantage",
-        "To seize the elder Roscius' estates",
-        "To punish corruption",
-        "To avenge an insult"
+        "It opposed Pompey",
+        "It challenged the people",
+        "It criticised Sulla’s regime",
+        "It angered the Senate"
       ],
-      "correctIndex": null
+      "correctIndex": 2
     },
     {
-      "question": "Was Roscius found guilty or acquitted?",
+      "question": "What does the Roscius case illustrate about Roman justice?",
       "options": [
-        "Acquitted",
-        "Exiled",
-        "Imprisoned",
-        "Executed"
+        "State prosecution",
+        "Equality before the law",
+        "Absence of corruption",
+        "Influence of patronage and rhetoric"
       ],
-      "correctIndex": null
+      "correctIndex": 3
     },
     {
-      "question": "Why was this case risky for Cicero to take on?",
+      "question": "Who were the quaestiones perpetuae designed to try?",
       "options": [
-        "Chrysogonus was a freedman of Sulla",
-        "The jury was biased against Cicero",
-        "It involved foreign citizens",
-        "Roscius was a senator"
+        "Religious crimes",
+        "Civil disputes",
+        "Military crimes",
+        "Specific criminal offences"
       ],
-      "correctIndex": null
+      "correctIndex": 3
+    },
+    {
+      "question": "What broader role did trials play in Roman society?",
+      "options": [
+        "Restricted to plebeians",
+        "Irrelevant to politics",
+        "Means of political advancement",
+        "Purely legal"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "question": "Who benefited most from the Roman legal system?",
+      "options": [
+        "The wealthy elite",
+        "The poor",
+        "Women",
+        "Foreigners"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "question": "What best summarises the Roman legal system?",
+      "options": [
+        "Private, rhetorical, and socially unequal",
+        "Centralised and bureaucratic",
+        "Militarised and harsh",
+        "State-driven and impartial"
+      ],
+      "correctIndex": 0
     }
   ]
 }
