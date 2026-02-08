@@ -546,29 +546,29 @@
         "description": "Structure of the Roman legal system.",
         "quizzes": [
           {
-            "id": "10-sulla-s-early-career",
-            "title": "10. Sulla's Early Career",
-            "path": "quizzes/republic/sulla70s/10-sulla-s-early-career.json"
+            "id": "10-sullas-early-career",
+            "title": "10. Sulla’s Early Career",
+            "path": "quizzes/republic/sulla70s/10-sullas-early-career.json"
           },
           {
-            "id": "11-sulla-s-civil-war",
-            "title": "11. Sulla's Civil War",
-            "path": "quizzes/republic/sulla70s/11-sulla-s-civil-war.json"
+            "id": "11-sullas-civil-war",
+            "title": "11. Sulla’s Civil War",
+            "path": "quizzes/republic/sulla70s/11-sullas-civil-war.json"
           },
           {
-            "id": "12-sulla-s-dictatorship",
-            "title": "12. Sulla's Dictatorship",
-            "path": "quizzes/republic/sulla70s/12-sulla-s-dictatorship.json"
+            "id": "12-sullas-dictatorship",
+            "title": "12. Sulla’s Dictatorship",
+            "path": "quizzes/republic/sulla70s/12-sullas-dictatorship.json"
           },
           {
-            "id": "13-responses-to-sulla-s-reforms",
-            "title": "13. Responses to Sulla's Reforms",
-            "path": "quizzes/republic/sulla70s/13-responses-to-sulla-s-reforms.json"
+            "id": "13-responses-to-sullas-reforms",
+            "title": "13. Responses to Sulla’s Reforms",
+            "path": "quizzes/republic/sulla70s/13-responses-to-sullas-reforms.json"
           },
           {
-            "id": "14-pompey-s-early-career",
-            "title": "14. Pompey's Early Career",
-            "path": "quizzes/republic/sulla70s/14-pompey-s-early-career.json"
+            "id": "14-pompeys-early-career",
+            "title": "14. Pompey’s Early Career",
+            "path": "quizzes/republic/sulla70s/14-pompeys-early-career.json"
           },
           {
             "id": "15-the-third-servile-war",
@@ -576,9 +576,9 @@
             "path": "quizzes/republic/sulla70s/15-the-third-servile-war.json"
           },
           {
-            "id": "16-pompey-and-crassus-consulship",
-            "title": "16. Pompey and Crassus' Consulship",
-            "path": "quizzes/republic/sulla70s/16-pompey-and-crassus-consulship.json"
+            "id": "16-pompey-and-crassus-as-consuls",
+            "title": "16. Pompey and Crassus as Consuls",
+            "path": "quizzes/republic/sulla70s/16-pompey-and-crassus-as-consuls.json"
           }
         ]
       },
@@ -593,9 +593,9 @@
             "path": "quizzes/republic/cicero60s/17-the-first-catilinarian-conspiracy.json"
           },
           {
-            "id": "18-cicero-s-early-career",
-            "title": "18. Cicero's Early Career",
-            "path": "quizzes/republic/cicero60s/18-cicero-s-early-career.json"
+            "id": "18-ciceros-early-career",
+            "title": "18. Cicero’s Early Career",
+            "path": "quizzes/republic/cicero60s/18-ciceros-early-career.json"
           },
           {
             "id": "19-the-catilinarian-conspiracy",
@@ -603,14 +603,14 @@
             "path": "quizzes/republic/cicero60s/19-the-catilinarian-conspiracy.json"
           },
           {
-            "id": "20-pompey-s-extraordinary-commands",
-            "title": "20. Pompey's Extraordinary Commands",
-            "path": "quizzes/republic/cicero60s/20-pompey-s-extraordinary-commands.json"
+            "id": "20-pompeys-extraordinary-commands",
+            "title": "20. Pompey’s Extraordinary Commands",
+            "path": "quizzes/republic/cicero60s/20-pompeys-extraordinary-commands.json"
           },
           {
-            "id": "21-caesar-s-early-career",
-            "title": "21. Caesar's Early Career",
-            "path": "quizzes/republic/cicero60s/21-caesar-s-early-career.json"
+            "id": "21-caesars-early-career",
+            "title": "21. Caesar’s Early Career",
+            "path": "quizzes/republic/cicero60s/21-caesars-early-career.json"
           }
         ]
       },
@@ -625,24 +625,24 @@
             "path": "quizzes/republic/caesar50s/22-the-first-triumvirate.json"
           },
           {
-            "id": "23-caesar-s-consulship",
-            "title": "23. Caesar's Consulship",
-            "path": "quizzes/republic/caesar50s/23-caesar-s-consulship.json"
+            "id": "23-caesars-consulship",
+            "title": "23. Caesar’s Consulship",
+            "path": "quizzes/republic/caesar50s/23-caesars-consulship.json"
           },
           {
             "id": "24-clodius-early-career",
-            "title": "24. Clodius' Early Career",
+            "title": "24. Clodius’ Early Career",
             "path": "quizzes/republic/caesar50s/24-clodius-early-career.json"
           },
           {
-            "id": "25-breakdown-of-the-triumvirate",
-            "title": "25. Breakdown of the Triumvirate",
-            "path": "quizzes/republic/caesar50s/25-breakdown-of-the-triumvirate.json"
+            "id": "25-the-breakdown-of-the-triumvirate",
+            "title": "25. The Breakdown of the Triumvirate",
+            "path": "quizzes/republic/caesar50s/25-the-breakdown-of-the-triumvirate.json"
           },
           {
-            "id": "26-pompey-s-sole-consulship",
-            "title": "26. Pompey's Sole Consulship",
-            "path": "quizzes/republic/caesar50s/26-pompey-s-sole-consulship.json"
+            "id": "26-pompeys-sole-consulship",
+            "title": "26. Pompey’s Sole Consulship",
+            "path": "quizzes/republic/caesar50s/26-pompeys-sole-consulship.json"
           }
         ]
       },
@@ -657,24 +657,24 @@
             "path": "quizzes/republic/civilwar/27-the-lead-up-to-the-civil-war.json"
           },
           {
-            "id": "28-caesar-s-civil-war",
-            "title": "28. Caesar's Civil War",
-            "path": "quizzes/republic/civilwar/28-caesar-s-civil-war.json"
+            "id": "28-caesars-civil-war",
+            "title": "28. Caesar’s Civil War",
+            "path": "quizzes/republic/civilwar/28-caesars-civil-war.json"
           },
           {
-            "id": "29-caesar-s-dictatorship",
-            "title": "29. Caesar's Dictatorship",
-            "path": "quizzes/republic/civilwar/29-caesar-s-dictatorship.json"
+            "id": "29-caesars-dictatorships",
+            "title": "29. Caesar’s Dictatorships",
+            "path": "quizzes/republic/civilwar/29-caesars-dictatorships.json"
           },
           {
-            "id": "30-caesar-s-reforms",
-            "title": "30. Caesar's Reforms",
-            "path": "quizzes/republic/civilwar/30-caesar-s-reforms.json"
+            "id": "30-caesars-reforms",
+            "title": "30. Caesar’s Reforms",
+            "path": "quizzes/republic/civilwar/30-caesars-reforms.json"
           },
           {
-            "id": "31-the-assassination-of-caesar",
-            "title": "31. The Assassination of Caesar",
-            "path": "quizzes/republic/civilwar/31-the-assassination-of-caesar.json"
+            "id": "31-caesars-assassination",
+            "title": "31. Caesar’s Assassination",
+            "path": "quizzes/republic/civilwar/31-caesars-assassination.json"
           }
         ]
       },
@@ -685,33 +685,33 @@
         "quizzes": [
           {
             "id": "32-antony-and-octavian-44-43-bce",
-            "title": "32. Antony and Octavian, 44-43 BCE",
+            "title": "32. Antony and Octavian, 44–43 BCE",
             "path": "quizzes/republic/secondtrium/32-antony-and-octavian-44-43-bce.json"
           },
           {
-            "id": "33-the-second-triumvirate",
-            "title": "33. The Second Triumvirate",
-            "path": "quizzes/republic/secondtrium/33-the-second-triumvirate.json"
+            "id": "33-the-second-triumvirate-43-bce",
+            "title": "33. The Second Triumvirate, 43 BCE",
+            "path": "quizzes/republic/secondtrium/33-the-second-triumvirate-43-bce.json"
           },
           {
-            "id": "34-the-liberators-civil-war",
-            "title": "34. The Liberators' Civil War",
-            "path": "quizzes/republic/secondtrium/34-the-liberators-civil-war.json"
+            "id": "34-the-liberators-civil-war-43-42-bce",
+            "title": "34. The Liberators’ Civil War, 43–42 BCE",
+            "path": "quizzes/republic/secondtrium/34-the-liberators-civil-war-43-42-bce.json"
           },
           {
-            "id": "35-challenges-to-the-second-triumvirate",
-            "title": "35. Challenges to the Second Triumvirate",
-            "path": "quizzes/republic/secondtrium/35-challenges-to-the-second-triumvirate.json"
+            "id": "35-challenges-to-the-second-triumvirate-42-36-bce",
+            "title": "35. Challenges to the Second Triumvirate, 42–36 BCE",
+            "path": "quizzes/republic/secondtrium/35-challenges-to-the-second-triumvirate-42-36-bce.json"
           },
           {
             "id": "36-antony-and-octavian-36-33-bce",
-            "title": "36. Antony and Octavian, 36-33 BCE",
+            "title": "36. Antony and Octavian, 36–33 BCE",
             "path": "quizzes/republic/secondtrium/36-antony-and-octavian-36-33-bce.json"
           },
           {
-            "id": "37-antony-vs-octavian-33-31",
-            "title": "37. Antony vs Octavian, 33-31",
-            "path": "quizzes/republic/secondtrium/37-antony-vs-octavian-33-31.json"
+            "id": "37-antony-vs-octavian-33-31-bce",
+            "title": "37. Antony vs Octavian, 33–31 BCE",
+            "path": "quizzes/republic/secondtrium/37-antony-vs-octavian-33-31-bce.json"
           }
         ]
       },
@@ -721,9 +721,9 @@
         "description": "Structure of the Roman legal system.",
         "quizzes": [
           {
-            "id": "38-senators-equestrians-and-plebs",
-            "title": "38. Senators, Equestrians, and Plebs",
-            "path": "quizzes/republic/socialeconomic/38-senators-equestrians-and-plebs.json"
+            "id": "38-senators-equestrians-and-plebians",
+            "title": "38. Senators, Equestrians, and Plebians",
+            "path": "quizzes/republic/socialeconomic/38-senators-equestrians-and-plebians.json"
           },
           {
             "id": "39-land-reform",
@@ -750,9 +750,89 @@
         "description": "Caesar, Pompey and the late Republic.",
         "quizzes": [
           {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/julioclaudians/augustus/late-roman-republic.json"
+            "id": "01-the-victory-at-actium",
+            "title": "01. The Victory at Actium",
+            "path": "quizzes/julioclaudians/augustus/01-the-victory-at-actium.json"
+          },
+          {
+            "id": "02-the-first-constitutional-settlement-27-bce",
+            "title": "02. The First Constitutional Settlement, 27 BCE",
+            "path": "quizzes/julioclaudians/augustus/02-the-first-constitutional-settlement-27-bce.json"
+          },
+          {
+            "id": "03-the-second-constitutional-settlement-23-bce",
+            "title": "03. The Second Constitutional Settlement, 23 BCE",
+            "path": "quizzes/julioclaudians/augustus/03-the-second-constitutional-settlement-23-bce.json"
+          },
+          {
+            "id": "04-augustus-moral-legislation",
+            "title": "04. Augustus' Moral Legislation",
+            "path": "quizzes/julioclaudians/augustus/04-augustus-moral-legislation.json"
+          },
+          {
+            "id": "05-augustus-and-religion",
+            "title": "05. Augustus and Religion",
+            "path": "quizzes/julioclaudians/augustus/05-augustus-and-religion.json"
+          },
+          {
+            "id": "06-augustus-and-the-imperial-cult",
+            "title": "06. Augustus and the Imperial Cult",
+            "path": "quizzes/julioclaudians/augustus/06-augustus-and-the-imperial-cult.json"
+          },
+          {
+            "id": "07-augustus-and-tradition",
+            "title": "07. Augustus and Tradition",
+            "path": "quizzes/julioclaudians/augustus/07-augustus-and-tradition.json"
+          },
+          {
+            "id": "08-augustus-and-livia",
+            "title": "08. Augustus and Livia",
+            "path": "quizzes/julioclaudians/augustus/08-augustus-and-livia.json"
+          },
+          {
+            "id": "09-augustus-military-achievements",
+            "title": "09. Augustus’ Military Achievements",
+            "path": "quizzes/julioclaudians/augustus/09-augustus-military-achievements.json"
+          },
+          {
+            "id": "10-augustus-administrative-changes",
+            "title": "10. Augustus' Administrative Changes",
+            "path": "quizzes/julioclaudians/augustus/10-augustus-administrative-changes.json"
+          },
+          {
+            "id": "11-augustus-and-the-people-of-rome",
+            "title": "11. Augustus and the People of Rome",
+            "path": "quizzes/julioclaudians/augustus/11-augustus-and-the-people-of-rome.json"
+          },
+          {
+            "id": "12-challenges-to-augustus-rule",
+            "title": "12. Challenges to Augustus’ Rule",
+            "path": "quizzes/julioclaudians/augustus/12-challenges-to-augustus-rule.json"
+          },
+          {
+            "id": "13-augustus-and-agrippa",
+            "title": "13. Augustus and Agrippa",
+            "path": "quizzes/julioclaudians/augustus/13-augustus-and-agrippa.json"
+          },
+          {
+            "id": "14-augustus-building-programme",
+            "title": "14. Augustus' Building Programme",
+            "path": "quizzes/julioclaudians/augustus/14-augustus-building-programme.json"
+          },
+          {
+            "id": "15-augustus-tiberius-and-germanicus",
+            "title": "15. Augustus, Tiberius, and Germanicus",
+            "path": "quizzes/julioclaudians/augustus/15-augustus-tiberius-and-germanicus.json"
+          },
+          {
+            "id": "16-the-succession",
+            "title": "16. The Succession",
+            "path": "quizzes/julioclaudians/augustus/16-the-succession.json"
+          },
+          {
+            "id": "17-the-res-gestae",
+            "title": "17. The Res Gestae",
+            "path": "quizzes/julioclaudians/augustus/17-the-res-gestae.json"
           }
         ]
       },
@@ -762,9 +842,64 @@
         "description": "Structure of the Roman legal system.",
         "quizzes": [
           {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/julioclaudians/tiberius/late-roman-republic.json"
+            "id": "18-tiberius-early-career",
+            "title": "18. Tiberius’ Early Career",
+            "path": "quizzes/julioclaudians/tiberius/18-tiberius-early-career.json"
+          },
+          {
+            "id": "19-tiberius-and-germanicus",
+            "title": "19. Tiberius and Germanicus",
+            "path": "quizzes/julioclaudians/tiberius/19-tiberius-and-germanicus.json"
+          },
+          {
+            "id": "20-tiberius-and-sejanus",
+            "title": "20. Tiberius and Sejanus",
+            "path": "quizzes/julioclaudians/tiberius/20-tiberius-and-sejanus.json"
+          },
+          {
+            "id": "21-suetonius-on-tiberius",
+            "title": "21. Suetonius on Tiberius",
+            "path": "quizzes/julioclaudians/tiberius/21-suetonius-on-tiberius.json"
+          },
+          {
+            "id": "22-tacitus-on-tiberius",
+            "title": "22. Tacitus on Tiberius",
+            "path": "quizzes/julioclaudians/tiberius/22-tacitus-on-tiberius.json"
+          },
+          {
+            "id": "23-velleius-paterculus-on-tiberius",
+            "title": "23. Velleius Paterculus on Tiberius",
+            "path": "quizzes/julioclaudians/tiberius/23-velleius-paterculus-on-tiberius.json"
+          },
+          {
+            "id": "24-challenges-to-tiberius",
+            "title": "24. Challenges to Tiberius",
+            "path": "quizzes/julioclaudians/tiberius/24-challenges-to-tiberius.json"
+          },
+          {
+            "id": "25-the-maiestas-trials",
+            "title": "25. The Maiestas Trials",
+            "path": "quizzes/julioclaudians/tiberius/25-the-maiestas-trials.json"
+          },
+          {
+            "id": "26-tiberius-and-the-provinces",
+            "title": "26. Tiberius and the Provinces",
+            "path": "quizzes/julioclaudians/tiberius/26-tiberius-and-the-provinces.json"
+          },
+          {
+            "id": "27-tiberius-and-the-people-of-rome",
+            "title": "27. Tiberius and the People of Rome",
+            "path": "quizzes/julioclaudians/tiberius/27-tiberius-and-the-people-of-rome.json"
+          },
+          {
+            "id": "28-tiberius-administration-of-rome",
+            "title": "28. Tiberius’ Administration of Rome",
+            "path": "quizzes/julioclaudians/tiberius/28-tiberius-administration-of-rome.json"
+          },
+          {
+            "id": "29-tiberius-and-religion",
+            "title": "29. Tiberius and Religion",
+            "path": "quizzes/julioclaudians/tiberius/29-tiberius-and-religion.json"
           }
         ]
       },
@@ -774,9 +909,39 @@
         "description": "Structure of the Roman legal system.",
         "quizzes": [
           {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/julioclaudians/tiberius/late-roman-republic.json"
+            "id": "30-gaius-early-reign",
+            "title": "30. Gaius’ Early Reign",
+            "path": "quizzes/julioclaudians/gaius/30-gaius-early-reign.json"
+          },
+          {
+            "id": "31-gaius-madness",
+            "title": "31. Gaius’ ‘Madness’",
+            "path": "quizzes/julioclaudians/gaius/31-gaius-madness.json"
+          },
+          {
+            "id": "32-gaius-and-religion",
+            "title": "32. Gaius and Religion",
+            "path": "quizzes/julioclaudians/gaius/32-gaius-and-religion.json"
+          },
+          {
+            "id": "33-gaius-and-the-empire",
+            "title": "33. Gaius and the Empire",
+            "path": "quizzes/julioclaudians/gaius/33-gaius-and-the-empire.json"
+          },
+          {
+            "id": "34-gaius-administration",
+            "title": "34. Gaius’ Administration",
+            "path": "quizzes/julioclaudians/gaius/34-gaius-administration.json"
+          },
+          {
+            "id": "35-gaius-and-the-people-of-rome",
+            "title": "35. Gaius and the People of Rome",
+            "path": "quizzes/julioclaudians/gaius/35-gaius-and-the-people-of-rome.json"
+          },
+          {
+            "id": "36-gaius-assassination",
+            "title": "36. Gaius’ Assassination",
+            "path": "quizzes/julioclaudians/gaius/36-gaius-assassination.json"
           }
         ]
       },
@@ -786,9 +951,44 @@
         "description": "Structure of the Roman legal system.",
         "quizzes": [
           {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/julioclaudians/claudius/late-roman-republic.json"
+            "id": "37-claudius-accession",
+            "title": "37. Claudius’ Accession",
+            "path": "quizzes/julioclaudians/claudius/37-claudius-accession.json"
+          },
+          {
+            "id": "38-claudius-freedmen-and-civil-service",
+            "title": "38. Claudius’ Freedmen and Civil Service",
+            "path": "quizzes/julioclaudians/claudius/38-claudius-freedmen-and-civil-service.json"
+          },
+          {
+            "id": "39-claudius-wives",
+            "title": "39. Claudius’ Wives",
+            "path": "quizzes/julioclaudians/claudius/39-claudius-wives.json"
+          },
+          {
+            "id": "40-claudius-foreign-policies",
+            "title": "40. Claudius’ Foreign Policies",
+            "path": "quizzes/julioclaudians/claudius/40-claudius-foreign-policies.json"
+          },
+          {
+            "id": "41-claudius-administrative-changes",
+            "title": "41. Claudius’ Administrative Changes",
+            "path": "quizzes/julioclaudians/claudius/41-claudius-administrative-changes.json"
+          },
+          {
+            "id": "42-claudius-and-the-people-of-rome",
+            "title": "42. Claudius and the People of Rome",
+            "path": "quizzes/julioclaudians/claudius/42-claudius-and-the-people-of-rome.json"
+          },
+          {
+            "id": "43-claudius-britannicus-and-nero",
+            "title": "43. Claudius, Britannicus, and Nero",
+            "path": "quizzes/julioclaudians/claudius/43-claudius-britannicus-and-nero.json"
+          },
+          {
+            "id": "44-claudius-death",
+            "title": "44. Claudius’ Death",
+            "path": "quizzes/julioclaudians/claudius/44-claudius-death.json"
           }
         ]
       },
@@ -798,9 +998,64 @@
         "description": "Structure of the Roman legal system.",
         "quizzes": [
           {
-            "id": "late-roman-republic",
-            "title": "Late Roman Republic Overview",
-            "path": "quizzes/julioclaudians/nero/late-roman-republic.json"
+            "id": "45-nero-early-reign",
+            "title": "45. Nero’s Early Reign",
+            "path": "quizzes/julioclaudians/nero/45-nero-early-reign.json"
+          },
+          {
+            "id": "46-nero-and-agrippina",
+            "title": "46. Nero and Agrippina",
+            "path": "quizzes/julioclaudians/nero/46-nero-and-agrippina.json"
+          },
+          {
+            "id": "47-nero-wives",
+            "title": "47. Nero’s Wives",
+            "path": "quizzes/julioclaudians/nero/47-nero-wives.json"
+          },
+          {
+            "id": "48-nero-administration",
+            "title": "48. Nero’s Administration",
+            "path": "quizzes/julioclaudians/nero/48-nero-administration.json"
+          },
+          {
+            "id": "49-nero-and-religion",
+            "title": "49. Nero and Religion",
+            "path": "quizzes/julioclaudians/nero/49-nero-and-religion.json"
+          },
+          {
+            "id": "50-nero-and-the-people-of-rome",
+            "title": "50. Nero and the People of Rome",
+            "path": "quizzes/julioclaudians/nero/50-nero-and-the-people-of-rome.json"
+          },
+          {
+            "id": "51-the-great-fire-of-rome",
+            "title": "51. The Great Fire of Rome",
+            "path": "quizzes/julioclaudians/nero/51-the-great-fire-of-rome.json"
+          },
+          {
+            "id": "52-the-pisonian-conspiracy",
+            "title": "52. The Pisonian Conspiracy",
+            "path": "quizzes/julioclaudians/nero/52-the-pisonian-conspiracy.json"
+          },
+          {
+            "id": "53-corbulo-in-armenia",
+            "title": "53. Corbulo in Armenia",
+            "path": "quizzes/julioclaudians/nero/53-corbulo-in-armenia.json"
+          },
+          {
+            "id": "54-the-revolt-of-vindex",
+            "title": "54. The Revolt of Vindex",
+            "path": "quizzes/julioclaudians/nero/54-the-revolt-of-vindex.json"
+          },
+          {
+            "id": "55-the-fall-of-nero",
+            "title": "55. The Fall of Nero",
+            "path": "quizzes/julioclaudians/nero/55-the-fall-of-nero.json"
+          },
+          {
+            "id": "56-nero-in-the-sources",
+            "title": "56. Nero in the Sources",
+            "path": "quizzes/julioclaudians/nero/56-nero-in-the-sources.json"
           }
         ]
       }
