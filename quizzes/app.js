@@ -629,6 +629,113 @@ let lastView = {
 };
 
 
+
+
+/* ============================
+   SESSION STATE (TAB DISCARD / REFRESH RESILIENCE)
+   ============================ */
+
+// Some browsers may discard a background tab to save memory.
+// When you come back, the page reloads and all in-memory quiz state is lost.
+// We persist navigation position + in-progress quiz state in sessionStorage so
+// returning to the tab doesn't kick users back to the unit list or blank mastery.
+
+const SESSION_STATE_KEY = "mcqSessionState_v1";
+
+function safeJsonParse(raw, fallback = null) {
+  try {
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveSessionState(partial = {}) {
+  const existing = safeJsonParse(sessionStorage.getItem(SESSION_STATE_KEY), {});
+  const merged = { ...existing, ...partial, savedAt: new Date().toISOString() };
+  try {
+    sessionStorage.setItem(SESSION_STATE_KEY, JSON.stringify(merged));
+  } catch (e) {
+    console.warn("Failed to persist session state", e);
+  }
+}
+
+function loadSessionState() {
+  return safeJsonParse(sessionStorage.getItem(SESSION_STATE_KEY), null);
+}
+
+function findQuizMetaByIdOrPath(moduleId, unitId, quizId, quizPath) {
+  const mod = modules.find((m) => m.id === moduleId);
+  if (!mod) return { mod: null, unit: null, quiz: null };
+
+  const unit = (mod.units || []).find((u) => u.id === unitId) || null;
+  const unitQuizzes = unit ? unit.quizzes || [] : [];
+
+  let quiz =
+    unitQuizzes.find((q) => q.id === quizId) ||
+    unitQuizzes.find((q) => q.path === quizPath) ||
+    null;
+
+  if (!quiz) {
+    for (const u of mod.units || []) {
+      const q =
+        (u.quizzes || []).find((qq) => qq.id === quizId) ||
+        (u.quizzes || []).find((qq) => qq.path === quizPath);
+      if (q) return { mod, unit: u, quiz: q };
+    }
+  }
+
+  return { mod, unit, quiz };
+}
+
+function persistNavigationState(screen) {
+  saveSessionState({
+    screen,
+    lastView,
+    currentModuleId: currentModule?.id ?? null,
+    currentUnitId: currentUnit?.id ?? null,
+    currentQuizId: currentQuizMeta?.id ?? null,
+    currentQuizPath: currentQuizMeta?.path ?? null,
+    shuffleQuestionsEnabled,
+    hideFeedbackEnabled,
+  });
+}
+
+function persistQuizProgress(screen = "quiz") {
+  if (!currentQuizMeta) {
+    persistNavigationState(screen);
+    return;
+  }
+
+  saveSessionState({
+    screen,
+    lastView,
+    currentModuleId: currentModule?.id ?? null,
+    currentUnitId: currentUnit?.id ?? null,
+    currentQuizId: currentQuizMeta?.id ?? null,
+    currentQuizPath: currentQuizMeta?.path ?? null,
+    shuffleQuestionsEnabled,
+    hideFeedbackEnabled,
+    quizProgress: {
+      questionOrder,
+      currentQuestionIndex,
+      score,
+      answers,
+    },
+  });
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    const screen = currentQuizMeta ? "quiz" : (lastView?.view ?? "modules");
+    persistQuizProgress(screen === "quiz" ? "quiz" : screen);
+  }
+});
+window.addEventListener("pagehide", () => {
+  const screen = currentQuizMeta ? "quiz" : (lastView?.view ?? "modules");
+  persistQuizProgress(screen === "quiz" ? "quiz" : screen);
+});
+
 // Re-render whatever list view the user is currently on (used after auth changes)
 // so mastery tags and attempt counts refresh immediately.
 function rerenderCurrentView() {
@@ -678,7 +785,7 @@ async function loadModules() {
     const res = await fetch("modules.json");
     if (!res.ok) throw new Error("Failed to load modules.json");
     modules = await res.json();
-    renderModuleList();
+    restoreAppStateOrDefault();
   } catch (err) {
     console.error(err);
     cardTitleEl.textContent =
@@ -695,6 +802,69 @@ async function loadModules() {
       </p>
     `;
   }
+}
+
+
+/* ============================
+   RESTORE SESSION STATE (IF TAB WAS DISCARDED)
+   ============================ */
+async function restoreAppStateOrDefault() {
+  const state = loadSessionState();
+
+  if (!state) {
+    renderModuleList();
+    return;
+  }
+
+  shuffleQuestionsEnabled = !!state.shuffleQuestionsEnabled;
+  hideFeedbackEnabled = !!state.hideFeedbackEnabled;
+
+  if (state.lastView && typeof state.lastView === "object") {
+    lastView = state.lastView;
+  }
+
+  const screen = state.screen;
+  const moduleId = state.currentModuleId;
+  const unitId = state.currentUnitId;
+
+  if ((screen === "quiz" || screen === "results") && state.quizProgress) {
+    const { mod, unit, quiz } = findQuizMetaByIdOrPath(
+      moduleId,
+      unitId,
+      state.currentQuizId,
+      state.currentQuizPath
+    );
+
+    if (mod) currentModule = mod;
+    if (unit) currentUnit = unit;
+
+    if (quiz) {
+      lastView = {
+        view: "quizzes",
+        moduleId: mod?.id ?? moduleId ?? null,
+        unitId: unit?.id ?? unitId ?? null,
+      };
+
+      await startQuiz(quiz, {
+        resumeFrom: state.quizProgress,
+        showResults: screen === "results",
+      });
+      return;
+    }
+  }
+
+  if (screen === "quizzes" && moduleId && unitId) {
+    renderUnitList(moduleId);
+    renderQuizList(unitId);
+    return;
+  }
+
+  if (screen === "units" && moduleId) {
+    renderUnitList(moduleId);
+    return;
+  }
+
+  renderModuleList();
 }
 
 /* ============================
@@ -747,12 +917,14 @@ function setBreadcrumbs(level) {
    MODULE LIST
    ============================ */
 function renderModuleList() {
+  saveSessionState({ quizProgress: null, screen: "modules" });
   currentModule = null;
   currentUnit = null;
   currentQuizMeta = null;
   currentQuizData = null;
   questionOrder = [];
   lastView = { view: "modules", moduleId: null, unitId: null };
+  persistNavigationState("modules");
 
   cardTitleEl.textContent =
     "A Level Ancient History – Multiple Choice Quizzes";
@@ -880,6 +1052,7 @@ function renderModuleList() {
    UNIT LIST (WITH RANDOM QUIZ PER UNIT)
    ============================ */
 function renderUnitList(moduleId) {
+  saveSessionState({ quizProgress: null, screen: "units" });
   const mod = modules.find((m) => m.id === moduleId);
   if (!mod) return;
 
@@ -889,6 +1062,7 @@ function renderUnitList(moduleId) {
   currentQuizData = null;
   questionOrder = [];
   lastView = { view: "units", moduleId: mod.id, unitId: null };
+  persistNavigationState("units");
 
   cardTitleEl.textContent = mod.name;
   progressContainerEl.style.display = "none";
@@ -1017,6 +1191,7 @@ function renderUnitList(moduleId) {
    QUIZ LIST WITHIN A UNIT
    ============================ */
 function renderQuizList(unitId) {
+  saveSessionState({ quizProgress: null, screen: "quizzes" });
   if (!currentModule) return;
   const unit = (currentModule.units || []).find((u) => u.id === unitId);
   if (!unit) return;
@@ -1030,6 +1205,7 @@ function renderQuizList(unitId) {
     moduleId: currentModule.id,
     unitId: unit.id,
   };
+  persistNavigationState("quizzes");
 
   cardTitleEl.textContent = unit.name;
   progressContainerEl.style.display = "none";
@@ -1135,6 +1311,7 @@ function renderQuizList(unitId) {
    EXIT QUIZ (USES lastView)
    ============================ */
 function exitQuiz() {
+  saveSessionState({ quizProgress: null, screen: lastView?.view ?? "modules" });
   if (!lastView) {
     renderModuleList();
     return;
@@ -1159,7 +1336,10 @@ function exitQuiz() {
 /* ============================
    START QUIZ
    ============================ */
-async function startQuiz(quizMeta) {
+async function startQuiz(quizMeta, opts = {}) {
+  const resumeFrom = opts.resumeFrom || null;
+  const showResults = !!opts.showResults;
+
   currentQuizMeta = quizMeta;
   currentQuizData = null;
   currentQuestionIndex = 0;
@@ -1171,6 +1351,8 @@ async function startQuiz(quizMeta) {
 
   cardTitleEl.textContent = quizMeta.title || "Quiz";
   setBreadcrumbs("quiz");
+
+  persistQuizProgress("quiz");
   pillRightEl.textContent = "Loading quiz…";
   progressContainerEl.style.display = "none";
   progressFillEl.style.width = "0%";
@@ -1219,8 +1401,35 @@ async function startQuiz(quizMeta) {
   questionOrder = questions.map((_, i) => i);
   if (shuffleQuestionsEnabled) shuffleArray(questionOrder);
 
+
+  // Apply resume state (if any) AFTER quiz JSON is loaded so we can validate lengths.
+  if (resumeFrom) {
+    const rOrder = Array.isArray(resumeFrom.questionOrder) ? resumeFrom.questionOrder : null;
+    if (rOrder && rOrder.length === questions.length) {
+      questionOrder = rOrder.slice();
+    }
+    currentQuestionIndex = Math.max(0, Number(resumeFrom.currentQuestionIndex) || 0);
+    score = Math.max(0, Number(resumeFrom.score) || 0);
+
+    answers.length = 0;
+    if (Array.isArray(resumeFrom.answers)) {
+      resumeFrom.answers.forEach((a) => answers.push(a));
+    }
+
+    // If they've finished, allow results restore.
+    if (currentQuestionIndex > questions.length) currentQuestionIndex = questions.length;
+  }
+
+
   progressContainerEl.style.display = "block";
-  renderQuestion();
+
+  persistQuizProgress("quiz");
+
+  if (showResults || currentQuestionIndex >= questions.length) {
+    renderResult();
+  } else {
+    renderQuestion();
+  }
 }
 
 /* ============================
@@ -1286,6 +1495,8 @@ function renderQuestion() {
     if (hasMovedOn) return;
     hasMovedOn = true;
 
+    persistQuizProgress("quiz");
+
     currentQuestionIndex++;
     if (currentQuestionIndex < total) {
       renderQuestion();
@@ -1313,6 +1524,8 @@ function renderQuestion() {
         correctIndex,
         isCorrect,
       });
+
+      persistQuizProgress("quiz");
 
       optionButtons.forEach((b) => (b.disabled = true));
 
@@ -1356,6 +1569,8 @@ function renderQuestion() {
         isCorrect: false,
       });
 
+      persistQuizProgress("quiz");
+
       goNext();
     });
   }
@@ -1375,6 +1590,8 @@ async function renderResult() {
 
   // Save attempt to guest or Supabase
   const stats = await saveAttempt(currentQuizMeta, score, total);
+
+  persistQuizProgress("results");
 
   progressFillEl.style.width = "100%";
   pillRightEl.textContent = "Quiz complete";
